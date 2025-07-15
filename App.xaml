@@ -4,6 +4,9 @@
              xmlns:local="clr-namespace:FloatingMusic"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <SolidColorBrush x:Key="BackgroundDark" Color="#1F1F1F"/>
+        <SolidColorBrush x:Key="PrimaryText" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="SecondaryText" Color="DimGray"/>
+        <SolidColorBrush x:Key="AccentGreen" Color="#1DB954"/>
     </Application.Resources>
 </Application>

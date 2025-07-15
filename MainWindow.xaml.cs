@@ -1,14 +1,20 @@
-﻿using FloatingMusic.Utils;
-using Gma.System.MouseKeyHook;
+﻿using FloatingMusic.Models;
+using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
-using System.Windows.Threading;
-
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+using FloatingMusic.Utils;
 namespace FloatingMusic
 {
     /// <summary>
@@ -16,140 +22,96 @@ namespace FloatingMusic
     /// </summary>
     public partial class MainWindow : Window
     {
-        private IKeyboardMouseEvents _globalHook;
-        public bool IsConfigurationOpened = false;
-        ConfigurationWindow win = new ConfigurationWindow(); //configuration
-        DispatcherTimer timer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromMilliseconds(50)
-        };
-        private bool moveMode = false;
-        string musicFolder = Path.Combine(Directory.GetCurrentDirectory(), "Data", "Music");
-        string lyricsFolder = Path.Combine(Directory.GetCurrentDirectory(), "Data", "Lyrics");
-        MediaPlayer player = new MediaPlayer(); // MediaPlayer for playing audio
-        const int GWL_EXSTYLE = -20;
-        const int WS_EX_TRANSPARENT = 0x00000020;
-        const int WS_EX_TOOLWINDOW = 0x00000080;
-        IntPtr hwnd;
-        int baseStyle;
-        List<(string filename, string lyricname)> QueueList = new();
-
-        [DllImport("user32.dll")]
-        static extern int GetWindowLong(IntPtr hwnd, int index);
-        [DllImport("user32.dll")]
-        static extern int SetWindowLong(IntPtr hwnd, int index, int newStyle);
+        FloatingWindow fw = new(); // make just one instance of FloatingWindow (maybe its bad idea to create this here but whatever)
         public MainWindow()
         {
             InitializeComponent();
-            Loaded += (_, __) =>
+            LoadSongs();
+            UpdateGreeting();
+            MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
+        }
+        private void LoadSongs()
+        {
+            var json = File.ReadAllText(System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data","index-decrypted.dat"));
+            var songs = JsonSerializer.Deserialize<List<Song>>(json, new JsonSerializerOptions
             {
-                hwnd = new WindowInteropHelper(this).Handle;
-                baseStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
-                SetWindowLong(hwnd, GWL_EXSTYLE, baseStyle | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
-            };
-            Loaded += MainWindow_Loaded;
-
-            if (Directory.Exists(musicFolder))
+                PropertyNameCaseInsensitive = true
+            });
+            foreach(var song in songs) // make path to absolute
             {
-                var files = Directory.GetFiles(musicFolder, "*.mp3", SearchOption.TopDirectoryOnly);
-                var lyric = Directory.GetFiles(lyricsFolder, "*.srt", SearchOption.TopDirectoryOnly);
-                foreach(var x in files)
-                {
-                    var filename = Path.GetFileNameWithoutExtension(x);
-                    var fil = lyric.FirstOrDefault(y => Path.GetFileNameWithoutExtension(y) == filename);
-                    if (fil != null)
-                    {
-                        QueueList.Add((filename, fil));
-                    }
-                }
+                song.Music = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Music", song.Music);
+                song.Lyrics = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Lyrics", song.Lyrics);
+                song.Image = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Images", song.Image);
+                song.Banner = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Banners", song.Banner);
+            }
+            SongList.ItemsSource = songs;
+        }
+        private void SongButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.DataContext is Song song)
+            {
+                Label_SongTitle.Text = song.Title;
+                Label_ArtistName.Text = song.Artist;
+                Image_Banner.Source = new BitmapImage(new Uri(song.Banner, UriKind.RelativeOrAbsolute));
+                MusicPlayer.Play(song.Music,song.Lyrics);
             }
         }
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        private void UpdateGreeting()
         {
-            if (moveMode)
+            var now = DateTime.Now;
+            if (now.Hour <= 23)
             {
-                DragMove();
+                Label_Greeting.Text = "Good Night!";
+            }
+            if (now.Hour <= 19)
+            {
+                Label_Greeting.Text = "Good Evening!";
+            }
+            if (now.Hour <= 14)
+            {
+                Label_Greeting.Text = "Good Afternoon!";
+            }
+            if(now.Hour <= 10)
+            {
+                Label_Greeting.Text = "Good Morning!";
             }
         }
-
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private void Label_Debug_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            _globalHook = Hook.GlobalEvents();
-            _globalHook.KeyDown += GlobalHook_KeyDown;
+
         }
-        private void GlobalHook_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+        private void OnLyricsChanged(object sender, string newLyrics)
         {
-            if (e.KeyCode == System.Windows.Forms.Keys.F12)
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(() =>
-                {
-                    if (IsConfigurationOpened)
-                    {
-                        win.Hide();
-                        IsConfigurationOpened = false;
-                    }
-                    else
-                    {
-                        win.Show();
-                        IsConfigurationOpened = true;
-                    }
-                });
-            }
-            else if (e.KeyCode == System.Windows.Forms.Keys.F4)
-            {
-                Setup().GetAwaiter().GetResult();
-            }
-            else if (e.KeyCode == System.Windows.Forms.Keys.F8)
-            {
-                Stop().GetAwaiter().GetResult();
-            }
-            if (e.KeyCode == System.Windows.Forms.Keys.F11)
-            {
-                moveMode = !moveMode;
-                lbl_displayedlyrics.Text = moveMode ? "Move Mode: ON" : "Move Mode: OFF";
-
-                if (moveMode)
-                {
-                    // Make window clickable (remove transparent)
-                    SetWindowLong(hwnd, GWL_EXSTYLE, baseStyle | WS_EX_TOOLWINDOW);
-                }
-                else
-                {
-                    // Make window click-through again
-                    SetWindowLong(hwnd, GWL_EXSTYLE, baseStyle | WS_EX_TRANSPARENT | WS_EX_TOOLWINDOW);
-                }
-            }
+            Dispatcher.Invoke(() => Label_ActiveLyrics.Text = newLyrics);
         }
 
-        public async Task Setup()
+        private void Label_ActiveLyrics_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            string musicPath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "Music", "Tabun.mp3");
-            var lyrics = SRTParser.ParseSRT(Path.Combine(Directory.GetCurrentDirectory(), "Data", "Lyrics", "Tabun.srt"));
-            int lyricindex = 0;
-            if (File.Exists(musicPath))
+            if(!fw.IsVisible)
             {
-                player.Open(new Uri(musicPath, UriKind.Absolute));
-                player.Play();
-                timer.Tick += (s, e) =>
-                { 
-                    var entry = lyrics[lyricindex];
-                    if (player.Position >= entry.start && player.Position <= entry.end)
-                    {
-                        lbl_displayedlyrics.Text = entry.text +"\n" + entry.text2;
-                        lyricindex++;
-                    }
-                };
-                timer.Start();
+                fw.Show();
             }
             else
             {
-                MessageBox.Show("File not found: " + musicPath);
+                fw.Hide();
             }
         }
-        public async Task Stop()
-        {
-            player.Stop();
-        }
 
+        private void Label_About_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("🎵 FloatingMusic\r\n" +
+                "A lightweight local music player made with ❤️ in C# and XAML.\r\n\r\n" +
+                "Credits:\r\n" +
+                "Main Developer: Putra3340\r\n\r\n" +
+                "Icons & Artwork: - \r\n\r\n" +
+                "Libraries:\r\n" +
+                " - .NET WPF\r\n" +
+                " - System.Text.Json\r\n" +
+                " - MediaPlayer (WPF)\r\n\r\n" +
+                "Special Thanks:\r\n" +
+                " - Internet\r\n" +
+                " - All artists whose music brings this app to life\r\n\r\n" +
+                $"© {DateTime.Now.Year} FloatingMusic Project. All rights reserved.");
+        }
     }
 }
