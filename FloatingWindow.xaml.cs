@@ -1,4 +1,4 @@
-﻿using FloatingMusic.Utils;
+﻿using Floatly.Utils;
 using Gma.System.MouseKeyHook;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -9,7 +9,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace FloatingMusic
+namespace Floatly
 {
     /// <summary>
     /// Interaction logic for FloatingWindow.xaml
@@ -53,11 +53,12 @@ namespace FloatingMusic
             _globalHook = Hook.GlobalEvents();
             _globalHook.KeyDown += GlobalHook_KeyDown;
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
+            OnLyricsChanged(null, MusicPlayer.CurrentActiveLyrics); // just update when its showed
         }
 
         private void OnLyricsChanged(object? sender, string e)
         {
-            lbl_displayedlyrics.Text = e;
+            Dispatcher.Invoke(() => lbl_displayedlyrics.Text = e);
         }
 
         private void GlobalHook_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
@@ -79,36 +80,5 @@ namespace FloatingMusic
                 }
             }
         }
-
-        //public async Task Setup()
-        //{
-        //    string musicPath = Path.Combine(Directory.GetCurrentDirectory(), "Data", "Music", "Tabun.mp3");
-        //    var lyrics = SRTParser.ParseSRT(Path.Combine(Directory.GetCurrentDirectory(), "Data", "Lyrics", "Tabun.srt"));
-        //    int lyricindex = 0;
-        //    if (File.Exists(musicPath))
-        //    {
-        //        player.Open(new Uri(musicPath, UriKind.Absolute));
-        //        player.Play();
-        //        timer.Tick += (s, e) =>
-        //        { 
-        //            var entry = lyrics[lyricindex];
-        //            if (player.Position >= entry.start && player.Position <= entry.end)
-        //            {
-        //                lbl_displayedlyrics.Text = entry.text +"\n" + entry.text2;
-        //                lyricindex++;
-        //            }
-        //        };
-        //        timer.Start();
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("File not found: " + musicPath);
-        //    }
-        //}
-        //public async Task Stop()
-        //{
-        //    player.Stop();
-        //}
-
     }
 }

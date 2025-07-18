@@ -1,6 +1,6 @@
-# FloatingMusic
+# Floatly
 
-🎵 **FloatingMusic** is a lightweight local music player built with ❤️ using C# and XAML. This project is currently under development and not ready for public builds yet. Stay tuned for updates!
+🎵 **Floatly** is a lightweight local music player built with ❤️ using C# and XAML. This project is currently under development and not ready for public builds yet. Stay tuned for updates!
 
 ## Features
 - Play your favorite local music files.
@@ -13,7 +13,7 @@
 - Add support for more file formats and features.
 
 ## Contributing
-We welcome contributions! In the future, you'll be able to submit your songs along with lyrics to enrich the FloatingMusic library.
+We welcome contributions! In the future, you'll be able to submit your songs along with lyrics to enrich the Floatly library.
 
 ## License
 This project is licensed under the Apache License 2.0. See the [LICENSE.txt](LICENSE.txt) file for details.
@@ -21,6 +21,6 @@ This project is licensed under the Apache License 2.0. See the [LICENSE.txt](LIC
 ---
 
 **Copyright Notice**  
-© 2023 FloatingMusic Project. All rights reserved.  
-All music, lyrics, and artwork used in this project are the property of their respective owners. FloatingMusic does not claim ownership of any third-party content.  
-By contributing to this project, you agree to grant FloatingMusic the rights to use your submitted content within the scope of this application.
+© 2023 Floatly Project. All rights reserved.  
+All music, lyrics, and artwork used in this project are the property of their respective owners. Floatly does not claim ownership of any third-party content.  
+By contributing to this project, you agree to grant Floatly the rights to use your submitted content within the scope of this application.

@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace FloatingMusic.Utils
+namespace Floatly.Utils
 {
     public static class MusicPlayer
     {
@@ -32,6 +32,7 @@ namespace FloatingMusic.Utils
         #endregion
         #region Player Thing
         private static MediaPlayer _player = new MediaPlayer();
+        public static MediaPlayer Player => _player;
 
         public static void Play(string filePath,string lyricspath)
         {

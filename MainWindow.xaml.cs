@@ -1,4 +1,5 @@
-﻿using FloatingMusic.Models;
+﻿using Floatly.Models;
+using Floatly.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -14,8 +15,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using FloatingMusic.Utils;
-namespace FloatingMusic
+using System.Windows.Threading;
+namespace Floatly
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,16 +24,20 @@ namespace FloatingMusic
     public partial class MainWindow : Window
     {
         FloatingWindow fw = new(); // make just one instance of FloatingWindow (maybe its bad idea to create this here but whatever)
+        DispatcherTimer timer = new DispatcherTimer(); // for slider
+        bool isDragging = false; // dragging slider
         public MainWindow()
         {
             InitializeComponent();
             LoadSongs();
             UpdateGreeting();
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
+            timer.Interval = TimeSpan.FromMilliseconds(500);
+            timer.Tick += Timer_Tick;
         }
         private void LoadSongs()
         {
-            var json = File.ReadAllText(System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data","index-decrypted.dat"));
+            var json = File.ReadAllText(System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data","index.json"));
             var songs = JsonSerializer.Deserialize<List<Song>>(json, new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -52,9 +57,10 @@ namespace FloatingMusic
             {
                 Label_SongTitle.Text = song.Title;
                 Label_ArtistName.Text = song.Artist;
-                Image_Banner.Source = new BitmapImage(new Uri(song.Banner, UriKind.RelativeOrAbsolute));
+                Image_Banner.Fill = new ImageBrush(new BitmapImage(new Uri(song.Banner, UriKind.RelativeOrAbsolute)));
                 MusicPlayer.Play(song.Music,song.Lyrics);
-            }
+                StartSlider();
+			}
         }
         private void UpdateGreeting()
         {
@@ -99,7 +105,7 @@ namespace FloatingMusic
 
         private void Label_About_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show("🎵 FloatingMusic\r\n" +
+            MessageBox.Show("🎵 Floatly\r\n" +
                 "A lightweight local music player made with ❤️ in C# and XAML.\r\n\r\n" +
                 "Credits:\r\n" +
                 "Main Developer: Putra3340\r\n\r\n" +
@@ -111,7 +117,61 @@ namespace FloatingMusic
                 "Special Thanks:\r\n" +
                 " - Internet\r\n" +
                 " - All artists whose music brings this app to life\r\n\r\n" +
-                $"© {DateTime.Now.Year} FloatingMusic Project. All rights reserved.");
+                $"© {DateTime.Now.Year} Floatly Project. All rights reserved.");
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            fw.Close();
+        }
+        private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                DragMove();
+        }
+
+        private void Minimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
+
+        private void Maximize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e) => Close();
+        private void StartSlider()
+        {
+            if (MusicPlayer.Player.NaturalDuration.HasTimeSpan)
+            {
+                Slider_Progress.Maximum = MusicPlayer.Player.NaturalDuration.TimeSpan.TotalSeconds;
+                timer.Start();
+            }
+        }
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            if (!isDragging && MusicPlayer.Player.NaturalDuration.HasTimeSpan)
+            {
+                Slider_Progress.Value = MusicPlayer.Player.Position.TotalSeconds;
+            }
+        }
+
+        private void Slider_Progress_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            isDragging = true;
+        }
+
+        private void Slider_Progress_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            isDragging = false;
+            MusicPlayer.Player.Position = TimeSpan.FromSeconds(Slider_Progress.Value);
+        }
+
+        // Optional: live update while dragging
+        private void Slider_Progress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (isDragging)
+            {
+                // Preview or show position somewhere
+            }
         }
     }
 }

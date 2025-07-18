@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FloatingMusic.Utils
+namespace Floatly.Utils
 {
     public static class SRTParser
     {

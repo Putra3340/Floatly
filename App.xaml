@@ -1,12 +1,14 @@
-﻿<Application x:Class="FloatingMusic.App"
+﻿<Application x:Class="Floatly.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:FloatingMusic"
+             xmlns:local="clr-namespace:Floatly"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <SolidColorBrush x:Key="BackgroundDark" Color="#1F1F1F"/>
+        <SolidColorBrush x:Key="BackgroundDark" Color="#000000"/>
+        <SolidColorBrush x:Key="BackgroundSecondary" Color="#121212"/>
         <SolidColorBrush x:Key="PrimaryText" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="SecondaryText" Color="DimGray"/>
         <SolidColorBrush x:Key="AccentGreen" Color="#1DB954"/>
+        <SolidColorBrush x:Key="AccentPurple" Color="#9A60D4"/>
     </Application.Resources>
 </Application>

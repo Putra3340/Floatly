@@ -2,7 +2,7 @@
 using System.Data;
 using System.Windows;
 
-namespace FloatingMusic
+namespace Floatly
 {
     /// <summary>
     /// Interaction logic for App.xaml
