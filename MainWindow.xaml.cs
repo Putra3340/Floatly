@@ -2,8 +2,10 @@
 using Floatly.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -24,43 +26,40 @@ namespace Floatly
     public partial class MainWindow : Window
     {
         FloatingWindow fw = new(); // make just one instance of FloatingWindow (maybe its bad idea to create this here but whatever)
+        ConfigurationWindow cw = new(); // make just one instance of ConfigurationWindow (maybe its bad idea to create this here but whatever)
+        ServerLibrary sl = new(); // make just one instance of ServerLibrary (maybe its bad idea to create this here but whatever)
         DispatcherTimer timer = new DispatcherTimer(); // for slider
         bool isDragging = false; // dragging slider
         public MainWindow()
         {
             InitializeComponent();
-            LoadSongs();
+
+            sl.LoadLibrary(Window_Title,SongList);
             UpdateGreeting();
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
             timer.Interval = TimeSpan.FromMilliseconds(500);
             timer.Tick += Timer_Tick;
         }
-        private void LoadSongs()
-        {
-            var json = File.ReadAllText(System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data","index.json"));
-            var songs = JsonSerializer.Deserialize<List<Song>>(json, new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            });
-            foreach(var song in songs) // make path to absolute
-            {
-                song.Music = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Music", song.Music);
-                song.Lyrics = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Lyrics", song.Lyrics);
-                song.Image = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Images", song.Image);
-                song.Banner = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Banners", song.Banner);
-            }
-            SongList.ItemsSource = songs;
-        }
+        
         private void SongButton_Click(object sender, RoutedEventArgs e)
         {
+            if (Prefs.OnlineMode && sender is Button btnonline && btnonline.DataContext is OnlineSong onlinesong)
+            {
+                Label_SongTitle.Text = onlinesong.Title;
+                Label_ArtistName.Text = onlinesong.Artist;
+                Image_Banner.Fill = new ImageBrush(new BitmapImage(new Uri(onlinesong.Banner, UriKind.RelativeOrAbsolute)));
+                MusicPlayer.Play(onlinesong.Music, onlinesong.Lyrics);
+                StartSlider();
+            }
+            else
             if (sender is Button btn && btn.DataContext is Song song)
             {
                 Label_SongTitle.Text = song.Title;
                 Label_ArtistName.Text = song.Artist;
                 Image_Banner.Fill = new ImageBrush(new BitmapImage(new Uri(song.Banner, UriKind.RelativeOrAbsolute)));
-                MusicPlayer.Play(song.Music,song.Lyrics);
+                MusicPlayer.Play(song.Music, song.Lyrics);
                 StartSlider();
-			}
+            }
         }
         private void UpdateGreeting()
         {
@@ -137,13 +136,21 @@ namespace Floatly
             WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
         }
 
-        private void Close_Click(object sender, RoutedEventArgs e) => Close();
-        private void StartSlider()
+        private void Close_Click(object sender, RoutedEventArgs e)
         {
-            if (MusicPlayer.Player.NaturalDuration.HasTimeSpan)
-            {
-                Slider_Progress.Maximum = MusicPlayer.Player.NaturalDuration.TimeSpan.TotalSeconds;
-                timer.Start();
+            fw.Close();
+            cw.Close();
+            Application.Current.Shutdown();
+        }
+        private async Task StartSlider()
+        {
+            while (true) { 
+                if (MusicPlayer.Player.NaturalDuration.HasTimeSpan)
+                {
+                    Slider_Progress.Maximum = MusicPlayer.Player.NaturalDuration.TimeSpan.TotalSeconds;
+                    timer.Start();
+                }
+                await Task.Delay(100);
             }
         }
         private void Timer_Tick(object sender, EventArgs e)
@@ -151,6 +158,8 @@ namespace Floatly
             if (!isDragging && MusicPlayer.Player.NaturalDuration.HasTimeSpan)
             {
                 Slider_Progress.Value = MusicPlayer.Player.Position.TotalSeconds;
+                Label_CurrentTime.Text = (TimeSpan.FromSeconds(Slider_Progress.Value)).ToString(@"mm\:ss");
+                Label_TotalTime.Text = MusicPlayer.Player.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
             }
         }
 
@@ -170,8 +179,27 @@ namespace Floatly
         {
             if (isDragging)
             {
-                // Preview or show position somewhere
+                Label_CurrentTime.Text = TimeSpan.FromSeconds(Slider_Progress.Value).ToString(@"mm\:ss");
             }
+        }
+
+        private void Label_Settings_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            cw.ShowDialog();
+        }
+
+        private void Label_OnlineLibrary_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Prefs.OnlineMode = true;
+            sl.ClearLibrary(SongList);
+            sl.LoadLibrary(Window_Title, SongList);
+        }
+
+        private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Prefs.OnlineMode = false;
+            sl.ClearLibrary(SongList);
+            sl.LoadLibrary(Window_Title, SongList);
         }
     }
 }

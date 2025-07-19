@@ -34,13 +34,13 @@ namespace Floatly.Utils
         private static MediaPlayer _player = new MediaPlayer();
         public static MediaPlayer Player => _player;
 
-        public static void Play(string filePath,string lyricspath)
+        public async static void Play(string filePath,string lyricspath)
         {
             // Setup lyrics first
             timer.Stop();
             CurrentActiveLyrics = ""; // Clear current lyrics
             lyricslist.Clear();
-            lyricslist = SRTParser.ParseSRT(lyricspath);
+            lyricslist = await SRTParser.ParseSRT(lyricspath);
             int lyricindex = 0; // maybe we didnt need this in future
             try
             {

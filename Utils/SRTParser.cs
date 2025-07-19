@@ -1,17 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Floatly.Utils
 {
     public static class SRTParser
     {
-        public static List<(int lyricindex,TimeSpan start, TimeSpan end, string text, string text2)> ParseSRT(string srtpath)
+        public async static Task<List<(int lyricindex,TimeSpan start, TimeSpan end, string text, string text2)>> ParseSRT(string srtpath)
         {
             var subtitles = new List<(int lyricindex,TimeSpan start, TimeSpan end, string text,string text2)>();
-            var lines = System.IO.File.ReadAllLines(srtpath);
+            string localPath = srtpath;
+
+            if (Uri.IsWellFormedUriString(srtpath, UriKind.Absolute) && srtpath.StartsWith("http"))
+            {
+                using var client = new HttpClient();
+                var data = await client.GetByteArrayAsync(srtpath);
+                localPath = Path.Combine(Prefs.TempDirectory, Path.GetFileName(new Uri(srtpath).LocalPath));
+                await File.WriteAllBytesAsync(localPath, data);
+            }
+
+            var lines = File.ReadAllLines(localPath);
             int lineIndex = 0;
             int lyricsindex = 1; //start from one because the first line is the index
             TimeSpan start = TimeSpan.Zero;

@@ -18,7 +18,7 @@
         </Grid.RowDefinitions>
         <Border Background="{StaticResource AccentPurple}" Height="32" MouseDown="TitleBar_MouseDown" Grid.Row="0">
             <DockPanel LastChildFill="True">
-                <TextBlock Text="Floatly" Foreground="White" VerticalAlignment="Center" Margin="10,0" FontSize="20"/>
+                <TextBlock x:Name="Window_Title" Text="Floatly" Foreground="White" VerticalAlignment="Center" Margin="10,0" FontSize="20"/>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
                     <Button Click="Minimize_Click" Content="_" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
                     <Button Click="Maximize_Click" Content="☐" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
@@ -40,8 +40,9 @@
         Margin="10" Grid.Column="0">
                 <StackPanel  Margin="10" Background="{StaticResource BackgroundSecondary}">
                     <TextBlock Text="Home" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10"/>
-                    <TextBlock Text="Search" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10"/>
-                    <TextBlock Text="Your Library" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10"/>
+                    <TextBlock Text="Online Library" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10"  MouseLeftButtonDown="Label_OnlineLibrary_MouseLeftButtonDown"/>
+                    <TextBlock Text="Your Library" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="TextBlock_MouseLeftButtonDown"/>
+                    <TextBlock x:Name="Label_Settings" Text="Settings" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_Settings_MouseLeftButtonDown"/>
                     <TextBlock x:Name="Label_About" Text="About" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_About_MouseLeftButtonDown"/>
                     <TextBlock x:Name="Label_Debug" Text="Debug" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_Debug_MouseLeftButtonDown"/>
                 </StackPanel>
@@ -74,14 +75,21 @@ Margin="10">
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
 
-                                            <Image Grid.Column="0"
-               Source="{Binding Image}"
-               Width="80"
-               Height="80"
-               Stretch="UniformToFill"
-               Margin="0,0,12,0"
-               VerticalAlignment="Center"/>
-
+                                            
+                                            <Rectangle
+                                                
+Height="80"
+Width="80"
+RadiusX="16"
+RadiusY="16"
+Stretch="UniformToFill"
+Margin="0,0,12,0"
+VerticalAlignment="Center">
+                                                <!-- or desired width -->
+                                                <Rectangle.Fill>
+                                                    <ImageBrush Stretch="Fill" ImageSource="{Binding Image}" />
+                                                </Rectangle.Fill>
+                                            </Rectangle>
                                             <StackPanel Grid.Column="1"
                     Orientation="Vertical"
                     VerticalAlignment="Center">
@@ -110,7 +118,7 @@ Padding="10"
 Margin="10" Grid.Column="2">
                 <!-- Now Playing -->
                 <StackPanel  Margin="25">
-                    <TextBlock Text="Now Playing.." Foreground="{StaticResource PrimaryText}" FontSize="24"/>
+                    <TextBlock Text="Now Playing.." Foreground="{StaticResource PrimaryText}" FontSize="24" Margin="0,0,0,10"/>
                     <Rectangle x:Name="Image_Banner"
            Height="243"
            RadiusX="16"
@@ -134,6 +142,7 @@ Margin="10" Grid.Column="2">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="0">
@@ -142,6 +151,8 @@ Margin="10" Grid.Column="2">
                                 <Button x:Name="Button_Next" Content="Next" Width="47" Height="40" Margin="5,0"/>
                             </StackPanel>
                             <Slider x:Name="Slider_Progress" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Width="400" Margin="0,11,0,0" Minimum="0" Maximum="100" ValueChanged="Slider_Progress_ValueChanged" PreviewMouseDown="Slider_Progress_PreviewMouseDown" PreviewMouseUp="Slider_Progress_PreviewMouseUp"/>
+                            <TextBlock Text="00:00" x:Name="Label_CurrentTime" Foreground="{StaticResource PrimaryText}" FontSize="14" HorizontalAlignment="Left" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="00:00" x:Name="Label_TotalTime" Foreground="{StaticResource PrimaryText}" FontSize="14" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
                         </Grid>
                     </StackPanel>
                     <TextBlock x:Name="Label_ActiveLyrics" Text="Lyrics heree..." Foreground="{StaticResource PrimaryText}" FontSize="24" HorizontalAlignment="Center" Margin="0,30,0,0" TextWrapping="Wrap" TextAlignment="Center" MouseLeftButtonDown="Label_ActiveLyrics_MouseLeftButtonDown"/>
