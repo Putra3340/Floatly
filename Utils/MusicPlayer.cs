@@ -9,7 +9,7 @@ namespace Floatly.Utils
 {
     public static class MusicPlayer
     {
-        public static DispatcherTimer timer = new DispatcherTimer
+        public static DispatcherTimer timer = new DispatcherTimer // set it to very low if building a music player with lyrics support
         {
             Interval = TimeSpan.FromMilliseconds(50) // more low more accuracy & heavy (also depends on the lyrics list)
         };
@@ -34,6 +34,7 @@ namespace Floatly.Utils
         private static MediaPlayer _player = new MediaPlayer();
         public static MediaPlayer Player => _player;
 
+        public static string currentlyricpath = ""; // This will hold the current lyrics path (for debugging purposes)
         public async static void Play(string filePath,string lyricspath)
         {
             // Setup lyrics first
@@ -41,20 +42,23 @@ namespace Floatly.Utils
             CurrentActiveLyrics = ""; // Clear current lyrics
             lyricslist.Clear();
             lyricslist = await SRTParser.ParseSRT(lyricspath);
-            int lyricindex = 0; // maybe we didnt need this in future
+            currentlyricpath = lyricspath; // for debugging purposes
             try
             {
                 _player.Open(new Uri(filePath, UriKind.RelativeOrAbsolute));
                 _player.Play();
                 timer.Tick += (s, e) =>
                 {
-                    // maybe for optimization we need to define it once
-                    var entry = lyricslist[lyricindex >= lyricslist.Count ? 0 : lyricindex]; // prevent accessing out of bounds
-                    if (_player.Position >= entry.start && _player.Position <= entry.end)
+                    // support when player position changed
+                    var entry = lyricslist.FirstOrDefault(x => _player.Position >= x.start && _player.Position <= x.end);
+                    if (!string.IsNullOrEmpty(entry.text)) // or check entry.start != default
                     {
-                       CurrentActiveLyrics = entry.text + "\n" + entry.text2;
-                        lyricindex++;
+                        if(entry.text == "NULL")
+                            CurrentActiveLyrics = "Oops You caught us";
+                        else
+                            CurrentActiveLyrics = entry.text + "\n" + entry.text2;
                     }
+
                 };
                 timer.Start();
             }

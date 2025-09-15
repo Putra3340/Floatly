@@ -11,15 +11,16 @@
 
     <Grid Background="{StaticResource BackgroundDark}" Visibility="Visible">
         <Grid.RowDefinitions>
-            <RowDefinition Height="32"/>
+            <RowDefinition Height="64"/>
             <!-- TitleBar -->
             <RowDefinition Height="*"/>
             <!-- Main content -->
         </Grid.RowDefinitions>
-        <Border Background="{StaticResource AccentPurple}" Height="32" MouseDown="TitleBar_MouseDown" Grid.Row="0">
+        <Border Background="{StaticResource BackgroundSecondary}" Height="50" MouseDown="TitleBar_MouseDown" Grid.Row="0" Margin="10,0,10,0">
             <DockPanel LastChildFill="True">
                 <TextBlock x:Name="Window_Title" Text="Floatly" Foreground="White" VerticalAlignment="Center" Margin="10,0" FontSize="20"/>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                    <TextBox x:Name="tbx_search" Width="500px" Margin="0,0,200,0" Background="Black" Foreground="White" TextChanged="tbx_search_TextChanged"></TextBox>
                     <Button Click="Minimize_Click" Content="_" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
                     <Button Click="Maximize_Click" Content="☐" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
                     <Button Click="Close_Click" Content="X" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
@@ -48,19 +49,25 @@
                 </StackPanel>
             </Border>
 
-            <StackPanel Grid.Column="1" Grid.Row="1">
-                <Border Background="{StaticResource BackgroundSecondary}"
+            <Grid Grid.Column="1" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <!-- Greeting -->
+                    <RowDefinition Height="*"/>
+                    <!-- Scrollable content -->
+                </Grid.RowDefinitions>
+                <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="0"
 CornerRadius="10"
 Padding="10"
 Margin="10">
                     <TextBlock Text="Content Area" Margin="0,0,0,10" Foreground="{StaticResource PrimaryText}" x:Name="Label_Greeting" FontSize="36"/>
                 </Border>
-                <Border Background="{StaticResource BackgroundSecondary}"
+                <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="1"
 CornerRadius="10"
 Padding="10"
 Margin="10">
                     <!-- Content Area -->
-                    <ScrollViewer Margin="0,10,0,10" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer x:Name="scrollview" Margin="0,10,0,10" VerticalScrollBarVisibility="Auto">
                         <ItemsControl x:Name="SongList">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
@@ -111,7 +118,7 @@ VerticalAlignment="Center">
                     </ScrollViewer>
                 </Border>
 
-            </StackPanel>
+            </Grid>
             <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="1"
 CornerRadius="10"
 Padding="10"
@@ -147,7 +154,7 @@ Margin="10" Grid.Column="2">
 
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="0">
                                 <Button x:Name="Button_Previous" Content="Previous" Width="47" Height="40" Margin="5,0"/>
-                                <Button x:Name="Button_PlayPause" Content="Play" Width="47" Height="40" Margin="5,0"/>
+                                <Button x:Name="Button_PlayPause" Content="Play" Width="47" Height="40" Margin="5,0" Click="Button_PlayPause_Click" />
                                 <Button x:Name="Button_Next" Content="Next" Width="47" Height="40" Margin="5,0"/>
                             </StackPanel>
                             <Slider x:Name="Slider_Progress" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Width="400" Margin="0,11,0,0" Minimum="0" Maximum="100" ValueChanged="Slider_Progress_ValueChanged" PreviewMouseDown="Slider_Progress_PreviewMouseDown" PreviewMouseUp="Slider_Progress_PreviewMouseUp"/>
@@ -157,7 +164,7 @@ Margin="10" Grid.Column="2">
                     </StackPanel>
                     <TextBlock x:Name="Label_ActiveLyrics" Text="Lyrics heree..." Foreground="{StaticResource PrimaryText}" FontSize="24" HorizontalAlignment="Center" Margin="0,30,0,0" TextWrapping="Wrap" TextAlignment="Center" MouseLeftButtonDown="Label_ActiveLyrics_MouseLeftButtonDown"/>
                 </StackPanel>
-            </Border>
+            </Border> <!-- Right Side-->
         </Grid>
     </Grid>
 </Window>

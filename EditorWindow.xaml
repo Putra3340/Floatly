@@ -1,0 +1,32 @@
+﻿<Window x:Class="Floatly.EditorWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Floatly"
+        mc:Ignorable="d"
+        Title="Editor" Height="450" Width="800" Background="{StaticResource BackgroundDark}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30px"/>
+            <RowDefinition Height="24px"/>
+            <RowDefinition Height="50px"/>
+            <RowDefinition Height="45px"/>
+            <RowDefinition Height="45px"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Slider HorizontalAlignment="Center" Margin="0,5,0,0" VerticalAlignment="Top" Width="760" Grid.Row="0"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Label Content="0:00:00.00" Foreground="White" HorizontalAlignment="Left" Grid.Column="0"></Label>
+            <Label Content="0:00:00.00" Foreground="White" HorizontalAlignment="Right" Grid.Column="1"></Label>
+        </Grid>
+        <Label Content="Previous Lyrics" VerticalAlignment="Bottom" HorizontalAlignment="Center" Foreground="White" Grid.Row="2" FontSize="24"></Label>
+        <Label Content="Current Lyrics" VerticalAlignment="Bottom" HorizontalAlignment="Center" Foreground="White" Grid.Row="3" FontSize="24"></Label>
+        <Label Content="Next Lyrics" VerticalAlignment="Bottom" HorizontalAlignment="Center" Foreground="White" Grid.Row="4" FontSize="24"></Label>
+        <TextBlock Text="Keybind :" Foreground="White" VerticalAlignment="Bottom" Grid.Row="5"></TextBlock>
+    </Grid>
+</Window>

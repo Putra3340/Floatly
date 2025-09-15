@@ -34,13 +34,31 @@ namespace Floatly
         {
             InitializeComponent();
 
-            sl.LoadLibrary(Window_Title,SongList);
+            sl.LoadLibrary(Window_Title,SongList, scrollview);
             UpdateGreeting();
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
-            timer.Interval = TimeSpan.FromMilliseconds(500);
+            timer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
             timer.Tick += Timer_Tick;
+            this.Loaded += (s, e) =>
+            {
+                LoginWindow login = new LoginWindow
+                {
+                    Owner = this, // important!
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+
+                this.Effect = new System.Windows.Media.Effects.BlurEffect()
+                {
+                    Radius = 20
+                };
+
+                login.ShowDialog();
+
+                this.Effect = null;
+            };
+
         }
-        
+
         private void SongButton_Click(object sender, RoutedEventArgs e)
         {
             if (Prefs.OnlineMode && sender is Button btnonline && btnonline.DataContext is OnlineSong onlinesong)
@@ -83,7 +101,10 @@ namespace Floatly
         }
         private void Label_Debug_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
+            MusicPlayer.Player.Pause();
+            MusicPlayer.lyricslist.Clear();
+            MusicPlayer.lyricslist = SRTParser.ParseSRT(MusicPlayer.currentlyricpath).Result; // for debugging purposes
+            MusicPlayer.Player.Play();
         }
         private void OnLyricsChanged(object sender, string newLyrics)
         {
@@ -149,6 +170,7 @@ namespace Floatly
                 {
                     Slider_Progress.Maximum = MusicPlayer.Player.NaturalDuration.TimeSpan.TotalSeconds;
                     timer.Start();
+                    break;
                 }
                 await Task.Delay(100);
             }
@@ -158,7 +180,7 @@ namespace Floatly
             if (!isDragging && MusicPlayer.Player.NaturalDuration.HasTimeSpan)
             {
                 Slider_Progress.Value = MusicPlayer.Player.Position.TotalSeconds;
-                Label_CurrentTime.Text = (TimeSpan.FromSeconds(Slider_Progress.Value)).ToString(@"mm\:ss");
+                Label_CurrentTime.Text = MusicPlayer.Player.Position.ToString(@"mm\:ss");
                 Label_TotalTime.Text = MusicPlayer.Player.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
             }
         }
@@ -192,14 +214,46 @@ namespace Floatly
         {
             Prefs.OnlineMode = true;
             sl.ClearLibrary(SongList);
-            sl.LoadLibrary(Window_Title, SongList);
+            sl.LoadLibrary(Window_Title, SongList,scrollview);
         }
 
         private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Prefs.OnlineMode = false;
             sl.ClearLibrary(SongList);
-            sl.LoadLibrary(Window_Title, SongList);
+            sl.LoadLibrary(Window_Title, SongList,scrollview);
         }
+
+        bool ispaused = false;
+        private void Button_PlayPause_Click(object sender, RoutedEventArgs e)
+        {
+            if (ispaused)
+            {
+                MusicPlayer.Player.Play();
+                ispaused = false;
+            }
+            else
+            {
+                MusicPlayer.Player.Pause();
+                ispaused=true;
+            }
+
+        }
+
+        private void tbx_search_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if(Prefs.OnlineMode)
+            {
+                sl.SearchOnlineSongs(tbx_search.Text, SongList);
+            }
+            else
+            {
+                // TODO OFFLINE
+                backup = SongList.ItemsSource.Cast<Song>().ToList();
+                //SongList.ItemsSource = 
+            }
+            
+        }
+        private List<Song> backup = new();
     }
 }

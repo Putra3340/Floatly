@@ -4,11 +4,12 @@
              xmlns:local="clr-namespace:Floatly"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <SolidColorBrush x:Key="BackgroundDark" Color="#000000"/>
-        <SolidColorBrush x:Key="BackgroundSecondary" Color="#121212"/>
+        <SolidColorBrush x:Key="BackgroundDark" Color="#0a0a0f"/>
+        <SolidColorBrush x:Key="BackgroundSecondary" Color="#1a1a2e"/>
         <SolidColorBrush x:Key="PrimaryText" Color="#FFFFFF"/>
         <SolidColorBrush x:Key="SecondaryText" Color="DimGray"/>
         <SolidColorBrush x:Key="AccentGreen" Color="#1DB954"/>
-        <SolidColorBrush x:Key="AccentPurple" Color="#9A60D4"/>
+        <SolidColorBrush x:Key="AccentPurple" Color="#6366f1"/>
+        <SolidColorBrush x:Key="AccentPurple2" Color="#8b5cf6"/>
     </Application.Resources>
 </Application>
