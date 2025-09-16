@@ -4,12 +4,33 @@
              xmlns:local="clr-namespace:Floatly"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
+        <!-- Backgrounds -->
         <SolidColorBrush x:Key="BackgroundDark" Color="#0a0a0f"/>
+        <!-- Main background -->
         <SolidColorBrush x:Key="BackgroundSecondary" Color="#1a1a2e"/>
-        <SolidColorBrush x:Key="PrimaryText" Color="#FFFFFF"/>
-        <SolidColorBrush x:Key="SecondaryText" Color="DimGray"/>
+        <!-- Cards / popovers -->
+        <SolidColorBrush x:Key="SidebarBg" Color="#0f0f23"/>
+        <!-- Sidebar background -->
+        <SolidColorBrush x:Key="BackgroundMuted" Color="#16213e"/>
+        <!-- Inputs / borders -->
+
+        <!-- Primary / Accent Colors -->
+        <SolidColorBrush x:Key="AccentIndigo" Color="#6366f1"/>
+        <!-- Primary indigo -->
+        <SolidColorBrush x:Key="AccentPurple" Color="#8b5cf6"/>
+        <!-- Secondary accent -->
+        <SolidColorBrush x:Key="AccentDeepIndigo" Color="#4f46e5"/>
+        <!-- Charts / highlights -->
         <SolidColorBrush x:Key="AccentGreen" Color="#1DB954"/>
-        <SolidColorBrush x:Key="AccentPurple" Color="#6366f1"/>
-        <SolidColorBrush x:Key="AccentPurple2" Color="#8b5cf6"/>
+        <!-- Success / active -->
+        <SolidColorBrush x:Key="AccentRed" Color="#e22134"/>
+        <!-- Error / destructive -->
+
+        <!-- Text -->
+        <SolidColorBrush x:Key="PrimaryText" Color="#FFFFFF"/>
+        <!-- Main text -->
+        <SolidColorBrush x:Key="SecondaryText" Color="#a5b4fc"/>
+        <!-- Muted / secondary text -->
     </Application.Resources>
+
 </Application>

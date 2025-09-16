@@ -9,81 +9,83 @@
         AllowsTransparency="True"
         WindowStyle="None">
 
-    <Grid Background="{StaticResource BackgroundDark}" Visibility="Visible">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="64"/>
-            <!-- TitleBar -->
-            <RowDefinition Height="*"/>
-            <!-- Main content -->
-        </Grid.RowDefinitions>
-        <Border Background="{StaticResource BackgroundSecondary}" Height="50" MouseDown="TitleBar_MouseDown" Grid.Row="0" Margin="10,0,10,0">
-            <DockPanel LastChildFill="True">
-                <TextBlock x:Name="Window_Title" Text="Floatly" Foreground="White" VerticalAlignment="Center" Margin="10,0" FontSize="20"/>
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                    <TextBox x:Name="tbx_search" Width="500px" Margin="0,0,200,0" Background="Black" Foreground="White" TextChanged="tbx_search_TextChanged"></TextBox>
-                    <Button Click="Minimize_Click" Content="_" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
-                    <Button Click="Maximize_Click" Content="☐" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
-                    <Button Click="Close_Click" Content="X" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
-                </StackPanel>
-            </DockPanel>
+    <Grid Background="Transparent">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!-- Sidebar -->
+        <Border Grid.Row="1" Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{StaticResource BackgroundMuted}">
+            <StackPanel Background="{StaticResource SidebarBg}">
+                <TextBlock Text="Home" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="10,10,0,0"/>
+                <TextBlock Text="Online Library" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10"  MouseLeftButtonDown="Label_OnlineLibrary_MouseLeftButtonDown"/>
+                <TextBlock Text="Your Library" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="TextBlock_MouseLeftButtonDown"/>
+                <TextBlock x:Name="Label_Settings" Text="Settings" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_Settings_MouseLeftButtonDown"/>
+                <TextBlock x:Name="Label_About" Text="About" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_About_MouseLeftButtonDown"/>
+                <TextBlock x:Name="Label_Debug" Text="Debug" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_Debug_MouseLeftButtonDown"/>
+            </StackPanel>
         </Border>
-
-        <Grid Grid.Row="1" x:Name="Page_Home" Background="{StaticResource BackgroundDark}">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="500"/>
-            </Grid.ColumnDefinitions>
-            <!-- Sidebar -->
-            <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="1"
-        CornerRadius="10"
-        Padding="10"
-        Margin="10" Grid.Column="0">
-                <StackPanel  Margin="10" Background="{StaticResource BackgroundSecondary}">
-                    <TextBlock Text="Home" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10"/>
-                    <TextBlock Text="Online Library" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10"  MouseLeftButtonDown="Label_OnlineLibrary_MouseLeftButtonDown"/>
-                    <TextBlock Text="Your Library" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="TextBlock_MouseLeftButtonDown"/>
-                    <TextBlock x:Name="Label_Settings" Text="Settings" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_Settings_MouseLeftButtonDown"/>
-                    <TextBlock x:Name="Label_About" Text="About" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_About_MouseLeftButtonDown"/>
-                    <TextBlock x:Name="Label_Debug" Text="Debug" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_Debug_MouseLeftButtonDown"/>
-                </StackPanel>
+        <Grid Background="{StaticResource BackgroundDark}" Visibility="Visible" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="64"/>
+                <!-- TitleBar -->
+                <RowDefinition Height="*"/>
+                <!-- Main content -->
+            </Grid.RowDefinitions>
+            <Border Background="{StaticResource BackgroundSecondary}" Height="50" MouseDown="TitleBar_MouseDown" Grid.Row="0" Margin="10,0,10,0">
+                <DockPanel LastChildFill="True">
+                    <TextBlock x:Name="Window_Title" Text="Floatly" Foreground="White" VerticalAlignment="Center" Margin="10,0" FontSize="20"/>
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
+                        <TextBox x:Name="tbx_search" Width="500px" Margin="0,0,200,0" Background="Black" Foreground="White" TextChanged="tbx_search_TextChanged"></TextBox>
+                        <Button Click="Minimize_Click" Content="_" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
+                        <Button Click="Maximize_Click" Content="☐" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
+                        <Button Click="Close_Click" Content="X" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
+                    </StackPanel>
+                </DockPanel>
             </Border>
 
-            <Grid Grid.Column="1" Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <!-- Greeting -->
-                    <RowDefinition Height="*"/>
-                    <!-- Scrollable content -->
-                </Grid.RowDefinitions>
-                <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="0"
+            <Grid Grid.Row="1" x:Name="Page_Home" Background="{StaticResource BackgroundDark}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="500"/>
+                </Grid.ColumnDefinitions>
+               
+
+                <Grid Grid.Column="0" Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- Greeting -->
+                        <RowDefinition Height="*"/>
+                        <!-- Scrollable content -->
+                    </Grid.RowDefinitions>
+                    <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="0"
 CornerRadius="10"
 Padding="10"
 Margin="10">
-                    <TextBlock Text="Content Area" Margin="0,0,0,10" Foreground="{StaticResource PrimaryText}" x:Name="Label_Greeting" FontSize="36"/>
-                </Border>
-                <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="1"
+                        <TextBlock Text="Content Area" Margin="0,0,0,10" Foreground="{StaticResource PrimaryText}" x:Name="Label_Greeting" FontSize="36"/>
+                    </Border>
+                    <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="1"
 CornerRadius="10"
 Padding="10"
 Margin="10">
-                    <!-- Content Area -->
-                    <ScrollViewer x:Name="scrollview" Margin="0,10,0,10" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl x:Name="SongList">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Click="SongButton_Click"
+                        <!-- Content Area -->
+                        <ScrollViewer x:Name="scrollview" Margin="0,10,0,10" VerticalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="SongList">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Click="SongButton_Click"
         Padding="8"
         BorderThickness="0"
         Background="Transparent"
         HorizontalContentAlignment="Stretch">
-                                        <Grid VerticalAlignment="Center">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
+                                            <Grid VerticalAlignment="Center">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
 
-                                            
-                                            <Rectangle
+
+                                                <Rectangle
                                                 
 Height="80"
 Width="80"
@@ -92,79 +94,81 @@ RadiusY="16"
 Stretch="UniformToFill"
 Margin="0,0,12,0"
 VerticalAlignment="Center">
-                                                <!-- or desired width -->
-                                                <Rectangle.Fill>
-                                                    <ImageBrush Stretch="Fill" ImageSource="{Binding Image}" />
-                                                </Rectangle.Fill>
-                                            </Rectangle>
-                                            <StackPanel Grid.Column="1"
+                                                    <!-- or desired width -->
+                                                    <Rectangle.Fill>
+                                                        <ImageBrush Stretch="Fill" ImageSource="{Binding Image}" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <StackPanel Grid.Column="1"
                     Orientation="Vertical"
                     VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Title}"
+                                                    <TextBlock Text="{Binding Title}"
                        FontWeight="SemiBold"
                        FontSize="18"
                        Foreground="{StaticResource PrimaryText}"/>
-                                                <TextBlock Text="{Binding Artist}"
+                                                    <TextBlock Text="{Binding Artist}"
                        FontSize="14"
                        Foreground="{StaticResource SecondaryText}"
                        Margin="0,4,0,0"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </Button>
+                                                </StackPanel>
+                                            </Grid>
+                                        </Button>
 
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Border>
 
-            </Grid>
-            <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="1"
+                </Grid>
+                <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="1"
 CornerRadius="10"
 Padding="10"
 Margin="10" Grid.Column="2">
-                <!-- Now Playing -->
-                <StackPanel  Margin="25">
-                    <TextBlock Text="Now Playing.." Foreground="{StaticResource PrimaryText}" FontSize="24" Margin="0,0,0,10"/>
-                    <Rectangle x:Name="Image_Banner"
+                    <!-- Now Playing -->
+                    <StackPanel  Margin="25">
+                        <TextBlock Text="Now Playing.." Foreground="{StaticResource PrimaryText}" FontSize="24" Margin="0,0,0,10"/>
+                        <Rectangle x:Name="Image_Banner"
            Height="243"
            RadiusX="16"
            RadiusY="16"
            Margin="0,10,0,0"
            HorizontalAlignment="Left"
            Width="400">
-                        <!-- or desired width -->
-                        <Rectangle.Fill>
-                            <ImageBrush Stretch="Fill"/>
-                        </Rectangle.Fill>
-                    </Rectangle>
+                            <!-- or desired width -->
+                            <Rectangle.Fill>
+                                <ImageBrush Stretch="Fill"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
 
-                    <TextBlock x:Name="Label_SongTitle" Text="Track Title" Foreground="{StaticResource PrimaryText}" FontSize="36"/>
-                    <TextBlock x:Name="Label_ArtistName" Text="Artist Name" Foreground="{StaticResource PrimaryText}" FontSize="18"/>
-                    <StackPanel Margin="0,10,0,0">
-                        <Grid HorizontalAlignment="Stretch" Height="85">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                        <TextBlock x:Name="Label_SongTitle" Text="Track Title" Foreground="{StaticResource PrimaryText}" FontSize="36"/>
+                        <TextBlock x:Name="Label_ArtistName" Text="Artist Name" Foreground="{StaticResource PrimaryText}" FontSize="18"/>
+                        <StackPanel Margin="0,10,0,0">
+                            <Grid HorizontalAlignment="Stretch" Height="85">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="0">
-                                <Button x:Name="Button_Previous" Content="Previous" Width="47" Height="40" Margin="5,0"/>
-                                <Button x:Name="Button_PlayPause" Content="Play" Width="47" Height="40" Margin="5,0" Click="Button_PlayPause_Click" />
-                                <Button x:Name="Button_Next" Content="Next" Width="47" Height="40" Margin="5,0"/>
-                            </StackPanel>
-                            <Slider x:Name="Slider_Progress" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Width="400" Margin="0,11,0,0" Minimum="0" Maximum="100" ValueChanged="Slider_Progress_ValueChanged" PreviewMouseDown="Slider_Progress_PreviewMouseDown" PreviewMouseUp="Slider_Progress_PreviewMouseUp"/>
-                            <TextBlock Text="00:00" x:Name="Label_CurrentTime" Foreground="{StaticResource PrimaryText}" FontSize="14" HorizontalAlignment="Left" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            <TextBlock Text="00:00" x:Name="Label_TotalTime" Foreground="{StaticResource PrimaryText}" FontSize="14" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                        </Grid>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="0">
+                                    <Button x:Name="Button_Previous" Content="Previous" Width="47" Height="40" Margin="5,0"/>
+                                    <Button x:Name="Button_PlayPause" Content="Play" Width="47" Height="40" Margin="5,0" Click="Button_PlayPause_Click" />
+                                    <Button x:Name="Button_Next" Content="Next" Width="47" Height="40" Margin="5,0"/>
+                                </StackPanel>
+                                <Slider x:Name="Slider_Progress" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Width="400" Margin="0,11,0,0" Minimum="0" Maximum="100" ValueChanged="Slider_Progress_ValueChanged" PreviewMouseDown="Slider_Progress_PreviewMouseDown" PreviewMouseUp="Slider_Progress_PreviewMouseUp"/>
+                                <TextBlock Text="00:00" x:Name="Label_CurrentTime" Foreground="{StaticResource PrimaryText}" FontSize="14" HorizontalAlignment="Left" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="00:00" x:Name="Label_TotalTime" Foreground="{StaticResource PrimaryText}" FontSize="14" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            </Grid>
+                        </StackPanel>
+                        <TextBlock x:Name="Label_ActiveLyrics" Text="Lyrics heree..." Foreground="{StaticResource PrimaryText}" FontSize="24" HorizontalAlignment="Center" Margin="0,30,0,0" TextWrapping="Wrap" TextAlignment="Center" MouseLeftButtonDown="Label_ActiveLyrics_MouseLeftButtonDown"/>
                     </StackPanel>
-                    <TextBlock x:Name="Label_ActiveLyrics" Text="Lyrics heree..." Foreground="{StaticResource PrimaryText}" FontSize="24" HorizontalAlignment="Center" Margin="0,30,0,0" TextWrapping="Wrap" TextAlignment="Center" MouseLeftButtonDown="Label_ActiveLyrics_MouseLeftButtonDown"/>
-                </StackPanel>
-            </Border> <!-- Right Side-->
+                </Border>
+                <!-- Right Side-->
+            </Grid>
         </Grid>
     </Grid>
 </Window>

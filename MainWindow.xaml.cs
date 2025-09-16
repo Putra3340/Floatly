@@ -1,5 +1,6 @@
 ﻿using Floatly.Models;
 using Floatly.Utils;
+using StringExt;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -34,26 +35,41 @@ namespace Floatly
         {
             InitializeComponent();
 
-            sl.LoadLibrary(Window_Title,SongList, scrollview);
+            sl.LoadLibrary(Window_Title, SongList, scrollview);
             UpdateGreeting();
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
             timer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
             timer.Tick += Timer_Tick;
+
             this.Loaded += (s, e) =>
             {
+            // AUTH
+
+            auth:
+                Prefs.isRegister = false; // reset
                 LoginWindow login = new LoginWindow
                 {
                     Owner = this, // important!
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-
+                RegisterWindow register = new RegisterWindow
+                {
+                    Owner = this, // important!
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
                 this.Effect = new System.Windows.Media.Effects.BlurEffect()
                 {
                     Radius = 20
                 };
-
                 login.ShowDialog();
-
+                if (Prefs.isRegister)
+                {
+                    register.ShowDialog();
+                }
+                if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
+                {
+                    goto auth; // re-authenticate
+                }
                 this.Effect = null;
             };
 
@@ -94,7 +110,7 @@ namespace Floatly
             {
                 Label_Greeting.Text = "Good Afternoon!";
             }
-            if(now.Hour <= 10)
+            if (now.Hour <= 10)
             {
                 Label_Greeting.Text = "Good Morning!";
             }
@@ -113,7 +129,7 @@ namespace Floatly
 
         private void Label_ActiveLyrics_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if(!fw.IsVisible)
+            if (!fw.IsVisible)
             {
                 fw.Show();
             }
@@ -165,7 +181,8 @@ namespace Floatly
         }
         private async Task StartSlider()
         {
-            while (true) { 
+            while (true)
+            {
                 if (MusicPlayer.Player.NaturalDuration.HasTimeSpan)
                 {
                     Slider_Progress.Maximum = MusicPlayer.Player.NaturalDuration.TimeSpan.TotalSeconds;
@@ -214,14 +231,14 @@ namespace Floatly
         {
             Prefs.OnlineMode = true;
             sl.ClearLibrary(SongList);
-            sl.LoadLibrary(Window_Title, SongList,scrollview);
+            sl.LoadLibrary(Window_Title, SongList, scrollview);
         }
 
         private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Prefs.OnlineMode = false;
             sl.ClearLibrary(SongList);
-            sl.LoadLibrary(Window_Title, SongList,scrollview);
+            sl.LoadLibrary(Window_Title, SongList, scrollview);
         }
 
         bool ispaused = false;
@@ -235,14 +252,14 @@ namespace Floatly
             else
             {
                 MusicPlayer.Player.Pause();
-                ispaused=true;
+                ispaused = true;
             }
 
         }
 
         private void tbx_search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if(Prefs.OnlineMode)
+            if (Prefs.OnlineMode)
             {
                 sl.SearchOnlineSongs(tbx_search.Text, SongList);
             }
@@ -252,7 +269,7 @@ namespace Floatly
                 backup = SongList.ItemsSource.Cast<Song>().ToList();
                 //SongList.ItemsSource = 
             }
-            
+
         }
         private List<Song> backup = new();
     }

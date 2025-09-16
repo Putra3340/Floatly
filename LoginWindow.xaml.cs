@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Floatly.Api;
+using StringExt;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +13,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-
 namespace Floatly
 {
     /// <summary>
@@ -25,7 +26,9 @@ namespace Floatly
             this.Closing += (s, e) =>
             {
                 // Prevent Alt+F4 or clicking X
-                e.Cancel = true;
+                if (!Prefs.isRegister && Prefs.LoginToken.IsNullOrEmpty()) { 
+                    e.Cancel = true;
+                }
             };
         }
 
@@ -43,7 +46,7 @@ namespace Floatly
 
         private void RegisterAccount_MouseDown(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Register account feature is not implemented yet.");
+            Prefs.isRegister = true; this.Close();
         }
         private void ForgotPassword_MouseDown(object sender, RoutedEventArgs e)
         {
@@ -53,6 +56,36 @@ namespace Floatly
         private void CloseLogin_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void AnonymousLogin_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Prefs.LoginToken = "ANONYMOUS_USER";
+            this.Close();
+        }
+
+        private async void Login_Click(object sender, RoutedEventArgs e)
+        {
+            if (UsernameBox.Text.IsNullOrEmpty() || PasswordBox.Password.IsNullOrEmpty())
+            {
+                MessageBox.Show("Please fill all required fields.");
+                return;
+            }
+            var btn = sender as Button;
+            btn.IsEnabled = false; // disable while processing
+            try
+            {
+                await ApiAuth.Login(UsernameBox.Text,PasswordBox.Password);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Login failed: {ex.Message}");
+            }
+            finally
+            {
+                btn.IsEnabled = true; // re-enable no matter what
+                this.Close();
+            }
         }
     }
 }
