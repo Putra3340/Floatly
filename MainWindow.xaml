@@ -9,83 +9,184 @@
         AllowsTransparency="True"
         WindowStyle="None">
 
-    <Grid Background="Transparent">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <!-- Sidebar -->
-        <Border Grid.Row="1" Grid.Column="0" BorderThickness="0,0,1,0" BorderBrush="{StaticResource BackgroundMuted}">
-            <StackPanel Background="{StaticResource SidebarBg}">
-                <TextBlock Text="Home" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="10,10,0,0"/>
-                <TextBlock Text="Online Library" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10"  MouseLeftButtonDown="Label_OnlineLibrary_MouseLeftButtonDown"/>
-                <TextBlock Text="Your Library" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="TextBlock_MouseLeftButtonDown"/>
-                <TextBlock x:Name="Label_Settings" Text="Settings" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_Settings_MouseLeftButtonDown"/>
-                <TextBlock x:Name="Label_About" Text="About" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_About_MouseLeftButtonDown"/>
-                <TextBlock x:Name="Label_Debug" Text="Debug" Foreground="{StaticResource PrimaryText}" FontSize="16" Margin="0 10" MouseLeftButtonDown="Label_Debug_MouseLeftButtonDown"/>
-            </StackPanel>
-        </Border>
-        <Grid Background="{StaticResource BackgroundDark}" Visibility="Visible" Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="64"/>
-                <!-- TitleBar -->
-                <RowDefinition Height="*"/>
-                <!-- Main content -->
-            </Grid.RowDefinitions>
-            <Border Background="{StaticResource BackgroundSecondary}" Height="50" MouseDown="TitleBar_MouseDown" Grid.Row="0" Margin="10,0,10,0">
-                <DockPanel LastChildFill="True">
-                    <TextBlock x:Name="Window_Title" Text="Floatly" Foreground="White" VerticalAlignment="Center" Margin="10,0" FontSize="20"/>
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" HorizontalAlignment="Right">
-                        <TextBox x:Name="tbx_search" Width="500px" Margin="0,0,200,0" Background="Black" Foreground="White" TextChanged="tbx_search_TextChanged"></TextBox>
-                        <Button Click="Minimize_Click" Content="_" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
-                        <Button Click="Maximize_Click" Content="☐" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
-                        <Button Click="Close_Click" Content="X" Width="40" Margin="10,0,10,0" Background="Transparent" Foreground="{StaticResource PrimaryText}" BorderBrush="Transparent"/>
-                    </StackPanel>
-                </DockPanel>
-            </Border>
-
-            <Grid Grid.Row="1" x:Name="Page_Home" Background="{StaticResource BackgroundDark}">
+    <Grid Background="{DynamicResource BackgroundDark}" Visibility="Visible">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <!-- TITLE BAR -->
+        <Border Background="{DynamicResource SidebarBg}" Height="40" MouseDown="TitleBar_MouseDown"
+        Grid.Row="0" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,0,0,1">
+            <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="500"/>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-               
+                <!-- Title in the center/left -->
+                <Label Content="Floatly" Foreground="{DynamicResource SecondaryText}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Grid.Column="0"/>
+                <!--  HOLY SHI, I CAN MANIPULATE IT LIKE INPUT PLACEHOLDER  -->
+                <!-- Minimize button at the right -->
+                <Button Content="" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Minimize_Click" Grid.Column="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="{DynamicResource SidebarBg}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Border Width="20" Height="20" Background="White" Grid.Column="1" Margin="20,0,20,0" VerticalAlignment="Center" IsHitTestVisible="False">
+                    <Border.OpacityMask>
+                        <ImageBrush ImageSource="/Assets/Images/icon-minimize.png"/>
+                    </Border.OpacityMask>
+                </Border>
+                <!-- Maximize button at the right -->
+                <Button Content="" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Maximize_Click" Grid.Column="2">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="{DynamicResource SidebarBg}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Border Width="20" Height="20" Background="White" Grid.Column="2" Margin="20,0,20,0" VerticalAlignment="Center" IsHitTestVisible="False">
+                    <Border.OpacityMask>
+                        <ImageBrush ImageSource="/Assets/Images/icon-maximize.png"/>
+                    </Border.OpacityMask>
+                </Border>
+                <Button Content="" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Close_Click" Grid.Column="3">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="{DynamicResource SidebarBg}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource AccentRed}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <!-- Close button at the right -->
+                <Border Width="20" Height="20" Background="White" Grid.Column="3" Margin="20,0,20,0" VerticalAlignment="Center" IsHitTestVisible="False">
+                    <Border.OpacityMask>
+                        <ImageBrush ImageSource="/Assets/Images/icon-close.png"/>
+                    </Border.OpacityMask>
+                </Border>
+            </Grid>
+        </Border>
+        <!-- Main Content Grid -->
+        <Grid Grid.Row="1" x:Name="Page_Home">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="400"/>
+            </Grid.ColumnDefinitions>
+            <!-- SIDEBAR -->
+            <Border Background="{DynamicResource SidebarBg}" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,0,1,0">
+                <StackPanel Margin="10">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="80"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Label Content="INILOGO" Foreground="{DynamicResource AccentGreen}" Margin="8" FontSize="28" FontWeight="Bold" Grid.Row="0"></Label>
+                        <Button Content="" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Minimize_Click" Grid.Row="1">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border CornerRadius="10" Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="{DynamicResource AccentIndigo}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Label Content="Home" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10"  Grid.Row="1" IsHitTestVisible="False"/>
+                        <Label Content="Online Library" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10"  MouseLeftButtonDown="Label_OnlineLibrary_MouseLeftButtonDown"  Grid.Row="2" IsHitTestVisible="False"/>
+                        <Label Content="Your Library" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10" MouseLeftButtonDown="TextBlock_MouseLeftButtonDown"  Grid.Row="3" IsHitTestVisible="False"/>
+                        <Label x:Name="Label_Settings" Content="Settings" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10" MouseLeftButtonDown="Label_Settings_MouseLeftButtonDown"  Grid.Row="4" IsHitTestVisible="False"/>
+                        <Label x:Name="Label_About" Content="About" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10" MouseLeftButtonDown="Label_About_MouseLeftButtonDown"  Grid.Row="5" IsHitTestVisible="False"/>
+                        <Label x:Name="Label_Debug" Content="Debug" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10" MouseLeftButtonDown="Label_Debug_MouseLeftButtonDown"  Grid.Row="6" IsHitTestVisible="False"/>
+                    </Grid>
+                    
+                </StackPanel>
+            </Border>
+            <!-- MAIN ITEM CONTENT -->
+            <Grid Grid.Column="1" Grid.Row="1" Background="{DynamicResource BackgroundDark}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
+                    <!-- Greeting -->
+                    <RowDefinition Height="*"/>
+                    <!-- Scrollable content -->
+                </Grid.RowDefinitions>
 
-                <Grid Grid.Column="0" Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <!-- Greeting -->
-                        <RowDefinition Height="*"/>
-                        <!-- Scrollable content -->
-                    </Grid.RowDefinitions>
-                    <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="0"
-CornerRadius="10"
-Padding="10"
-Margin="10">
-                        <TextBlock Text="Content Area" Margin="0,0,0,10" Foreground="{StaticResource PrimaryText}" x:Name="Label_Greeting" FontSize="36"/>
-                    </Border>
-                    <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="1"
-CornerRadius="10"
-Padding="10"
-Margin="10">
-                        <!-- Content Area -->
-                        <ScrollViewer x:Name="scrollview" Margin="0,10,0,10" VerticalScrollBarVisibility="Auto">
-                            <ItemsControl x:Name="SongList">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Button Click="SongButton_Click"
+                <TextBlock Text="Content Area" Margin="0,0,0,10" Foreground="{DynamicResource PrimaryText}" x:Name="Label_Greeting" FontSize="36"/>
+                <Border Background="{DynamicResource BackgroundDark}" Grid.Row="1" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
+                    <!-- Content Area -->
+                    <ScrollViewer x:Name="scrollview"  VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="SongList">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Button Click="SongButton_Click"
         Padding="8"
         BorderThickness="0"
         Background="Transparent"
         HorizontalContentAlignment="Stretch">
-                                            <Grid VerticalAlignment="Center">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
+                                        <Grid VerticalAlignment="Center">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
 
 
-                                                <Rectangle
+                                            <Rectangle
                                                 
 Height="80"
 Width="80"
@@ -94,81 +195,77 @@ RadiusY="16"
 Stretch="UniformToFill"
 Margin="0,0,12,0"
 VerticalAlignment="Center">
-                                                    <!-- or desired width -->
-                                                    <Rectangle.Fill>
-                                                        <ImageBrush Stretch="Fill" ImageSource="{Binding Image}" />
-                                                    </Rectangle.Fill>
-                                                </Rectangle>
-                                                <StackPanel Grid.Column="1"
+                                                <!-- or desired width -->
+                                                <Rectangle.Fill>
+                                                    <ImageBrush Stretch="Fill" ImageSource="{Binding Image}" />
+                                                </Rectangle.Fill>
+                                            </Rectangle>
+                                            <StackPanel Grid.Column="1"
                     Orientation="Vertical"
                     VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Title}"
+                                                <TextBlock Text="{Binding Title}"
                        FontWeight="SemiBold"
                        FontSize="18"
-                       Foreground="{StaticResource PrimaryText}"/>
-                                                    <TextBlock Text="{Binding Artist}"
+                       Foreground="{DynamicResource PrimaryText}"/>
+                                                <TextBlock Text="{Binding Artist}"
                        FontSize="14"
-                       Foreground="{StaticResource SecondaryText}"
+                       Foreground="{DynamicResource SecondaryText}"
                        Margin="0,4,0,0"/>
-                                                </StackPanel>
-                                            </Grid>
-                                        </Button>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Button>
 
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </ScrollViewer>
-                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Border>
 
-                </Grid>
-                <Border Background="{StaticResource BackgroundSecondary}" Grid.Row="1"
-CornerRadius="10"
-Padding="10"
-Margin="10" Grid.Column="2">
-                    <!-- Now Playing -->
-                    <StackPanel  Margin="25">
-                        <TextBlock Text="Now Playing.." Foreground="{StaticResource PrimaryText}" FontSize="24" Margin="0,0,0,10"/>
-                        <Rectangle x:Name="Image_Banner"
+            </Grid>
+            <!-- PLAYER CARD-->
+            <Border Background="{DynamicResource BackgroundSecondary}" Grid.Row="1" Grid.Column="2" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="1,0,0,0">
+                <!-- Now Playing -->
+                <StackPanel  Margin="25">
+                    <TextBlock Text="Now Playing.." Foreground="{DynamicResource PrimaryText}" FontSize="24" Margin="0,0,0,10"/>
+                    <Rectangle x:Name="Image_Banner"
            Height="243"
            RadiusX="16"
            RadiusY="16"
            Margin="0,10,0,0"
            HorizontalAlignment="Left"
            Width="400">
-                            <!-- or desired width -->
-                            <Rectangle.Fill>
-                                <ImageBrush Stretch="Fill"/>
-                            </Rectangle.Fill>
-                        </Rectangle>
+                        <!-- or desired width -->
+                        <Rectangle.Fill>
+                            <ImageBrush Stretch="Fill"/>
+                        </Rectangle.Fill>
+                    </Rectangle>
 
-                        <TextBlock x:Name="Label_SongTitle" Text="Track Title" Foreground="{StaticResource PrimaryText}" FontSize="36"/>
-                        <TextBlock x:Name="Label_ArtistName" Text="Artist Name" Foreground="{StaticResource PrimaryText}" FontSize="18"/>
-                        <StackPanel Margin="0,10,0,0">
-                            <Grid HorizontalAlignment="Stretch" Height="85">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
+                    <TextBlock x:Name="Label_SongTitle" Text="Track Title" Foreground="{DynamicResource PrimaryText}" FontSize="36"/>
+                    <TextBlock x:Name="Label_ArtistName" Text="Artist Name" Foreground="{DynamicResource PrimaryText}" FontSize="18"/>
+                    <StackPanel Margin="0,10,0,0">
+                        <Grid HorizontalAlignment="Stretch" Height="85">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="0">
-                                    <Button x:Name="Button_Previous" Content="Previous" Width="47" Height="40" Margin="5,0"/>
-                                    <Button x:Name="Button_PlayPause" Content="Play" Width="47" Height="40" Margin="5,0" Click="Button_PlayPause_Click" />
-                                    <Button x:Name="Button_Next" Content="Next" Width="47" Height="40" Margin="5,0"/>
-                                </StackPanel>
-                                <Slider x:Name="Slider_Progress" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Width="400" Margin="0,11,0,0" Minimum="0" Maximum="100" ValueChanged="Slider_Progress_ValueChanged" PreviewMouseDown="Slider_Progress_PreviewMouseDown" PreviewMouseUp="Slider_Progress_PreviewMouseUp"/>
-                                <TextBlock Text="00:00" x:Name="Label_CurrentTime" Foreground="{StaticResource PrimaryText}" FontSize="14" HorizontalAlignment="Left" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                                <TextBlock Text="00:00" x:Name="Label_TotalTime" Foreground="{StaticResource PrimaryText}" FontSize="14" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
-                            </Grid>
-                        </StackPanel>
-                        <TextBlock x:Name="Label_ActiveLyrics" Text="Lyrics heree..." Foreground="{StaticResource PrimaryText}" FontSize="24" HorizontalAlignment="Center" Margin="0,30,0,0" TextWrapping="Wrap" TextAlignment="Center" MouseLeftButtonDown="Label_ActiveLyrics_MouseLeftButtonDown"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="0">
+                                <Button x:Name="Button_Previous" Content="Previous" Width="47" Height="40" Margin="5,0"/>
+                                <Button x:Name="Button_PlayPause" Content="Play" Width="47" Height="40" Margin="5,0" Click="Button_PlayPause_Click" />
+                                <Button x:Name="Button_Next" Content="Next" Width="47" Height="40" Margin="5,0"/>
+                            </StackPanel>
+                            <Slider x:Name="Slider_Progress" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Width="400" Margin="0,11,0,0" Minimum="0" Maximum="100" ValueChanged="Slider_Progress_ValueChanged" PreviewMouseDown="Slider_Progress_PreviewMouseDown" PreviewMouseUp="Slider_Progress_PreviewMouseUp"/>
+                            <TextBlock Text="00:00" x:Name="Label_CurrentTime" Foreground="{DynamicResource PrimaryText}" FontSize="14" HorizontalAlignment="Left" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                            <TextBlock Text="00:00" x:Name="Label_TotalTime" Foreground="{DynamicResource PrimaryText}" FontSize="14" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        </Grid>
                     </StackPanel>
-                </Border>
-                <!-- Right Side-->
-            </Grid>
+                    <TextBlock x:Name="Label_ActiveLyrics" Text="Lyrics heree..." Foreground="{DynamicResource PrimaryText}" FontSize="24" HorizontalAlignment="Center" Margin="0,30,0,0" TextWrapping="Wrap" TextAlignment="Center" MouseLeftButtonDown="Label_ActiveLyrics_MouseLeftButtonDown"/>
+                </StackPanel>
+            </Border>
         </Grid>
     </Grid>
 </Window>

@@ -31,6 +31,7 @@ namespace Floatly
         ServerLibrary sl = new(); // make just one instance of ServerLibrary (maybe its bad idea to create this here but whatever)
         DispatcherTimer timer = new DispatcherTimer(); // for slider
         bool isDragging = false; // dragging slider
+        public static TextBlock Window_Title = new(); // default title
         public MainWindow()
         {
             InitializeComponent();
@@ -261,7 +262,7 @@ namespace Floatly
         {
             if (Prefs.OnlineMode)
             {
-                sl.SearchOnlineSongs(tbx_search.Text, SongList);
+                sl.SearchOnlineSongs("", SongList); // TODO ONLINE
             }
             else
             {
@@ -272,5 +273,11 @@ namespace Floatly
 
         }
         private List<Song> backup = new();
+
+        private void Button_MouseEnter(object sender, MouseEventArgs e)
+        {
+            var btn = sender as Button;
+            btn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0000FF"));
+        }
     }
 }
