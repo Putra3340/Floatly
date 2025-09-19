@@ -167,58 +167,67 @@
                     <!-- Scrollable content -->
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Content Area" Margin="0,0,0,10" Foreground="{DynamicResource PrimaryText}" x:Name="Label_Greeting" FontSize="36"/>
+                <TextBlock Text="Welcome" Margin="20,10,0,0" Foreground="{DynamicResource PrimaryText}" x:Name="Label_Greeting" FontSize="36" VerticalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Bold"/>
                 <Border Background="{DynamicResource BackgroundDark}" Grid.Row="1" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
+                    <StackPanel>
+                        <Label Content="Popular Tracks" Foreground="{DynamicResource PrimaryText}" FontWeight="Bold" FontSize="23" FontFamily="/Assets/Fonts/Geist/#Geist" Margin="20,20,0,0"></Label>
                     <!-- Content Area -->
-                    <ScrollViewer x:Name="scrollview"  VerticalScrollBarVisibility="Auto">
-                        <ItemsControl x:Name="SongList">
+                    <ScrollViewer x:Name="scrollview"  VerticalScrollBarVisibility="Auto" Margin="20">
+                            <ItemsControl x:Name="SongList" AlternationCount="9999">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Button Click="SongButton_Click"
-        Padding="8"
-        BorderThickness="0"
-        Background="Transparent"
-        HorizontalContentAlignment="Stretch">
-                                        <Grid VerticalAlignment="Center">
+                                    <Button Click="SongButton_Click" HorizontalContentAlignment="Stretch" Margin="10,0,10,0">
+                                        <Grid VerticalAlignment="Center" IsHitTestVisible="False">
                                             <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*" />
                                             </Grid.ColumnDefinitions>
-
-
-                                            <Rectangle
-                                                
-Height="80"
-Width="80"
-RadiusX="16"
-RadiusY="16"
-Stretch="UniformToFill"
-Margin="0,0,12,0"
-VerticalAlignment="Center">
+                                                <TextBlock Text="{}"></TextBlock>
+                                            <Rectangle Height="40" Width="40" RadiusX="16" RadiusY="16" Stretch="UniformToFill" Margin="0,0,12,0" VerticalAlignment="Center" IsHitTestVisible="False">
                                                 <!-- or desired width -->
                                                 <Rectangle.Fill>
                                                     <ImageBrush Stretch="Fill" ImageSource="{Binding Image}" />
                                                 </Rectangle.Fill>
                                             </Rectangle>
-                                            <StackPanel Grid.Column="1"
+                                            <StackPanel Grid.Column="1" IsHitTestVisible="False"
                     Orientation="Vertical"
                     VerticalAlignment="Center">
-                                                <TextBlock Text="{Binding Title}"
+                                                <TextBlock Text="{Binding Title}" IsHitTestVisible="False"
                        FontWeight="SemiBold"
                        FontSize="18"
                        Foreground="{DynamicResource PrimaryText}"/>
-                                                <TextBlock Text="{Binding Artist}"
+                                                <TextBlock Text="{Binding Artist}" IsHitTestVisible="False"
                        FontSize="14"
                        Foreground="{DynamicResource SecondaryText}"
                        Margin="0,4,0,0"/>
                                             </StackPanel>
                                         </Grid>
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#8b5cf6"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
                                     </Button>
 
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
+                    </StackPanel>
                 </Border>
 
             </Grid>

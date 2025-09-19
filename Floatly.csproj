@@ -16,6 +16,42 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-Black.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-BlackItalic.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-Bold.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-BoldItalic.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-ExtraBold.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-ExtraBoldItalic.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-ExtraLight.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-ExtraLightItalic.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-Italic.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-Light.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-LightItalic.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-Medium.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-MediumItalic.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-Regular.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-SemiBold.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-SemiBoldItalic.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-Thin.otf" />
+    <None Remove="Assets\Fonts\GeistMono\GeistMono-ThinItalic.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-Black.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-BlackItalic.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-Bold.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-BoldItalic.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-ExtraBold.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-ExtraBoldItalic.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-ExtraLight.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-ExtraLightItalic.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-Light.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-LightItalic.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-Medium.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-MediumItalic.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-Regular.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-RegularItalic.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-SemiBold.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-SemiBoldItalic.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-Thin.otf" />
+    <None Remove="Assets\Fonts\Geist\Geist-ThinItalic.otf" />
     <None Remove="Assets\Images\icon-close.png" />
     <None Remove="Assets\Images\icon-maximize.png" />
     <None Remove="Assets\Images\icon-minimize.png" />
@@ -26,6 +62,42 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-Black.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-BlackItalic.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-Bold.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-BoldItalic.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-ExtraBold.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-ExtraBoldItalic.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-ExtraLight.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-ExtraLightItalic.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-Italic.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-Light.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-LightItalic.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-Medium.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-MediumItalic.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-Regular.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-SemiBold.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-SemiBoldItalic.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-Thin.otf" />
+    <Resource Include="Assets\Fonts\GeistMono\GeistMono-ThinItalic.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-Black.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-BlackItalic.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-Bold.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-BoldItalic.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-ExtraBold.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-ExtraBoldItalic.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-ExtraLight.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-ExtraLightItalic.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-Light.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-LightItalic.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-Medium.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-MediumItalic.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-Regular.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-RegularItalic.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-SemiBold.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-SemiBoldItalic.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-Thin.otf" />
+    <Resource Include="Assets\Fonts\Geist\Geist-ThinItalic.otf" />
     <Resource Include="Assets\Images\icon-close.png" />
     <Resource Include="Assets\Images\icon-maximize.png" />
     <Resource Include="Assets\Images\icon-minimize.png" />
