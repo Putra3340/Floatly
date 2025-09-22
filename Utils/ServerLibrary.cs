@@ -1,6 +1,8 @@
 ﻿using Floatly.Models;
+using Floatly.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -21,12 +23,30 @@ namespace Floatly.Utils
             {
                 PropertyNameCaseInsensitive = true
             });
+            int i = 1;
             foreach (var song in songs) // make path to absolute
             {
                 song.Music = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Music", song.Music);
                 song.Lyrics = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Lyrics", song.Lyrics);
                 song.Image = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Images", song.Image);
                 song.Banner = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Banners", song.Banner);
+                // Extract duration from MP3 file
+                if (!Path.GetExtension(song.Music).Equals(".mp3", StringComparison.OrdinalIgnoreCase))
+                {
+                    MessageBox.Show("Warning: Only MP3 files are supported for duration extraction. Some features may not work as expected.");
+                }
+                else
+                {
+                    song.MusicLength = await Task.Run(() =>
+                    {
+                        using var tagFile = TagLib.File.Create(song.Music);
+                        var seconds = tagFile.Properties.Duration.TotalSeconds;
+                        var ts = TimeSpan.FromSeconds(seconds);
+                        return ts.ToString(@"mm\:ss");
+                    });
+                }
+                song.MusicPlays = "69k";
+                song.Id = i++;
             }
             ic.ItemsSource = songs;
             tb.Text = "Floatly - Local Library";
