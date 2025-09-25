@@ -28,7 +28,7 @@ namespace Floatly
     {
         FloatingWindow fw = new(); // make just one instance of FloatingWindow (maybe its bad idea to create this here but whatever)
         ConfigurationWindow cw = new(); // make just one instance of ConfigurationWindow (maybe its bad idea to create this here but whatever)
-        ServerLibrary sl = new(); // make just one instance of ServerLibrary (maybe its bad idea to create this here but whatever)
+        ServerLibrary sl = null; // make just one instance of ServerLibrary
         DispatcherTimer timer = new DispatcherTimer(); // for slider
         bool isDragging = false; // dragging slider
         public static TextBlock Window_Title = new(); // default title
@@ -36,7 +36,9 @@ namespace Floatly
         {
             InitializeComponent();
 
-            sl.LoadLibrary(Window_Title, SongList, scrollview);
+            sl = new ServerLibrary(SongList_Home,SCV_Home,ArtistList,SCV_HomeArtist,AlbumList,SCV_HomeAlbum);
+
+            sl.LoadLibrary(Window_Title, SongList_Home, SCV_Home,ArtistList,SCV_HomeArtist);
             UpdateGreeting();
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
             timer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
@@ -118,10 +120,11 @@ namespace Floatly
         }
         private void Label_Debug_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            MusicPlayer.Player.Pause();
-            MusicPlayer.lyricslist.Clear();
-            MusicPlayer.lyricslist = SRTParser.ParseSRT(MusicPlayer.currentlyricpath).Result; // for debugging purposes
-            MusicPlayer.Player.Play();
+            //MusicPlayer.Player.Pause();
+            //MusicPlayer.lyricslist.Clear();
+            //MusicPlayer.lyricslist = SRTParser.ParseSRT(MusicPlayer.currentlyricpath).Result; // for debugging purposes
+            //MusicPlayer.Player.Play();
+            PlayerCard.Visibility = Visibility.Collapsed;
         }
         private void OnLyricsChanged(object sender, string newLyrics)
         {
@@ -228,18 +231,20 @@ namespace Floatly
             cw.ShowDialog();
         }
 
-        private void Label_OnlineLibrary_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void LoadOnlineLibrary_Click(object sender, MouseButtonEventArgs e)
         {
-            Prefs.OnlineMode = true;
-            sl.ClearLibrary(SongList);
-            sl.LoadLibrary(Window_Title, SongList, scrollview);
+            //Prefs.OnlineMode = true;
+            //sl.ClearLibrary(SongList);
+            //sl.LoadLibrary(Window_Title, SongList, scrollview);
+            PanelHome.Visibility = Visibility.Collapsed;
+            PanelOnline.Visibility = Visibility.Visible;
         }
 
         private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Prefs.OnlineMode = false;
-            sl.ClearLibrary(SongList);
-            sl.LoadLibrary(Window_Title, SongList, scrollview);
+            sl.ClearLibrary(SongList_Home);
+            sl.LoadLibrary(Window_Title, SongList_Home, SCV_Home,ArtistList,SCV_HomeArtist);
         }
 
         bool ispaused = false;
@@ -262,12 +267,12 @@ namespace Floatly
         {
             if (Prefs.OnlineMode)
             {
-                sl.SearchOnlineSongs("", SongList); // TODO ONLINE
+                sl.SearchOnlineSongs("", SongList_Home); // TODO ONLINE
             }
             else
             {
                 // TODO OFFLINE
-                backup = SongList.ItemsSource.Cast<Song>().ToList();
+                backup = SongList_Home.ItemsSource.Cast<Song>().ToList();
                 //SongList.ItemsSource = 
             }
 
@@ -278,6 +283,19 @@ namespace Floatly
         {
             var btn = sender as Button;
             btn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0000FF"));
+        }
+
+        private void NavHome_Click(object sender, RoutedEventArgs e)
+        {
+            PanelHome.Visibility = Visibility.Visible;
+            PanelOnline.Visibility = Visibility.Collapsed;
+
+        }
+        private void NavOnline_Click(object sender, RoutedEventArgs e)
+        {
+            PanelHome.Visibility = Visibility.Collapsed;
+            PanelOnline.Visibility = Visibility.Visible;
+
         }
     }
 }

@@ -112,7 +112,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="369"/>
             </Grid.ColumnDefinitions>
             <!-- SIDEBAR -->
             <Border Background="{DynamicResource SidebarBg}" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,0,1,0">
@@ -128,7 +128,7 @@
                             <RowDefinition Height="50"></RowDefinition>
                         </Grid.RowDefinitions>
                         <Label Content="INILOGO" Foreground="{DynamicResource AccentGreen}" Margin="8" FontSize="28" FontWeight="Bold" Grid.Row="0"></Label>
-                        <Button Content="" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Minimize_Click" Grid.Row="1">
+                        <Button Content="" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NavHome_Click" Grid.Row="1">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border CornerRadius="10" Background="{TemplateBinding Background}">
@@ -149,17 +149,38 @@
                             </Button.Style>
                         </Button>
                         <Label Content="Home" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10"  Grid.Row="1" IsHitTestVisible="False"/>
-                        <Label Content="Online Library" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10"  MouseLeftButtonDown="Label_OnlineLibrary_MouseLeftButtonDown"  Grid.Row="2" IsHitTestVisible="False"/>
+                        <Button Content="" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NavOnline_Click" Grid.Row="2">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border CornerRadius="10" Background="{TemplateBinding Background}">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="{DynamicResource AccentIndigo}"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Label Content="Online Library" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10" Grid.Row="2" IsHitTestVisible="False"/>
                         <Label Content="Your Library" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10" MouseLeftButtonDown="TextBlock_MouseLeftButtonDown"  Grid.Row="3" IsHitTestVisible="False"/>
                         <Label x:Name="Label_Settings" Content="Settings" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10" MouseLeftButtonDown="Label_Settings_MouseLeftButtonDown"  Grid.Row="4" IsHitTestVisible="False"/>
                         <Label x:Name="Label_About" Content="About" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10" MouseLeftButtonDown="Label_About_MouseLeftButtonDown"  Grid.Row="5" IsHitTestVisible="False"/>
-                        <Label x:Name="Label_Debug" Content="Debug" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10" MouseLeftButtonDown="Label_Debug_MouseLeftButtonDown"  Grid.Row="6" IsHitTestVisible="False"/>
+                        <Label x:Name="Label_Debug" Content="Debug" Foreground="{DynamicResource PrimaryText}" FontSize="16" Margin="10" MouseLeftButtonDown="Label_Debug_MouseLeftButtonDown"  Grid.Row="6"/>
                     </Grid>
                     
                 </StackPanel>
             </Border>
             <!-- MAIN ITEM CONTENT -->
-            <Grid Grid.Column="1" Grid.Row="1" Background="{DynamicResource BackgroundDark}">
+            <Grid Grid.Column="1" Grid.Row="1" Background="{DynamicResource BackgroundDark}" x:Name="PanelHome">
+                
                 <Grid.RowDefinitions>
                     <RowDefinition Height="100"/>
                     <!-- Greeting -->
@@ -170,10 +191,240 @@
                 <TextBlock Text="Welcome" Margin="20,10,0,0" Foreground="{DynamicResource PrimaryText}" x:Name="Label_Greeting" FontSize="36" VerticalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Bold"/>
                 <Border Background="{DynamicResource BackgroundDark}" Grid.Row="1" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
                     <StackPanel>
+                        
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto" MinWidth="100"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Label Content="Popular Songs" Foreground="{DynamicResource PrimaryText}" FontWeight="Bold" FontSize="23" FontFamily="/Assets/Fonts/Geist/#Geist" Margin="20,20,0,0" Grid.Row="0" Grid.Column="0"></Label>
+                                <Label Content="Popular Artist" Foreground="{DynamicResource PrimaryText}" FontWeight="Bold" FontSize="23" FontFamily="/Assets/Fonts/Geist/#Geist" Margin="20,20,0,0" Grid.Row="0" Grid.Column="1"></Label>
+                                <ScrollViewer x:Name="SCV_Home"  VerticalScrollBarVisibility="Auto" Grid.Column="0" Grid.Row="1" Margin="20">
+                                    <ItemsControl x:Name="SongList_Home" AlternationCount="9999">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Click="SongButton_Click" HorizontalContentAlignment="Stretch" Margin="10,0,10,0">
+                                                    <Grid IsHitTestVisible="False">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="30"/>
+                                                            <!-- Id -->
+                                                            <ColumnDefinition Width="40"/>
+                                                            <!-- Cover -->
+                                                            <ColumnDefinition Width="*"/>
+                                                            <!-- Title + Artist -->
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <!-- Plays + Duration -->
+                                                        </Grid.ColumnDefinitions>
+
+                                                        <TextBlock Text="{Binding Id}"  FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource SecondaryText}"></TextBlock>
+
+                                                        <Rectangle MinHeight="40" MinWidth="40" RadiusX="5" RadiusY="5" Stretch="UniformToFill"  VerticalAlignment="Center" IsHitTestVisible="False" Grid.Column="1" HorizontalAlignment="Center">
+                                                            <!-- or desired width -->
+                                                            <Rectangle.Fill>
+                                                                <ImageBrush Stretch="Fill" ImageSource="{Binding Image}" />
+                                                            </Rectangle.Fill>
+                                                        </Rectangle>
+                                                        <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10" MinWidth="3000">
+                                                            <TextBlock Text="{Binding Title}" 
+    FontWeight="SemiBold"
+    FontSize="18"
+    Foreground="{DynamicResource PrimaryText}"/>
+                                                            <TextBlock Text="{Binding Artist}" 
+    FontSize="14"
+    Foreground="{DynamicResource SecondaryText}"/>
+                                                        </StackPanel>
+
+                                                        <!-- Plays + Duration aligned right -->
+                                                        <Grid Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+
+                                                            <Label Grid.Column="0"
+Content="{Binding MusicPlays}"
+                                                FontSize="14"
+Foreground="{DynamicResource SecondaryText}"
+VerticalAlignment="Center"
+Margin="0,0,10,0"/>
+                                                            <!-- spacing -->
+
+                                                            <Label Grid.Column="1"
+Content="{Binding MusicLength}"
+Foreground="{DynamicResource SecondaryText}"
+                                                 FontSize="14"
+VerticalAlignment="Center"/>
+                                                        </Grid>
+
+                                                    </Grid>
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}">
+                                                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="#8b5cf6"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                                <ScrollViewer x:Name="SCV_HomeArtist"  VerticalScrollBarVisibility="Auto" Grid.Column="1" Grid.Row="1" Margin="20">
+                                    <ItemsControl x:Name="ArtistList" AlternationCount="9999">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Click="SongButton_Click" HorizontalContentAlignment="Stretch" Margin="10,20,10,0" MinWidth="250" Padding="0,0,0,0">
+                                                    <Grid IsHitTestVisible="False">
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <!-- Id -->
+                                                            <ColumnDefinition Width="160"/>
+                                                            <!-- Cover -->
+                                                        </Grid.ColumnDefinitions>
+                                                        <Rectangle MinHeight="80" MinWidth="80" RadiusX="5" RadiusY="5" Stretch="UniformToFill"  VerticalAlignment="Center" IsHitTestVisible="False" Grid.Column="0" HorizontalAlignment="Center">
+                                                            <!-- or desired width -->
+                                                            <Rectangle.Fill>
+                                                                <ImageBrush Stretch="Fill" ImageSource="{Binding Image}" />
+                                                            </Rectangle.Fill>
+                                                        </Rectangle>
+                                                        <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10">
+                                                            <TextBlock Text="{Binding Name}" 
+    FontWeight="SemiBold"
+    FontSize="18"
+    Foreground="{DynamicResource PrimaryText}"/>
+                                                            <TextBlock Text="{Binding PlayCount}" 
+    FontSize="14"
+    Foreground="{DynamicResource SecondaryText}"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}">
+                                                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="#8b5cf6"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </Grid>
+                            <Label Content="Popular Album" Foreground="{DynamicResource PrimaryText}" FontWeight="Bold" FontSize="23" FontFamily="/Assets/Fonts/Geist/#Geist" Margin="20,0,0,0" Grid.Row="1" Grid.Column="0"></Label>
+                            <Grid Grid.Row="2">
+                                <ScrollViewer x:Name="SCV_HomeAlbum"
+              HorizontalScrollBarVisibility="Disabled"
+              VerticalScrollBarVisibility="Disabled"  Margin="20,0,20,0">
+                                    <ItemsControl x:Name="AlbumList" AlternationCount="9999" >
+                                        <!-- Set horizontal panel -->
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <StackPanel Orientation="Horizontal"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Button Click="SongButton_Click" HorizontalContentAlignment="Stretch" Margin="5">
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}">
+                                                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="#8b5cf6"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                    <Grid IsHitTestVisible="False">
+                                                        <Rectangle MinHeight="100" MinWidth="220" RadiusX="5" RadiusY="5" Stretch="UniformToFill" VerticalAlignment="Center" IsHitTestVisible="False" HorizontalAlignment="Center">
+                                                            <Rectangle.Fill>
+                                                                <ImageBrush Stretch="None" ImageSource="{Binding Image}" />
+                                                            </Rectangle.Fill>
+                                                        </Rectangle>
+
+                                                        <StackPanel  Orientation="Vertical" VerticalAlignment="Center" Margin="10" MinWidth="200">
+                                                            <TextBlock Text="{Binding Name}" 
+                                       FontWeight="SemiBold"
+                                       FontSize="18"
+                                       Foreground="{DynamicResource PrimaryText}"/>
+                                                            <TextBlock Text="{Binding PlayCount}" 
+                                       FontSize="14"
+                                       Foreground="{DynamicResource SecondaryText}"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Button>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+
+                            </Grid>
+                        </Grid>
+                    <!-- Content Area -->
+                        
+                    
+                    </StackPanel>
+                </Border>
+
+            </Grid>
+            <Grid Grid.Column="1" Grid.Row="1" Background="{DynamicResource BackgroundDark}" x:Name="PanelOnline" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
+                    <!-- Greeting -->
+                    <RowDefinition Height="*"/>
+                    <!-- Scrollable content -->
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Welcome" Margin="20,10,0,0" Foreground="{DynamicResource PrimaryText}" x:Name="Label_Search" FontSize="36" VerticalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Bold"/>
+                <Border Background="{DynamicResource BackgroundDark}" Grid.Row="1" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
+                    <StackPanel>
                         <Label Content="Popular Tracks" Foreground="{DynamicResource PrimaryText}" FontWeight="Bold" FontSize="23" FontFamily="/Assets/Fonts/Geist/#Geist" Margin="20,20,0,0"></Label>
                     <!-- Content Area -->
-                    <ScrollViewer x:Name="scrollview"  VerticalScrollBarVisibility="Auto" Margin="20">
-                            <ItemsControl x:Name="SongList" AlternationCount="9999">
+                    <ScrollViewer x:Name="scrollview2"  VerticalScrollBarVisibility="Auto" Margin="20">
+                            <ItemsControl x:Name="SongList2" AlternationCount="9999">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Button Click="SongButton_Click" HorizontalContentAlignment="Stretch" Margin="10,0,10,0">
@@ -188,7 +439,9 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                     <!-- Plays + Duration -->
                                                 </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding Id}" FontFamily="Calibri" FontSize="26" Height="40" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></TextBlock>
+                                                
+                                                <TextBlock Text="{Binding Id}"  FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource SecondaryText}"></TextBlock>
+                                                   
                                             <Rectangle Height="40" Width="40" RadiusX="5" RadiusY="5" Stretch="UniformToFill"  VerticalAlignment="Center" IsHitTestVisible="False" Grid.Column="1" HorizontalAlignment="Center">
                                                 <!-- or desired width -->
                                                 <Rectangle.Fill>
@@ -214,14 +467,16 @@
 
                                                     <Label Grid.Column="0"
            Content="{Binding MusicPlays}"
-           Foreground="{DynamicResource PrimaryText}"
+                                                           FontSize="14"
+           Foreground="{DynamicResource SecondaryText}"
            VerticalAlignment="Center"
            Margin="0,0,10,0"/>
                                                     <!-- spacing -->
 
                                                     <Label Grid.Column="1"
            Content="{Binding MusicLength}"
-           Foreground="{DynamicResource PrimaryText}"
+           Foreground="{DynamicResource SecondaryText}"
+                                                            FontSize="14"
            VerticalAlignment="Center"/>
                                                 </Grid>
 
@@ -255,7 +510,7 @@
 
             </Grid>
             <!-- PLAYER CARD-->
-            <Border Background="{DynamicResource BackgroundSecondary}" Grid.Row="1" Grid.Column="2" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="1,0,0,0">
+            <Border Background="{DynamicResource BackgroundSecondary}" Grid.Row="1" Grid.Column="2" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="1,0,0,0" Name="PlayerCard">
                 <!-- Now Playing -->
                 <StackPanel  Margin="25">
                     <TextBlock Text="Now Playing.." Foreground="{DynamicResource PrimaryText}" FontSize="24" Margin="0,0,0,10"/>

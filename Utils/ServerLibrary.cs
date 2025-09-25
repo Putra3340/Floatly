@@ -16,7 +16,24 @@ namespace Floatly.Utils
 {
     public class ServerLibrary
     {
-        private async void LoadSongs(TextBlock tb, ItemsControl ic, ScrollViewer sv)
+        private ItemsControl songlist;
+        private ScrollViewer sc_song;
+
+        private ItemsControl artistlist;
+        private ScrollViewer sc_artist;
+
+        private ItemsControl albumlist;
+        private ScrollViewer sc_album;
+        public ServerLibrary(ItemsControl songlist,ScrollViewer sc_song,ItemsControl artistlist,ScrollViewer sc_artist,ItemsControl albumlist,ScrollViewer sc_album)
+        {
+            this.songlist = songlist;
+            this.sc_song = sc_song;
+            this.artistlist = artistlist;
+            this.sc_artist = sc_artist;
+            this.albumlist = albumlist;
+            this.sc_album = sc_album;
+        }
+        private async void LoadSongs()
         {
             var json = File.ReadAllText(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "index.json"));
             var songs = JsonSerializer.Deserialize<List<Song>>(json, new JsonSerializerOptions
@@ -48,9 +65,21 @@ namespace Floatly.Utils
                 song.MusicPlays = "69k";
                 song.Id = i++;
             }
-            ic.ItemsSource = songs;
-            tb.Text = "Floatly - Local Library";
-            sv.UpdateLayout();
+            songlist.ItemsSource = songs;
+            sc_song.UpdateLayout();
+
+            var artists = songs.GroupBy(s => s.Artist).Select(g => new Artist
+            {
+                Id = g.First().Id,
+                Name = g.Key,
+                Image = g.First().Image,
+                PlayCount = $"{g.Count() * 69}k"
+            }).ToList();
+           artistlist.ItemsSource = artists;
+            sc_artist.UpdateLayout();
+
+            albumlist.ItemsSource = artists;
+            sc_artist.UpdateLayout();
         }
         private async void LoadOnlineSongs(TextBlock tb, ItemsControl ic, ScrollViewer sv)
         {
@@ -126,7 +155,7 @@ namespace Floatly.Utils
             }
         }
 
-        public void LoadLibrary(TextBlock tb,ItemsControl ic,ScrollViewer sv)
+        public void LoadLibrary(TextBlock tb,ItemsControl ic,ScrollViewer sv, ItemsControl ic_a, ScrollViewer sv_a)
         {
             if (Prefs.OnlineMode)
             {
@@ -134,7 +163,7 @@ namespace Floatly.Utils
             }
             else
             {
-                LoadSongs(tb,ic,sv);
+                LoadSongs();
             }
         }
         public void ClearLibrary(ItemsControl ic)
