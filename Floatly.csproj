@@ -52,9 +52,24 @@
     <None Remove="Assets\Fonts\Geist\Geist-SemiBoldItalic.otf" />
     <None Remove="Assets\Fonts\Geist\Geist-Thin.otf" />
     <None Remove="Assets\Fonts\Geist\Geist-ThinItalic.otf" />
+    <None Remove="Assets\Images\banner-default.jpg" />
+    <None Remove="Assets\Images\icon-arrow-left.png" />
     <None Remove="Assets\Images\icon-close.png" />
+    <None Remove="Assets\Images\icon-debug.png" />
+    <None Remove="Assets\Images\icon-home.png" />
+    <None Remove="Assets\Images\icon-library.png" />
+    <None Remove="Assets\Images\icon-logout.png" />
+    <None Remove="Assets\Images\icon-loop.png" />
     <None Remove="Assets\Images\icon-maximize.png" />
     <None Remove="Assets\Images\icon-minimize.png" />
+    <None Remove="Assets\Images\icon-next.png" />
+    <None Remove="Assets\Images\icon-pause.png" />
+    <None Remove="Assets\Images\icon-playlist.png" />
+    <None Remove="Assets\Images\icon-prev.png" />
+    <None Remove="Assets\Images\icon-resume.png" />
+    <None Remove="Assets\Images\icon-search.png" />
+    <None Remove="Assets\Images\icon-settings.png" />
+    <None Remove="Assets\Images\icon-shuffle.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -99,9 +114,24 @@
     <Resource Include="Assets\Fonts\Geist\Geist-SemiBoldItalic.otf" />
     <Resource Include="Assets\Fonts\Geist\Geist-Thin.otf" />
     <Resource Include="Assets\Fonts\Geist\Geist-ThinItalic.otf" />
+    <Resource Include="Assets\Images\banner-default.jpg" />
+    <Resource Include="Assets\Images\icon-arrow-left.png" />
     <Resource Include="Assets\Images\icon-close.png" />
+    <Resource Include="Assets\Images\icon-debug.png" />
+    <Resource Include="Assets\Images\icon-home.png" />
+    <Resource Include="Assets\Images\icon-library.png" />
+    <Resource Include="Assets\Images\icon-logout.png" />
+    <Resource Include="Assets\Images\icon-loop.png" />
     <Resource Include="Assets\Images\icon-maximize.png" />
     <Resource Include="Assets\Images\icon-minimize.png" />
+    <Resource Include="Assets\Images\icon-next.png" />
+    <Resource Include="Assets\Images\icon-pause.png" />
+    <Resource Include="Assets\Images\icon-playlist.png" />
+    <Resource Include="Assets\Images\icon-prev.png" />
+    <Resource Include="Assets\Images\icon-resume.png" />
+    <Resource Include="Assets\Images\icon-search.png" />
+    <Resource Include="Assets\Images\icon-settings.png" />
+    <Resource Include="Assets\Images\icon-shuffle.png" />
   </ItemGroup>
 
 </Project>

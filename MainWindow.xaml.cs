@@ -1,4 +1,5 @@
-﻿using Floatly.Models;
+﻿using Floatly.Api;
+using Floatly.Models.Form;
 using Floatly.Utils;
 using StringExt;
 using System;
@@ -27,8 +28,9 @@ namespace Floatly
     public partial class MainWindow : Window
     {
         FloatingWindow fw = new(); // make just one instance of FloatingWindow (maybe its bad idea to create this here but whatever)
-        ConfigurationWindow cw = new(); // make just one instance of ConfigurationWindow (maybe its bad idea to create this here but whatever)
-        ServerLibrary sl = null; // make just one instance of ServerLibrary
+        ConfigurationWindow cw = null; // just one instance of ConfigurationWindow
+        ServerLibrary sl = null; // make just one instance of ServerLibrary (i didnt initialize first because the component didnt initialized yet)
+        PlayerCard plc = new();
         DispatcherTimer timer = new DispatcherTimer(); // for slider
         bool isDragging = false; // dragging slider
         public static TextBlock Window_Title = new(); // default title
@@ -37,8 +39,7 @@ namespace Floatly
             InitializeComponent();
 
             sl = new ServerLibrary(SongList_Home,SCV_Home,ArtistList,SCV_HomeArtist,AlbumList,SCV_HomeAlbum);
-
-            sl.LoadLibrary(Window_Title, SongList_Home, SCV_Home,ArtistList,SCV_HomeArtist);
+            sl.LoadHome();
             UpdateGreeting();
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
             timer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
@@ -75,27 +76,19 @@ namespace Floatly
                 }
                 this.Effect = null;
             };
-
+            PlayerCard.DataContext = plc;
+            StartSlider(); // Put this here so we dont create new useless threads
         }
 
         private void SongButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Prefs.OnlineMode && sender is Button btnonline && btnonline.DataContext is OnlineSong onlinesong)
+            if (sender is Button btnonline && btnonline.DataContext is Floatly.Models.ApiModel.Song onlinesong)
             {
-                Label_SongTitle.Text = onlinesong.Title;
-                Label_ArtistName.Text = onlinesong.Artist;
-                Image_Banner.Fill = new ImageBrush(new BitmapImage(new Uri(onlinesong.Banner, UriKind.RelativeOrAbsolute)));
+                plc.Title = onlinesong.Title;
+                plc.Artist = onlinesong.Artist;
+                plc.Banner = onlinesong.Banner;
                 MusicPlayer.Play(onlinesong.Music, onlinesong.Lyrics);
-                StartSlider();
-            }
-            else
-            if (sender is Button btn && btn.DataContext is Song song)
-            {
-                Label_SongTitle.Text = song.Title;
-                Label_ArtistName.Text = song.Artist;
-                Image_Banner.Fill = new ImageBrush(new BitmapImage(new Uri(song.Banner, UriKind.RelativeOrAbsolute)));
-                MusicPlayer.Play(song.Music, song.Lyrics);
-                StartSlider();
+                Api.Api.Play(onlinesong.Id);
             }
         }
         private void UpdateGreeting()
@@ -120,11 +113,7 @@ namespace Floatly
         }
         private void Label_Debug_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            //MusicPlayer.Player.Pause();
-            //MusicPlayer.lyricslist.Clear();
-            //MusicPlayer.lyricslist = SRTParser.ParseSRT(MusicPlayer.currentlyricpath).Result; // for debugging purposes
-            //MusicPlayer.Player.Play();
-            PlayerCard.Visibility = Visibility.Collapsed;
+            
         }
         private void OnLyricsChanged(object sender, string newLyrics)
         {
@@ -176,11 +165,8 @@ namespace Floatly
         {
             WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
         }
-
         private void Close_Click(object sender, RoutedEventArgs e)
         {
-            fw.Close();
-            cw.Close();
             Application.Current.Shutdown();
         }
         private async Task StartSlider()
@@ -240,13 +226,6 @@ namespace Floatly
             PanelOnline.Visibility = Visibility.Visible;
         }
 
-        private void TextBlock_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            Prefs.OnlineMode = false;
-            sl.ClearLibrary(SongList_Home);
-            sl.LoadLibrary(Window_Title, SongList_Home, SCV_Home,ArtistList,SCV_HomeArtist);
-        }
-
         bool ispaused = false;
         private void Button_PlayPause_Click(object sender, RoutedEventArgs e)
         {
@@ -263,28 +242,6 @@ namespace Floatly
 
         }
 
-        private void tbx_search_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (Prefs.OnlineMode)
-            {
-                sl.SearchOnlineSongs("", SongList_Home); // TODO ONLINE
-            }
-            else
-            {
-                // TODO OFFLINE
-                backup = SongList_Home.ItemsSource.Cast<Song>().ToList();
-                //SongList.ItemsSource = 
-            }
-
-        }
-        private List<Song> backup = new();
-
-        private void Button_MouseEnter(object sender, MouseEventArgs e)
-        {
-            var btn = sender as Button;
-            btn.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF0000FF"));
-        }
-
         private void NavHome_Click(object sender, RoutedEventArgs e)
         {
             PanelHome.Visibility = Visibility.Visible;
@@ -296,6 +253,28 @@ namespace Floatly
             PanelHome.Visibility = Visibility.Collapsed;
             PanelOnline.Visibility = Visibility.Visible;
 
+        }
+
+        private void NotImplemented_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Opps this feature is in todo!");
+        }
+
+        private void CollapsePlayerCard_Click(object sender, RoutedEventArgs e)
+        {
+            Grid_Main_PlayerCard.Width = new GridLength(0);     // collapse right column
+            Grid_Main_MiddleContent.Width = new GridLength(1, GridUnitType.Star); // take all leftover space
+
+            Btn_ShowPlayerCard.Visibility = Visibility.Visible;
+            Ico_ShowPlayerCard.Visibility = Visibility.Visible;
+        }
+        private void UnCollapsePlayerCard_Click(object sender, RoutedEventArgs e)
+        {
+            Grid_Main_PlayerCard.Width = new GridLength(370);   // restore original size
+            Grid_Main_MiddleContent.Width = new GridLength(1, GridUnitType.Star); // still fills leftover
+
+            Btn_ShowPlayerCard.Visibility = Visibility.Collapsed;
+            Ico_ShowPlayerCard.Visibility = Visibility.Collapsed;
         }
     }
 }

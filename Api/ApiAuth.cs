@@ -12,11 +12,12 @@ namespace Floatly.Api
 {
     public static class ApiAuth
     {
+        private static readonly string _serverurl = Prefs.ServerUrl;
         public static HttpClient client = new HttpClient();
 
         public async static Task Login(string email, string password)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "http://floatly.putrartx.my.id/auth/desktop/login");
+            var request = new HttpRequestMessage(HttpMethod.Post, _serverurl + "/auth/desktop/login");
             var collection = new List<KeyValuePair<string, string>>();
             collection.Add(new("username", email));
             collection.Add(new("password", password));
@@ -34,7 +35,7 @@ namespace Floatly.Api
         }
         public async static Task Register(string email, string password, string username)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "http://floatly.putrartx.my.id/auth/desktop/register");
+            var request = new HttpRequestMessage(HttpMethod.Post, _serverurl + "/auth/desktop/register");
             var collection = new List<KeyValuePair<string, string>>();
             collection.Add(new("email", email));
             collection.Add(new("password", password));
@@ -53,7 +54,7 @@ namespace Floatly.Api
         }
         public async static Task AutoLogin(string token)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "http://floatly.putrartx.my.id/auth/desktop/autologin");
+            var request = new HttpRequestMessage(HttpMethod.Post, _serverurl + "/auth/desktop/autologin");
             var collection = new List<KeyValuePair<string, string>>();
             collection.Add(new("email", token));
             var content = new FormUrlEncodedContent(collection);
@@ -64,7 +65,7 @@ namespace Floatly.Api
         }
         public async static Task VerifyEmail(string email) // Maybe Done?
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, "http://floatly.putrartx.my.id/auth/desktop/verify-email");
+            var request = new HttpRequestMessage(HttpMethod.Post, _serverurl + "/auth/desktop/verify-email");
             var collection = new List<KeyValuePair<string, string>>();
             collection.Add(new("email", email));
             var content = new FormUrlEncodedContent(collection);
