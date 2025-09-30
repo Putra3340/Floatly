@@ -58,6 +58,7 @@
     <None Remove="Assets\Images\icon-debug.png" />
     <None Remove="Assets\Images\icon-home.png" />
     <None Remove="Assets\Images\icon-library.png" />
+    <None Remove="Assets\Images\icon-logo.png" />
     <None Remove="Assets\Images\icon-logout.png" />
     <None Remove="Assets\Images\icon-loop.png" />
     <None Remove="Assets\Images\icon-maximize.png" />
@@ -120,6 +121,7 @@
     <Resource Include="Assets\Images\icon-debug.png" />
     <Resource Include="Assets\Images\icon-home.png" />
     <Resource Include="Assets\Images\icon-library.png" />
+    <Resource Include="Assets\Images\icon-logo.png" />
     <Resource Include="Assets\Images\icon-logout.png" />
     <Resource Include="Assets\Images\icon-loop.png" />
     <Resource Include="Assets\Images\icon-maximize.png" />

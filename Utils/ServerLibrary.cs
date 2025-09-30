@@ -36,58 +36,21 @@ namespace Floatly.Utils
         }
         public async void LoadHome()
         {
-            var song = await ApiLibrary.GetHomeLibrary();
-            songlist.ItemsSource = song.Songs;
-            artistlist.ItemsSource= song.Artists;
-            albumlist.ItemsSource= song.Albums;
-
-
-            // var json = File.ReadAllText(System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "index.json"));
-            // var songs = JsonSerializer.Deserialize<List<Song>>(json, new JsonSerializerOptions
-            // {
-            //     PropertyNameCaseInsensitive = true
-            // });
-            // int i = 1;
-            // foreach (var song in songs) // make path to absolute
-            // {
-            //     song.Music = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Music", song.Music);
-            //     song.Lyrics = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Lyrics", song.Lyrics);
-            //     song.Image = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Images", song.Image);
-            //     song.Banner = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "Data", "Banners", song.Banner);
-            //     // Extract duration from MP3 file
-            //     if (!Path.GetExtension(song.Music).Equals(".mp3", StringComparison.OrdinalIgnoreCase))
-            //     {
-            //         MessageBox.Show("Warning: Only MP3 files are supported for duration extraction. Some features may not work as expected.");
-            //     }
-            //     else
-            //     {
-            //         song.MusicLength = await Task.Run(() =>
-            //         {
-            //             using var tagFile = TagLib.File.Create(song.Music);
-            //             var seconds = tagFile.Properties.Duration.TotalSeconds;
-            //             var ts = TimeSpan.FromSeconds(seconds);
-            //             return ts.ToString(@"mm\:ss");
-            //         });
-            //     }
-            //     song.MusicPlays = "69k";
-            //     song.Id = i++;
-            // }
-            // songlist.ItemsSource = songs;
-            // sc_song.UpdateLayout();
-
-            // var artists = songs.GroupBy(s => s.Artist).Select(g => new Artist
-            // {
-            //     Id = g.First().Id,
-            //     Name = g.Key,
-            //     Image = g.First().Image,
-            //     PlayCount = $"{g.Count() * 69}k"
-            // }).ToList();
-            //artistlist.ItemsSource = artists;
-            // sc_artist.UpdateLayout();
-
-            // albumlist.ItemsSource = artists;
-            // sc_artist.UpdateLayout();
-            //LoadOnlineSongs();
+            if(MainWindow.WindowState == WindowState.Normal)
+            {
+                var song = await ApiLibrary.GetHomeLibrary();
+                songlist.ItemsSource = song.Songs.Take(5);
+                artistlist.ItemsSource = song.Artists.Take(3);
+                albumlist.ItemsSource = song.Albums.Take(4);
+            }
+            
+            if(MainWindow.WindowState == WindowState.Maximized)
+            {
+                var song = await ApiLibrary.GetHomeLibrary();
+                songlist.ItemsSource = song.Songs.Take(10);
+                artistlist.ItemsSource = song.Artists.Take(6);
+                albumlist.ItemsSource = song.Albums.Take(4);
+            }
         }
     }
 }

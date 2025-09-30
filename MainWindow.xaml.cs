@@ -242,16 +242,97 @@ namespace Floatly
 
         }
 
-        private void NavHome_Click(object sender, RoutedEventArgs e)
+        private void Nav_Click(object sender, RoutedEventArgs e) // put it on one single function to reduce redundancy  
         {
-            PanelHome.Visibility = Visibility.Visible;
-            PanelOnline.Visibility = Visibility.Collapsed;
+            var btn = sender as Button;
+            if(btn == null || btn.Name.IsNullOrEmpty())
+            {
+                MessageBox.Show("Nav Error, btn has no name");
+            }
+            if(btn.Name == "NavHome")
+            {
+                Style_ChangeButtonBackground(btn, "AccentIndigo"); // highlight this button
+                Style_ChangeButtonBackground(NavSearch); // clear other button
+                PanelHome.Visibility = Visibility.Visible;
+                PanelOnline.Visibility = Visibility.Collapsed;
+            }
+            else if(btn.Name == "NavSearch")
+            {
+                Style_ChangeButtonBackground(btn, "AccentIndigo");
+                Style_ChangeButtonBackground(NavHome);
+                PanelHome.Visibility = Visibility.Collapsed;
+                PanelOnline.Visibility = Visibility.Visible;
+            }
+            else if(btn.Name == "NavOffline")
+            {
+
+            }else if(btn.Name == "NavPlaylist")
+            {
+
+            }else if(btn.Name == "NavSettings")
+            {
+
+            }else if(btn.Name == "NavDebug")
+            {
+
+            }else if(btn.Name == "NavExit")
+            {
+
+            }
 
         }
-        private void NavOnline_Click(object sender, RoutedEventArgs e)
+
+        private void Style_ChangeButtonBackground(Button btn,string res = "Tranparent")
         {
-            PanelHome.Visibility = Visibility.Collapsed;
-            PanelOnline.Visibility = Visibility.Visible;
+            if (btn == null)
+                return;
+
+            // Get the current style
+            var oldStyle = btn.Style;
+
+            // Create a fresh style, inheriting from the old one if desired
+            var newStyle = new Style(typeof(Button));
+
+            // Copy each setter by creating a new Setter object
+            foreach (var s in oldStyle.Setters)
+            {
+                if (s is Setter oldSetter)
+                {
+                    var value = oldSetter.Value;
+
+                    // Change Background setter while copying
+                    if (oldSetter.Property == Button.BackgroundProperty)
+                        value = FindResource(res);
+
+                    newStyle.Setters.Add(new Setter(oldSetter.Property, value));
+                }
+            }
+
+            // Copy triggers (need to clone these as well if they contain setters)
+            foreach (var t in oldStyle.Triggers)
+            {
+                if (t is Trigger oldTrigger)
+                {
+                    var newTrigger = new Trigger
+                    {
+                        Property = oldTrigger.Property,
+                        Value = oldTrigger.Value
+                    };
+
+                    foreach (var setterBase in oldTrigger.Setters)
+                    {
+                        if (setterBase is Setter oldTrigSetter)
+                        {
+                            newTrigger.Setters.Add(new Setter(oldTrigSetter.Property, oldTrigSetter.Value));
+                        }
+                    }
+
+                    newStyle.Triggers.Add(newTrigger);
+                }
+            }
+
+            // Assign the new style to the button
+            btn.Style = newStyle;
 
         }
 

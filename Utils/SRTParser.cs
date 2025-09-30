@@ -9,6 +9,13 @@ using System.Threading.Tasks;
 
 namespace Floatly.Utils
 {
+    /*      
+     * SRT Parser
+     * Parses SRT files and returns a list of subtitles with start and end times
+     * Each subtitle is a tuple of (start time, end time, text)
+     * Supports downloading SRT files from URL
+     * Credits by Putra3340
+     */
     public static class SRTParser
     {
         public async static Task<List<(int lyricindex,TimeSpan start, TimeSpan end, string text, string text2)>> ParseSRT(string srtpath)
