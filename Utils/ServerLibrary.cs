@@ -1,7 +1,9 @@
 ﻿using Floatly.Api;
+using Floatly.Models.ApiModel;
 using Floatly.Models.Form;
 using Floatly.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -34,23 +36,24 @@ namespace Floatly.Utils
             this.albumlist = albumlist;
             this.sc_album = sc_album;
         }
-        public async void LoadHome()
+
+        // This is a default value to prevent errors, and for filtering
+        Library lib_home = default;
+
+        public async Task LoadHome()
         {
-            if(MainWindow.WindowState == WindowState.Normal)
-            {
-                var song = await ApiLibrary.GetHomeLibrary();
-                songlist.ItemsSource = song.Songs.Take(5);
-                artistlist.ItemsSource = song.Artists.Take(3);
-                albumlist.ItemsSource = song.Albums.Take(4);
-            }
-            
-            if(MainWindow.WindowState == WindowState.Maximized)
-            {
-                var song = await ApiLibrary.GetHomeLibrary();
-                songlist.ItemsSource = song.Songs.Take(10);
-                artistlist.ItemsSource = song.Artists.Take(6);
-                albumlist.ItemsSource = song.Albums.Take(4);
-            }
+            lib_home = await ApiLibrary.GetHomeLibrary();
+            songlist.ItemsSource = lib_home.Songs.Take(5);
+            artistlist.ItemsSource = lib_home.Artists.Take(3);
+            albumlist.ItemsSource = lib_home.Albums.Take(4);
+        }
+        // Maybe optimize this later
+        public async Task LoadHomeMax()
+        {
+            lib_home = await ApiLibrary.GetHomeLibrary();
+            songlist.ItemsSource = lib_home.Songs;
+            artistlist.ItemsSource = lib_home.Artists;
+            albumlist.ItemsSource = lib_home.Albums;
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Floatly.Api;
+using Floatly.Models.ApiModel;
 using Floatly.Models.Form;
 using Floatly.Utils;
 using StringExt;
@@ -45,36 +46,38 @@ namespace Floatly
             timer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
             timer.Tick += Timer_Tick;
 
-            this.Loaded += (s, e) =>
+            this.Loaded += async (s, e) =>
             {
-            // AUTH
-
-            auth:
-                Prefs.isRegister = false; // reset
-                LoginWindow login = new LoginWindow
+                if (!await UserData.LoadLoginData()) // check if saved data still valid, if it doesnt then show login and update the autologin
                 {
-                    Owner = this, // important!
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                RegisterWindow register = new RegisterWindow
-                {
-                    Owner = this, // important!
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                this.Effect = new System.Windows.Media.Effects.BlurEffect()
-                {
-                    Radius = 20
-                };
-                login.ShowDialog();
-                if (Prefs.isRegister)
-                {
-                    register.ShowDialog();
+                // AUTH
+                auth:
+                    Prefs.isRegister = false; // reset
+                    LoginWindow login = new LoginWindow
+                    {
+                        Owner = this, // important!
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    };
+                    RegisterWindow register = new RegisterWindow
+                    {
+                        Owner = this, // important!
+                        WindowStartupLocation = WindowStartupLocation.CenterOwner
+                    };
+                    this.Effect = new System.Windows.Media.Effects.BlurEffect()
+                    {
+                        Radius = 20
+                    };
+                    login.ShowDialog();
+                    if (Prefs.isRegister)
+                    {
+                        register.ShowDialog();
+                    }
+                    if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
+                    {
+                        goto auth; // re-authenticate
+                    }
+                    this.Effect = null;
                 }
-                if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
-                {
-                    goto auth; // re-authenticate
-                }
-                this.Effect = null;
             };
             PlayerCard.DataContext = plc;
             StartSlider(); // Put this here so we dont create new useless threads
@@ -161,9 +164,17 @@ namespace Floatly
 
         private void Minimize_Click(object sender, RoutedEventArgs e) => WindowState = WindowState.Minimized;
 
-        private void Maximize_Click(object sender, RoutedEventArgs e)
+        private async void Maximize_Click(object sender, RoutedEventArgs e)
         {
-            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : (WindowState.Maximized);
+            if(WindowState == WindowState.Normal)
+            {
+                await sl.LoadHome();
+            }
+            else
+            {
+                await sl.LoadHomeMax();
+            }
         }
         private void Close_Click(object sender, RoutedEventArgs e)
         {

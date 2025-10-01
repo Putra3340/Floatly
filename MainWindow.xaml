@@ -154,7 +154,7 @@
                                     <Setter Property="Foreground" Value="White"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                            <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -188,7 +188,7 @@
                                     <Setter Property="Foreground" Value="White"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                            <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -222,7 +222,7 @@
                                     <Setter Property="Foreground" Value="White"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                            <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -256,7 +256,7 @@
                                     <Setter Property="Foreground" Value="White"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                            <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -290,7 +290,7 @@
                                     <Setter Property="Foreground" Value="White"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                            <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -324,7 +324,7 @@
                                     <Setter Property="Foreground" Value="White"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                            <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -358,7 +358,7 @@
                                     <Setter Property="Foreground" Value="White"/>
                                     <Style.Triggers>
                                         <Trigger Property="IsMouseOver" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                            <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -514,7 +514,7 @@ VerticalAlignment="Center"/>
                                                             <Setter Property="Foreground" Value="White"/>
                                                             <Style.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                                                    <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
                                                                 </Trigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -566,7 +566,7 @@ VerticalAlignment="Center"/>
                                                             <Setter Property="Foreground" Value="White"/>
                                                             <Style.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="Background" Value="#8b5cf6"/>
+                                                                    <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
                                                                 </Trigger>
                                                             </Style.Triggers>
                                                         </Style>
@@ -954,7 +954,7 @@ RenderingBias="Quality" />
                                         </Button>
                                         <Border Background="White" Width="20" Height="20" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
                                             <Border.OpacityMask>
-                                                <ImageBrush ImageSource="/Assets/Images/icon-resume.png"/>
+                                                <ImageBrush ImageSource="/Assets/Images/icon-loop.png"/>
                                             </Border.OpacityMask>
                                         </Border>
                                     </Grid>
@@ -1050,7 +1050,29 @@ RenderingBias="Quality" />
                                 </Slider.Resources>
                             </Slider>
                         </StackPanel>
-                        <TextBlock x:Name="Label_ActiveLyrics" Text="Lyrics heree..." Foreground="{DynamicResource PrimaryText}" FontSize="24" HorizontalAlignment="Center" Margin="0,30,0,0" TextWrapping="Wrap" TextAlignment="Center" MouseLeftButtonDown="Label_ActiveLyrics_MouseLeftButtonDown"/>
+                        <Border BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="3" CornerRadius="10" Height="125">
+                            <TextBlock x:Name="Label_ActiveLyrics" Text="Lyrics heree..." Foreground="{DynamicResource PrimaryText}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" MouseLeftButtonDown="Label_ActiveLyrics_MouseLeftButtonDown"/>
+                        </Border>
+                        <!-- Additional Artist Card -->
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="20"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Rectangle Width="Auto" Height="150" Grid.Row="1">
+                                <Rectangle.Fill>
+                                    <ImageBrush ImageSource="/Assets/Images/banner-default.jpg"/>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                            <Rectangle Height="80" Width="Auto" Grid.Row="4">
+                                <Rectangle.Fill>
+                                    <ImageBrush ImageSource="/Assets/Images/banner-default.jpg"/>
+                                </Rectangle.Fill>
+                            </Rectangle>
+                        </Grid>
                     </StackPanel>
                 </Grid>
                 

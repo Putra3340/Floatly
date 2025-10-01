@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Floatly.Models.ApiModel;
+using Floatly.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -32,6 +34,7 @@ namespace Floatly.Api
             string token = doc.RootElement.GetProperty("token").GetString();
             Prefs.LoginToken = token;
             MessageBox.Show("Login successful");
+            UserData.SaveLoginData(await response.Content.ReadAsStringAsync());
         }
         public async static Task Register(string email, string password, string username)
         {
@@ -52,15 +55,18 @@ namespace Floatly.Api
             Prefs.LoginToken = token;
             MessageBox.Show("Registration successful");
         }
-        public async static Task AutoLogin(string token)
+        public async static Task<bool> AutoLogin(string token)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, _serverurl + "/auth/desktop/autologin");
             var collection = new List<KeyValuePair<string, string>>();
-            collection.Add(new("email", token));
+            collection.Add(new("token", token));
             var content = new FormUrlEncodedContent(collection);
             request.Content = content;
             var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
+            if(response.StatusCode != HttpStatusCode.OK)
+                return false;
+            Prefs.LoginToken = token;
+            return true;
 
         }
         public async static Task VerifyEmail(string email) // Maybe Done?

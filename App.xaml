@@ -17,7 +17,8 @@
         <!-- Primary / Accent Colors -->
         <SolidColorBrush x:Key="AccentIndigo" Color="#6366f1"/>
         <!-- Primary indigo -->
-        <SolidColorBrush x:Key="AccentPurple" Color="#608b5cf6"/>
+        <SolidColorBrush x:Key="AccentPurple" Color="#8b5cf6"/>
+        <SolidColorBrush x:Key="AccentPurpleHover" Color="#608b5cf6"/>
         <!-- Secondary accent -->
         <SolidColorBrush x:Key="AccentDeepIndigo" Color="#4f46e5"/>
         <!-- Charts / highlights -->
