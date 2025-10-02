@@ -107,6 +107,7 @@
                 </Border>
             </Grid>
         </Border>
+        
         <!-- Main Content Grid -->
         <Grid Grid.Row="1" x:Name="Page_Home">
             <Grid.ColumnDefinitions>
@@ -310,7 +311,7 @@
                                 <TextBlock Text="Settings" Foreground="{DynamicResource PrimaryText}" FontSize="14" Grid.Column="1" VerticalAlignment="Center" Margin="0,10,10,10" IsHitTestVisible="False" FontFamily="/Assets/Fonts/Geist/#Geist"/>
                             </Grid>
                         </StackPanel>
-                        <Button Content="" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Row="6"  Margin="0,8,0,8">
+                        <Button Content="" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="DebugMenu_Click" Grid.Row="6"  Margin="0,8,0,8">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border CornerRadius="10" Background="{TemplateBinding Background}">
@@ -670,10 +671,9 @@ RenderingBias="Quality" />
                     <!-- Scrollable content -->
                 </Grid.RowDefinitions>
 
-                <TextBlock Text="Welcome" Margin="20,10,0,0" Foreground="{DynamicResource PrimaryText}" x:Name="Label_Search" FontSize="36" VerticalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Bold"/>
+                <TextBlock Text="Search" Margin="20,10,0,0" Foreground="{DynamicResource PrimaryText}" FontSize="36" VerticalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Bold"/>
                 <Border Background="{DynamicResource BackgroundDark}" Grid.Row="1" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
                     <StackPanel>
-                        <Label Content="Popular Tracks" Foreground="{DynamicResource PrimaryText}" FontWeight="Bold" FontSize="23" FontFamily="/Assets/Fonts/Geist/#Geist" Margin="20,20,0,0"></Label>
                     <!-- Content Area -->
                     <ScrollViewer x:Name="scrollview2"  VerticalScrollBarVisibility="Auto" Margin="20">
                             <ItemsControl x:Name="SongList2" AlternationCount="9999">
@@ -762,6 +762,12 @@ RenderingBias="Quality" />
 
             </Grid>
             <!-- PLAYER CARD-->
+            <GridSplitter Grid.Column="1"
+                  Width="3"
+                  HorizontalAlignment="Right"
+                  VerticalAlignment="Stretch"
+                  Background="{DynamicResource BackgroundMuted}"
+                  ShowsPreview="True"/>
             <Border Background="{DynamicResource BackgroundSecondary}" Grid.Row="1" Grid.Column="2" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="1,0,0,0" Name="PlayerCard">
                 <Grid>
                     <Grid.RowDefinitions>
@@ -1062,21 +1068,48 @@ RenderingBias="Quality" />
                                 <RowDefinition Height="30"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-                            <Rectangle Width="Auto" Height="150" Grid.Row="1">
+                            <Rectangle Width="Auto" Height="200" Grid.Row="1" RadiusX="10" RadiusY="10">
+                                <Rectangle.Effect>
+                                    <BlurEffect/>
+                                </Rectangle.Effect>
                                 <Rectangle.Fill>
-                                    <ImageBrush ImageSource="/Assets/Images/banner-default.jpg"/>
+                                    <ImageBrush ImageSource="{Binding ArtistBanner}" Opacity="0.3" Stretch="UniformToFill"/>
                                 </Rectangle.Fill>
                             </Rectangle>
+                            <TextBlock Text="{Binding Artist}" Foreground="{DynamicResource PrimaryText}" FontSize="28" Grid.Row="1" Margin="0,50,0,0" FontWeight="Bold" Padding="10">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="Black"
+BlurRadius="0"
+ShadowDepth="3"
+Opacity="4"
+RenderingBias="Quality" />
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            <TextBlock Text="{Binding ArtistBio}" Foreground="{DynamicResource PrimaryText}" FontSize="16" Grid.Row="1" FontFamily="/Assets/Fonts/Geist/#Geist" Margin="0,85,0,0" TextAlignment="Left" TextWrapping="Wrap" Padding="10,30,10,10">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="Black"
+BlurRadius="0"
+ShadowDepth="3"
+Opacity="4"
+RenderingBias="Quality" />
+                                </TextBlock.Effect>
+                            </TextBlock>
                             <Rectangle Height="80" Width="Auto" Grid.Row="4">
                                 <Rectangle.Fill>
                                     <ImageBrush ImageSource="/Assets/Images/banner-default.jpg"/>
                                 </Rectangle.Fill>
                             </Rectangle>
+                            <TextBlock Text="Nothing in the queue.." Height="80" Width="Auto" Grid.Row="4" FontSize="24" Foreground="{DynamicResource PrimaryText}" Margin="45,40,0,0"/>
                         </Grid>
                     </StackPanel>
                 </Grid>
                 
             </Border>
         </Grid>
+        <StackPanel Grid.Row="1">
+            <Border x:Name="NotificationPanel" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="1" Height="80" Width="500" HorizontalAlignment="Right" Background="{DynamicResource AccentRed}" Opacity="60" CornerRadius="10" Margin="0,0,-500,0">
+                <TextBlock x:Name="NotificationText" Text="This is a notification!" Foreground="{DynamicResource PrimaryText}" FontSize="24" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" Margin="20,0,0,0"/>
+            </Border>
+        </StackPanel>
     </Grid>
 </Window>

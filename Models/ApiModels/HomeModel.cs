@@ -6,29 +6,30 @@ using System.Threading.Tasks;
 
 namespace Floatly.Models.ApiModel
 {
-    public class Song
+    public class HomeSong
     {
         public int Id { get; set; }
         public string Title { get; set; }
         public string Artist { get; set; }
+        public int ArtistId { get; set; }
         public string Music { get; set; }
         public string Lyrics { get; set; }
         public string Cover { get; set; }
         public string Banner { get; set; }
-        public int SongLength { get; set; }
-        public int PlayCount { get; set; }
+        public string SongLength { get; set; }
+        public string PlayCount { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 
-    public class Artist
+    public class HomeArtist
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public long TotalPlays { get; set; }
+        public string TotalPlays { get; set; }
         public string CoverUrl { get; set; }
     }
 
-    public class Album
+    public class HomeAlbum
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -39,8 +40,8 @@ namespace Floatly.Models.ApiModel
 
     public class Library
     {
-        public List<Song> Songs { get; set; }
-        public List<Artist> Artists { get; set; }
-        public List<Album> Albums { get; set; }
+        public List<HomeSong> Songs { get; set; }
+        public List<HomeArtist> Artists { get; set; }
+        public List<HomeAlbum> Albums { get; set; }
     }
 }

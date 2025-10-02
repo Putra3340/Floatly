@@ -18,6 +18,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -45,6 +46,7 @@ namespace Floatly
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
             timer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
             timer.Tick += Timer_Tick;
+            Notification.NotificationRaised += ShowNotification;
 
             this.Loaded += async (s, e) =>
             {
@@ -78,20 +80,27 @@ namespace Floatly
                     }
                     this.Effect = null;
                 }
+                else
+                {
+                    await Notification.ShowNotification("Login successful");
+                }
             };
             PlayerCard.DataContext = plc;
             StartSlider(); // Put this here so we dont create new useless threads
         }
 
-        private void SongButton_Click(object sender, RoutedEventArgs e)
+        private async void SongButton_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btnonline && btnonline.DataContext is Floatly.Models.ApiModel.Song onlinesong)
+            if (sender is Button btnonline && btnonline.DataContext is Floatly.Models.ApiModel.HomeSong onlinesong)
             {
                 plc.Title = onlinesong.Title;
                 plc.Artist = onlinesong.Artist;
                 plc.Banner = onlinesong.Banner;
                 MusicPlayer.Play(onlinesong.Music, onlinesong.Lyrics);
                 Api.Api.Play(onlinesong.Id);
+                var artist = await Api.ApiLibrary.GetArtist(onlinesong.ArtistId);
+                plc.ArtistBanner = artist.CoverImagePath;
+                plc.ArtistBio = artist.Bio.Substring(0,100) + "...";
             }
         }
         private void UpdateGreeting()
@@ -368,5 +377,45 @@ namespace Floatly
             Btn_ShowPlayerCard.Visibility = Visibility.Collapsed;
             Ico_ShowPlayerCard.Visibility = Visibility.Collapsed;
         }
+        private async void DebugMenu_Click(object sender, RoutedEventArgs e)
+        {
+            await Notification.ShowNotification("anjay");
+        }
+        private void ShowNotification(object sender,string message)
+        {
+            Notification.IsBusy = true;
+            NotificationText.Text = message;
+
+            // Slide in
+            var slideIn = new ThicknessAnimation
+            {
+                From = new Thickness(0, 0, -500, 0),
+                To = new Thickness(0, 0, 0, 0),
+                Duration = TimeSpan.FromSeconds(0.5),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            slideIn.Completed += (s, e) =>
+            {
+                // Start slide-out AFTER 3s
+                var slideOut = new ThicknessAnimation
+                {
+                    From = new Thickness(0, 0, 0, 0),
+                    To = new Thickness(0, 0, -500, 0),
+                    BeginTime = TimeSpan.FromSeconds(3), // wait before sliding out
+                    Duration = TimeSpan.FromSeconds(0.5),
+                    EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
+                };
+                slideOut.Completed += (s2, e2) =>
+                {
+                    Notification.IsBusy = false;
+                };
+                NotificationPanel.BeginAnimation(Border.MarginProperty, slideOut);
+
+            };
+
+            NotificationPanel.BeginAnimation(Border.MarginProperty, slideIn);
+        }
+
     }
 }

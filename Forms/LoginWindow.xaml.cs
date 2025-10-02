@@ -84,7 +84,8 @@ namespace Floatly
             finally
             {
                 btn.IsEnabled = true; // re-enable no matter what
-                this.Close();
+                if(!Prefs.LoginToken.IsNullOrEmpty())
+                    this.Close();
             }
         }
     }

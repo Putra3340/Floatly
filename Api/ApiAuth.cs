@@ -67,7 +67,6 @@ namespace Floatly.Api
                 return false;
             Prefs.LoginToken = token;
             return true;
-
         }
         public async static Task VerifyEmail(string email) // Maybe Done?
         {

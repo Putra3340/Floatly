@@ -31,7 +31,18 @@ namespace Floatly.Models.Form
             get => banner;
             set { banner = value; OnPropertyChanged(); }
         }
-
+        private string artistbanner = "/Assets/Images/banner-default.jpg";
+        public string ArtistBanner
+        {
+            get => artistbanner;
+            set { artistbanner = value; OnPropertyChanged(); }
+        }
+        private string artistbio = "/Assets/Images/banner-default.jpg";
+        public string ArtistBio
+        {
+            get => artistbio;
+            set { artistbio = value; OnPropertyChanged(); }
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
