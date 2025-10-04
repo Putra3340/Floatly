@@ -50,5 +50,18 @@ namespace Floatly.Api
             };
             return JsonSerializer.Deserialize<Artist>(result, options);
         }
+        public static async Task<Library> Search(string searchbytext)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v2/search?anycontent=" + searchbytext);
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string result = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            return JsonSerializer.Deserialize<Library>(result, options);
+        }
+
     }
 }

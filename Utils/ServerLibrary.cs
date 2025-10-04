@@ -14,46 +14,84 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace Floatly.Utils
 {
     public class ServerLibrary
     {
         private ItemsControl songlist;
-        private ScrollViewer sc_song;
-
         private ItemsControl artistlist;
-        private ScrollViewer sc_artist;
-
         private ItemsControl albumlist;
-        private ScrollViewer sc_album;
-        public ServerLibrary(ItemsControl songlist,ScrollViewer sc_song,ItemsControl artistlist,ScrollViewer sc_artist,ItemsControl albumlist,ScrollViewer sc_album)
+        private ListBox SongListSearch;
+        private Button BtnShowMore;
+        private ListBox ArtistListSearch;
+        private ListBox AlbumListSearch;
+
+        public ServerLibrary(ItemsControl songlist,ItemsControl artistlist,ItemsControl albumlist,ListBox searchsonglist,Button btn_showmore,ListBox searchartistlist,ListBox searchalbumlist)
         {
             this.songlist = songlist;
-            this.sc_song = sc_song;
             this.artistlist = artistlist;
-            this.sc_artist = sc_artist;
             this.albumlist = albumlist;
-            this.sc_album = sc_album;
+
+            this.SongListSearch = searchsonglist;
+            this.BtnShowMore = btn_showmore;
+            this.ArtistListSearch = searchartistlist;
+            this.AlbumListSearch = searchalbumlist;
         }
 
         // This is a default value to prevent errors, and for filtering
-        Library lib_home = default;
+        // maybe dont set it again if already set (Issue #2)
+        // 4 October 2025 - This is i can do to optimize it a bit, the memory usage is still high,but it will low eventually - #Issue #2
+        Library lib_home = null;
+        Library _allSearchResults = new();
+        private int _pageSize = 5;
+        private int _currentPage = 1;
 
         public async Task LoadHome()
         {
-            lib_home = await ApiLibrary.GetHomeLibrary();
-            songlist.ItemsSource = lib_home.Songs.Take(5);
-            artistlist.ItemsSource = lib_home.Artists.Take(3);
-            albumlist.ItemsSource = lib_home.Albums.Take(4);
+            lib_home ??= await ApiLibrary.GetHomeLibrary();
+            // It's better to avoid forcing GC.Collect() for production code unless absolutely necessary.
+            songlist.ItemsSource = lib_home.Songs.Take(5).ToList();
+            artistlist.ItemsSource = lib_home.Artists.Take(3).ToList();
+            albumlist.ItemsSource = lib_home.Albums.Take(5).ToList();
         }
-        // Maybe optimize this later
         public async Task LoadHomeMax()
         {
-            lib_home = await ApiLibrary.GetHomeLibrary();
-            songlist.ItemsSource = lib_home.Songs;
-            artistlist.ItemsSource = lib_home.Artists;
-            albumlist.ItemsSource = lib_home.Albums;
+            lib_home ??= await ApiLibrary.GetHomeLibrary();
+            songlist.ItemsSource = lib_home.Songs.ToList();
+            artistlist.ItemsSource = lib_home.Artists.ToList();
+            albumlist.ItemsSource = lib_home.Albums.ToList();
+        }
+
+        public async Task SearchAsync(string query)
+        {
+            _allSearchResults = await ApiLibrary.Search(query);
+            _currentPage = 1;
+            SongListSearch.ItemsSource = _allSearchResults.Songs.Take(_pageSize).ToList();
+            ArtistListSearch.ItemsSource = _allSearchResults.Artists.ToList();
+            AlbumListSearch.ItemsSource = _allSearchResults.Albums.ToList();
+            BtnShowMore.Visibility = _allSearchResults.Songs.Count > _pageSize
+                                     ? Visibility.Visible
+                                     : Visibility.Collapsed;
+        }
+        public void BtnShowMore_Click(object sender, RoutedEventArgs e)
+        {
+            _currentPage++;
+
+            var more = _allSearchResults.Songs
+                .Skip((_currentPage - 1) * _pageSize)
+                .Take(_pageSize)
+                .ToList();
+
+            var current = SongListSearch.ItemsSource as List<HomeSong> ?? new();
+            current.AddRange(more);
+
+            SongListSearch.ItemsSource = null;      // refresh binding
+            SongListSearch.ItemsSource = current;
+
+            if (_currentPage * _pageSize >= _allSearchResults.Songs.Count)
+                BtnShowMore.Visibility = Visibility.Collapsed;
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Floatly
         {
             InitializeComponent();
 
-            sl = new ServerLibrary(SongList_Home,SCV_Home,ArtistList,SCV_HomeArtist,AlbumList,SCV_HomeAlbum);
+            sl = new ServerLibrary(List_Song,List_Artist,List_Album,List_SongSearch,BtnShowMore,List_ArtistSearch,List_AlbumSearch);
             sl.LoadHome();
             UpdateGreeting();
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
@@ -185,6 +185,10 @@ namespace Floatly
                 await sl.LoadHomeMax();
             }
         }
+        private async void BtnShowMore_Click(object sender, RoutedEventArgs e)
+        {
+            sl.BtnShowMore_Click(sender, e);
+        }
         private void Close_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
@@ -282,6 +286,11 @@ namespace Floatly
                 Style_ChangeButtonBackground(NavHome);
                 PanelHome.Visibility = Visibility.Collapsed;
                 PanelOnline.Visibility = Visibility.Visible;
+                // Load search panel
+                if(List_ArtistSearch.ItemsSource == null && List_AlbumSearch.ItemsSource == null && List_SongSearch.ItemsSource == null)
+                {
+                    sl.SearchAsync(Tbx_Search.Text);
+                }
             }
             else if(btn.Name == "NavOffline")
             {
@@ -417,5 +426,9 @@ namespace Floatly
             NotificationPanel.BeginAnimation(Border.MarginProperty, slideIn);
         }
 
+        private void Btn_Search_Click(object sender, RoutedEventArgs e)
+        {
+            sl.SearchAsync(Tbx_Search.Text);
+        }
     }
 }

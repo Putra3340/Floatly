@@ -42,9 +42,13 @@ namespace Floatly.Utils
 
         public static async Task<bool> LoadLoginData() // For autologin
         {
+            if (!File.Exists(Path.Combine(GetUserDataPath(), "auth.dat")))
+                return false;
             string a = File.ReadAllText(Path.Combine(GetUserDataPath(), "auth.dat"));
             using var doc = JsonDocument.Parse(a);
             string token = doc.RootElement.GetProperty("token").GetString();
+            if (token == null)
+                return false;
             return await ApiAuth.AutoLogin(token);
         }
     }
