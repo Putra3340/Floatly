@@ -24,18 +24,16 @@ namespace Floatly.Utils
         private ItemsControl artistlist;
         private ItemsControl albumlist;
         private ListBox SongListSearch;
-        private Button BtnShowMore;
         private ListBox ArtistListSearch;
         private ListBox AlbumListSearch;
 
-        public ServerLibrary(ItemsControl songlist,ItemsControl artistlist,ItemsControl albumlist,ListBox searchsonglist,Button btn_showmore,ListBox searchartistlist,ListBox searchalbumlist)
+        public ServerLibrary(ItemsControl songlist,ItemsControl artistlist,ItemsControl albumlist,ListBox searchsonglist,ListBox searchartistlist,ListBox searchalbumlist)
         {
             this.songlist = songlist;
             this.artistlist = artistlist;
             this.albumlist = albumlist;
 
             this.SongListSearch = searchsonglist;
-            this.BtnShowMore = btn_showmore;
             this.ArtistListSearch = searchartistlist;
             this.AlbumListSearch = searchalbumlist;
         }
@@ -55,6 +53,9 @@ namespace Floatly.Utils
             songlist.ItemsSource = lib_home.Songs.Take(5).ToList();
             artistlist.ItemsSource = lib_home.Artists.Take(3).ToList();
             albumlist.ItemsSource = lib_home.Albums.Take(5).ToList();
+            songlist.UpdateLayout();
+            artistlist.UpdateLayout();
+            albumlist.UpdateLayout();
         }
         public async Task LoadHomeMax()
         {
@@ -62,36 +63,20 @@ namespace Floatly.Utils
             songlist.ItemsSource = lib_home.Songs.ToList();
             artistlist.ItemsSource = lib_home.Artists.ToList();
             albumlist.ItemsSource = lib_home.Albums.ToList();
+            songlist.UpdateLayout();
+            artistlist.UpdateLayout();
+            albumlist.UpdateLayout();
         }
 
         public async Task SearchAsync(string query)
         {
             _allSearchResults = await ApiLibrary.Search(query);
-            _currentPage = 1;
-            SongListSearch.ItemsSource = _allSearchResults.Songs.Take(_pageSize).ToList();
+            SongListSearch.ItemsSource = _allSearchResults.Songs.Take(20).ToList();
             ArtistListSearch.ItemsSource = _allSearchResults.Artists.ToList();
             AlbumListSearch.ItemsSource = _allSearchResults.Albums.ToList();
-            BtnShowMore.Visibility = _allSearchResults.Songs.Count > _pageSize
-                                     ? Visibility.Visible
-                                     : Visibility.Collapsed;
-        }
-        public void BtnShowMore_Click(object sender, RoutedEventArgs e)
-        {
-            _currentPage++;
-
-            var more = _allSearchResults.Songs
-                .Skip((_currentPage - 1) * _pageSize)
-                .Take(_pageSize)
-                .ToList();
-
-            var current = SongListSearch.ItemsSource as List<HomeSong> ?? new();
-            current.AddRange(more);
-
-            SongListSearch.ItemsSource = null;      // refresh binding
-            SongListSearch.ItemsSource = current;
-
-            if (_currentPage * _pageSize >= _allSearchResults.Songs.Count)
-                BtnShowMore.Visibility = Visibility.Collapsed;
+            SongListSearch.UpdateLayout();
+            ArtistListSearch.UpdateLayout();
+            AlbumListSearch.UpdateLayout();
         }
     }
 }

@@ -40,7 +40,7 @@ namespace Floatly
         {
             InitializeComponent();
 
-            sl = new ServerLibrary(List_Song,List_Artist,List_Album,List_SongSearch,BtnShowMore,List_ArtistSearch,List_AlbumSearch);
+            sl = new ServerLibrary(List_Song,List_Artist,List_Album,List_SongSearch,List_ArtistSearch,List_AlbumSearch);
             sl.LoadHome();
             UpdateGreeting();
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
@@ -89,19 +89,37 @@ namespace Floatly
             StartSlider(); // Put this here so we dont create new useless threads
         }
 
-        private async void SongButton_Click(object sender, RoutedEventArgs e)
+        private async void SongButton_Click(object sender, MouseButtonEventArgs e)
         {
-            if (sender is Button btnonline && btnonline.DataContext is Floatly.Models.ApiModel.HomeSong onlinesong)
+            if(e.ChangedButton == MouseButton.Right)
             {
-                plc.Title = onlinesong.Title;
-                plc.Artist = onlinesong.Artist;
-                plc.Banner = onlinesong.Banner;
-                MusicPlayer.Play(onlinesong.Music, onlinesong.Lyrics);
-                Api.Api.Play(onlinesong.Id);
-                var artist = await Api.ApiLibrary.GetArtist(onlinesong.ArtistId);
-                plc.ArtistBanner = artist.CoverImagePath;
-                plc.ArtistBio = artist.Bio.Substring(0,100) + "...";
+                // show context menu
+                if (sender is Button btn && btn.DataContext is Floatly.Models.ApiModel.HomeSong song)
+                {
+                    //ContextMenu cm = this.FindResource("SongContextMenu") as ContextMenu;
+                    //cm.DataContext = song; // set the context menu data context to the song
+                    //cm.PlacementTarget = btn; // set the placement target to the button
+                    //cm.IsOpen = true;
+
+                    Notification.ShowNotification("Right-Click Context");
+                }
+                return;
             }
+            else if(e.ChangedButton == MouseButton.Left)
+            {
+                if (sender is Button btnonline && btnonline.DataContext is Floatly.Models.ApiModel.HomeSong onlinesong)
+                {
+                    plc.Title = onlinesong.Title;
+                    plc.Artist = onlinesong.Artist;
+                    plc.Banner = onlinesong.Banner;
+                    MusicPlayer.Play(onlinesong.Music, onlinesong.Lyrics);
+                    Api.Api.Play(onlinesong.Id);
+                    var artist = await Api.ApiLibrary.GetArtist(onlinesong.ArtistId);
+                    plc.ArtistBanner = artist.CoverImagePath;
+                    plc.ArtistBio = artist.Bio.Substring(0, 100) + "...";
+                }
+            }
+            
         }
         private void UpdateGreeting()
         {
@@ -184,10 +202,13 @@ namespace Floatly
             {
                 await sl.LoadHomeMax();
             }
-        }
-        private async void BtnShowMore_Click(object sender, RoutedEventArgs e)
-        {
-            sl.BtnShowMore_Click(sender, e);
+            // i think its the best we update scrollviewer when maximize/restore
+            List_Song.UpdateLayout();
+            List_Artist.UpdateLayout();
+            List_Album.UpdateLayout();
+            List_SongSearch.UpdateLayout(); 
+            List_ArtistSearch.UpdateLayout();
+            List_AlbumSearch.UpdateLayout();
         }
         private void Close_Click(object sender, RoutedEventArgs e)
         {
