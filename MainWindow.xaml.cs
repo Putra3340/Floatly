@@ -96,10 +96,10 @@ namespace Floatly
                 // show context menu
                 if (sender is Button btn && btn.DataContext is Floatly.Models.ApiModel.HomeSong song)
                 {
-                    //ContextMenu cm = this.FindResource("SongContextMenu") as ContextMenu;
-                    //cm.DataContext = song; // set the context menu data context to the song
-                    //cm.PlacementTarget = btn; // set the placement target to the button
-                    //cm.IsOpen = true;
+                    ContextMenu cm = this.FindResource("SongContextMenu") as ContextMenu;
+                    cm.DataContext = song; // set the context menu data context to the song
+                    cm.PlacementTarget = btn; // set the placement target to the button
+                    cm.IsOpen = true;
 
                     Notification.ShowNotification("Right-Click Context");
                 }

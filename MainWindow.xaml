@@ -8,6 +8,56 @@
         Title="Floatly" Height="720" Width="1280" Closed="Window_Closed"
         AllowsTransparency="True"
         WindowStyle="None">
+    <Window.Resources>
+        <Style TargetType="ContextMenu" x:Key="PinkContextMenu">
+            <Setter Property="Background" Value="{DynamicResource SidebarBg}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BackgroundMuted}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContextMenu">
+                        <Border 
+                Background="{TemplateBinding Background}" 
+                BorderBrush="{TemplateBinding BorderBrush}" 
+                BorderThickness="{TemplateBinding BorderThickness}">
+                            <StackPanel IsItemsHost="True" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+
+        </Style>
+
+        <Style TargetType="MenuItem">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Style.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource PrimaryText}"/>
+                    <Setter Property="Foreground" Value="{DynamicResource AccentPurpleHover}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="Separator">
+            <Setter Property="Background" Value="{DynamicResource BackgroundMuted}" />
+            <Setter Property="Height" Value="1"/>
+            <Setter Property="Margin" Value="2,4"/>
+        </Style>
+
+        <ContextMenu x:Key="SongContextMenu" Style="{StaticResource PinkContextMenu}">
+            <MenuItem Header="Play"/>
+            <MenuItem Header="Add to Playlist"/>
+            <Separator/>
+            <MenuItem Header="Delete"/>
+        </ContextMenu>
+    </Window.Resources>
 
     <Grid Background="{DynamicResource BackgroundDark}" Visibility="Visible">
         <Grid.RowDefinitions>
