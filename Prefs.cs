@@ -14,5 +14,6 @@ namespace Floatly
         public static bool OnlineMode { get; set; } = false; // online mode (use online songs)
         public static string ServerUrl { get; set; } = "https://localhost:7156"; // server url for online mode localhost for development
         public static string TempDirectory { get; set; } = System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data" ,"Temp"); // temporary directory for downloaded songs
+        public static string DownloadDirectory { get; set; } = System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data" ,"Downloads");
     }
 }

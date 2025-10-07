@@ -9,7 +9,7 @@
         AllowsTransparency="True"
         WindowStyle="None">
     <Window.Resources>
-        <Style TargetType="ContextMenu" x:Key="PinkContextMenu">
+        <Style TargetType="ContextMenu" x:Key="DarkContextMenu">
             <Setter Property="Background" Value="{DynamicResource SidebarBg}"/>
             <Setter Property="BorderBrush" Value="{DynamicResource BackgroundMuted}"/>
             <Setter Property="BorderThickness" Value="2"/>
@@ -31,19 +31,20 @@
 
         </Style>
 
-        <Style TargetType="MenuItem">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Padding" Value="20"/>
+        <Style TargetType="MenuItem" x:Key="DarkMenuItem">
+            <Setter Property="Background" Value="{DynamicResource BackgroundMuted}"/>
+            <Setter Property="Padding" Value="1"/>
             <Setter Property="Margin" Value="2"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
             <Setter Property="BorderThickness" Value="0"/>
+
             <Style.Triggers>
                 <Trigger Property="IsHighlighted" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource PrimaryText}"/>
-                    <Setter Property="Foreground" Value="{DynamicResource AccentPurpleHover}"/>
+                    <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
                 </Trigger>
             </Style.Triggers>
+            
         </Style>
         <Style TargetType="Separator">
             <Setter Property="Background" Value="{DynamicResource BackgroundMuted}" />
@@ -51,11 +52,19 @@
             <Setter Property="Margin" Value="2,4"/>
         </Style>
 
-        <ContextMenu x:Key="SongContextMenu" Style="{StaticResource PinkContextMenu}">
-            <MenuItem Header="Play"/>
-            <MenuItem Header="Add to Playlist"/>
-            <Separator/>
-            <MenuItem Header="Delete"/>
+        <ContextMenu x:Key="SongContextMenu" Style="{DynamicResource DarkContextMenu}">
+            <MenuItem Header="Play" Click="MenuItem_Click"/>
+            <MenuItem Header="Add to Playlist" Click="MenuItem_Click">
+                <MenuItem Header="Favorites" Style="{DynamicResource DarkMenuItem}"/>
+                <MenuItem Header="Chill Vibes" Style="{DynamicResource DarkMenuItem}"/>
+                <MenuItem Header="Workout Mix" Style="{DynamicResource DarkMenuItem}"/>
+                <Separator/>
+                <MenuItem Header="Create New Playlist..." Style="{DynamicResource DarkMenuItem}"/>
+            </MenuItem>
+            <MenuItem Header="Download Song" Click="MenuItem_Click"/>
+        </ContextMenu>
+        <ContextMenu x:Key="SongOfflineContextMenu" Style="{DynamicResource DarkContextMenu}">
+            <MenuItem Header="Delete Song" Click="MenuItem_Click"/>
         </ContextMenu>
     </Window.Resources>
 
@@ -259,7 +268,7 @@
                                 <TextBlock Text="Search" Foreground="{DynamicResource PrimaryText}" FontSize="14" Grid.Column="1" VerticalAlignment="Center" Margin="0,10,10,10" IsHitTestVisible="False" FontFamily="/Assets/Fonts/Geist/#Geist"/>
                             </Grid>
                         </StackPanel>
-                        <Button Content="" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Row="3"  Margin="0,8,0,8">
+                        <Button x:Name="NavOffline" Content="" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Nav_Click" Grid.Row="3"  Margin="0,8,0,8">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Border CornerRadius="10" Background="{TemplateBinding Background}">
@@ -1351,6 +1360,281 @@ VerticalAlignment="Center"/>
                             </Canvas>
                         </Viewbox>
                     </Button>
+                </Grid>
+
+
+            </Grid>
+            <Grid Grid.Column="1" Grid.Row="1" Background="{DynamicResource BackgroundDark}" x:Name="PanelDownloaded" Visibility="Collapsed">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="50"/>
+                    <!-- Greeting -->
+                    <RowDefinition Height="*"/>
+                    <!-- Scrollable content -->
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto" MinWidth="100"/>
+                    </Grid.ColumnDefinitions>
+                    <Border Background="{DynamicResource BackgroundDark}" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <ListBox x:Name="List_DownloadedSong"
+                 VirtualizingStackPanel.IsVirtualizing="True"
+                 VirtualizingStackPanel.VirtualizationMode="Recycling"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 BorderThickness="0"
+                 Background="Transparent">
+                                <ListBox.Resources>
+                                    <!-- Custom ScrollBar style -->
+                                    <Style TargetType="ScrollBar">
+                                        <Setter Property="Width" Value="3"/>
+                                        <Setter Property="Background" Value="#222222"/>
+                                        <Setter Property="Foreground" Value="{DynamicResource AccentPurple}"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ScrollBar">
+                                                    <Grid Background="{TemplateBinding Background}">
+                                                        <Track x:Name="PART_Track"
+                                   IsDirectionReversed="True"
+                                   Focusable="False">
+                                                            <Track.DecreaseRepeatButton>
+                                                                <RepeatButton Command="ScrollBar.LineUpCommand"
+                                                  Opacity="0" IsTabStop="False"/>
+                                                            </Track.DecreaseRepeatButton>
+
+                                                            <Track.Thumb>
+                                                                <Thumb Background="{TemplateBinding Foreground}">
+                                                                    <Thumb.Template>
+                                                                        <ControlTemplate TargetType="Thumb">
+                                                                            <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="4"
+                                                        Width="8"
+                                                        SnapsToDevicePixels="True"/>
+                                                                        </ControlTemplate>
+                                                                    </Thumb.Template>
+                                                                </Thumb>
+                                                            </Track.Thumb>
+
+                                                            <Track.IncreaseRepeatButton>
+                                                                <RepeatButton Command="ScrollBar.LineDownCommand"
+                                                  Opacity="0" IsTabStop="False"/>
+                                                            </Track.IncreaseRepeatButton>
+                                                        </Track>
+                                                    </Grid>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+
+                                        <!-- hover glow for thumb -->
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Foreground" Value="#AA7FFF"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListBox.Resources>
+                                <!-- Remove selection & focus border -->
+                                <ListBox.ItemContainerStyle>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                        <Setter Property="Padding" Value="0"/>
+                                        <Setter Property="Margin" Value="0"/>
+                                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="ListBoxItem">
+                                                    <ContentPresenter/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </ListBox.ItemContainerStyle>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button PreviewMouseDown="SongButton_Click" Margin="5" HorizontalContentAlignment="Stretch" IsHitTestVisible="True">
+                                            <Grid IsHitTestVisible="False">
+                                                <Grid.ColumnDefinitions>
+
+                                                    <ColumnDefinition Width="20"/>
+                                                    <!-- Id -->
+                                                    <ColumnDefinition Width="40"/>
+                                                    <!-- Cover -->
+                                                    <ColumnDefinition Width="*"/>
+                                                    <!-- Title + Artist -->
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <!-- Plays + Duration -->
+                                                </Grid.ColumnDefinitions>
+                                                <Rectangle MinHeight="40" MinWidth="40" RadiusX="5" RadiusY="5" Stretch="UniformToFill"  VerticalAlignment="Center" IsHitTestVisible="False" Grid.Column="1" HorizontalAlignment="Center">
+                                                    <!-- or desired width -->
+                                                    <Rectangle.Fill>
+                                                        <ImageBrush Stretch="Fill" ImageSource="{Binding Cover}" />
+                                                    </Rectangle.Fill>
+                                                </Rectangle>
+                                                <StackPanel Grid.Column="2" Orientation="Vertical" VerticalAlignment="Center" Margin="10" MinWidth="3000">
+                                                    <TextBlock Text="{Binding Title}" 
+    FontWeight="SemiBold"
+    FontSize="18"
+    Foreground="{DynamicResource PrimaryText}"/>
+                                                    <TextBlock Text="{Binding Artist}" 
+    FontSize="14"
+    Foreground="{DynamicResource SecondaryText}"/>
+                                                </StackPanel>
+
+                                                <!-- Plays + Duration aligned right -->
+                                                <Grid Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <Label Grid.Column="0"
+Content="{Binding CreatedAt}"
+                                                FontSize="14"
+Foreground="{DynamicResource SecondaryText}"
+VerticalAlignment="Center"
+Margin="0,0,10,0"/>
+                                                    <!-- spacing -->
+
+                                                    <Label Grid.Column="1"
+Content="{Binding SongLength}"
+Foreground="{DynamicResource SecondaryText}"
+                                                 FontSize="14"
+VerticalAlignment="Center"/>
+                                                </Grid>
+
+                                            </Grid>
+                                            <Button.Template>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}" CornerRadius="10">
+                                                        <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                </ControlTemplate>
+                                            </Button.Template>
+                                            <Button.Style>
+                                                <Style TargetType="Button">
+                                                    <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                    </Border>
+                    <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                    </Grid>
+                </Grid>
+                <TextBlock Text="Search" Margin="20,10,0,0" Foreground="{DynamicResource PrimaryText}" FontSize="36" VerticalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Bold"/>
+                <Grid Grid.Row="1" Margin="20,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.Resources>
+                        <!-- Modern TextBox style with placeholder (WPF) -->
+                        <Style x:Key="SearchTextBoxStyle" TargetType="TextBox">
+                            <Setter Property="Background" Value="{DynamicResource Tranparent}"/>
+                            <Setter Property="BorderBrush" Value="#444"/>
+                            <Setter Property="BorderThickness" Value="1"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
+                            <Setter Property="Padding" Value="10,0"/>
+                            <Setter Property="Height" Value="36"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TextBox">
+                                        <Border x:Name="Bd"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="8"
+                    SnapsToDevicePixels="True">
+                                            <Grid>
+                                                <!-- Watermark -->
+                                                <TextBlock x:Name="Watermark"
+                           Text="Search..."
+                           Foreground="#888"
+                           VerticalAlignment="Center"
+                           Margin="12,0"
+                           IsHitTestVisible="False"
+                           Visibility="Collapsed"/>
+                                                <!-- Required host for TextBox editable area -->
+                                                <ScrollViewer x:Name="PART_ContentHost"
+                              Margin="0"
+                              VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+
+                                        <ControlTemplate.Triggers>
+                                            <!-- show watermark when Text is empty or null -->
+                                            <Trigger Property="Text" Value="">
+                                                <Setter TargetName="Watermark" Property="Visibility" Value="Visible"/>
+                                            </Trigger>
+                                            <Trigger Property="Text" Value="{x:Null}">
+                                                <Setter TargetName="Watermark" Property="Visibility" Value="Visible"/>
+                                            </Trigger>
+
+                                            <!-- focus effect -->
+                                            <Trigger Property="IsKeyboardFocused" Value="True">
+                                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentPurple}"/>
+                                            </Trigger>
+
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="Bd" Property="Opacity" Value="0.6"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+
+                        <!-- Rounded button template -->
+                        <Style x:Key="SearchButtonStyle" TargetType="Button">
+                            <Setter Property="Width" Value="40"/>
+                            <Setter Property="Height" Value="36"/>
+                            <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border x:Name="BtnBd" Background="{TemplateBinding Background}" CornerRadius="8" SnapsToDevicePixels="True">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="BtnBd" Property="Background" Value="#9A5CFF"/>
+                                            </Trigger>
+                                            <Trigger Property="IsPressed" Value="True">
+                                                <Setter TargetName="BtnBd" Property="Background" Value="#7B3CE6"/>
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Grid.Resources>
                 </Grid>
 
 

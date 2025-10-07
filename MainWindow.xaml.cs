@@ -1,5 +1,6 @@
 ﻿using Floatly.Api;
 using Floatly.Models.ApiModel;
+using Floatly.Models.Database;
 using Floatly.Models.Form;
 using Floatly.Utils;
 using StringExt;
@@ -33,6 +34,8 @@ namespace Floatly
         ConfigurationWindow cw = null; // just one instance of ConfigurationWindow
         ServerLibrary sl = null; // make just one instance of ServerLibrary (i didnt initialize first because the component didnt initialized yet)
         PlayerCard plc = new();
+        FloatlyClientContext db = new(); // database context
+
         DispatcherTimer timer = new DispatcherTimer(); // for slider
         bool isDragging = false; // dragging slider
         public static TextBlock Window_Title = new(); // default title
@@ -40,7 +43,7 @@ namespace Floatly
         {
             InitializeComponent();
 
-            sl = new ServerLibrary(List_Song,List_Artist,List_Album,List_SongSearch,List_ArtistSearch,List_AlbumSearch);
+            sl = new ServerLibrary(List_Song, List_Artist, List_Album, List_SongSearch, List_ArtistSearch, List_AlbumSearch);
             sl.LoadHome();
             UpdateGreeting();
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
@@ -91,7 +94,7 @@ namespace Floatly
 
         private async void SongButton_Click(object sender, MouseButtonEventArgs e)
         {
-            if(e.ChangedButton == MouseButton.Right)
+            if (e.ChangedButton == MouseButton.Right)
             {
                 // show context menu
                 if (sender is Button btn && btn.DataContext is Floatly.Models.ApiModel.HomeSong song)
@@ -100,12 +103,17 @@ namespace Floatly
                     cm.DataContext = song; // set the context menu data context to the song
                     cm.PlacementTarget = btn; // set the placement target to the button
                     cm.IsOpen = true;
-
-                    Notification.ShowNotification("Right-Click Context");
+                }
+                else if (sender is Button btnn && btnn.DataContext is DownloadedSong offlinesong)
+                {
+                    ContextMenu cm = this.FindResource("SongOfflineContextMenu") as ContextMenu;
+                    cm.DataContext = offlinesong; // set the context menu data context to the song
+                    cm.PlacementTarget = btnn; // set the placement target to the button
+                    cm.IsOpen = true;
                 }
                 return;
             }
-            else if(e.ChangedButton == MouseButton.Left)
+            else if (e.ChangedButton == MouseButton.Left)
             {
                 if (sender is Button btnonline && btnonline.DataContext is Floatly.Models.ApiModel.HomeSong onlinesong)
                 {
@@ -117,9 +125,21 @@ namespace Floatly
                     var artist = await Api.ApiLibrary.GetArtist(onlinesong.ArtistId);
                     plc.ArtistBanner = artist.CoverImagePath;
                     plc.ArtistBio = artist.Bio.Substring(0, 100) + "...";
+                    return;
+                }
+                else if (sender is Button btnoffline && btnoffline.DataContext is DownloadedSong offlinesong) // play on offline
+                {
+                    plc.Title = offlinesong.Title;
+                    plc.Artist = offlinesong.Artist;
+                    plc.Banner = offlinesong.Banner;
+                    MusicPlayer.Play(offlinesong.Music, offlinesong.Lyrics);
+                    Api.Api.Play(offlinesong.Id);
+                    plc.ArtistBanner = offlinesong.ArtistCover;
+                    plc.ArtistBio = offlinesong.ArtistBio.Substring(0, 100) + "...";
+                    return;
                 }
             }
-            
+
         }
         private void UpdateGreeting()
         {
@@ -143,7 +163,7 @@ namespace Floatly
         }
         private void Label_Debug_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            
+
         }
         private void OnLyricsChanged(object sender, string newLyrics)
         {
@@ -194,7 +214,7 @@ namespace Floatly
         private async void Maximize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : (WindowState.Maximized);
-            if(WindowState == WindowState.Normal)
+            if (WindowState == WindowState.Normal)
             {
                 await sl.LoadHome();
             }
@@ -206,7 +226,7 @@ namespace Floatly
             List_Song.UpdateLayout();
             List_Artist.UpdateLayout();
             List_Album.UpdateLayout();
-            List_SongSearch.UpdateLayout(); 
+            List_SongSearch.UpdateLayout();
             List_ArtistSearch.UpdateLayout();
             List_AlbumSearch.UpdateLayout();
         }
@@ -286,53 +306,80 @@ namespace Floatly
             }
 
         }
-
+        Button lastnavbtn = null; // we use this to make navigate is dynamic
         private void Nav_Click(object sender, RoutedEventArgs e) // put it on one single function to reduce redundancy  
         {
+            // always init other panel to collapsed first and dont put any data loading here
             var btn = sender as Button;
-            if(btn == null || btn.Name.IsNullOrEmpty())
+            if (btn == null || btn.Name.IsNullOrEmpty())
             {
                 MessageBox.Show("Nav Error, btn has no name");
             }
-            if(btn.Name == "NavHome")
+            if (btn.Name == "NavHome")
             {
                 Style_ChangeButtonBackground(btn, "AccentIndigo"); // highlight this button
-                Style_ChangeButtonBackground(NavSearch); // clear other button
+                Style_ChangeButtonBackground(lastnavbtn); // clear previous button
+
                 PanelHome.Visibility = Visibility.Visible;
                 PanelOnline.Visibility = Visibility.Collapsed;
+                PanelDownloaded.Visibility = Visibility.Collapsed;
+
+                lastnavbtn = btn; // set last button to this button
             }
-            else if(btn.Name == "NavSearch")
+            else if (btn.Name == "NavSearch")
             {
-                Style_ChangeButtonBackground(btn, "AccentIndigo");
-                Style_ChangeButtonBackground(NavHome);
+                Style_ChangeButtonBackground(btn, "AccentIndigo"); // highlight this button
+                Style_ChangeButtonBackground(lastnavbtn); // clear previous button
+
                 PanelHome.Visibility = Visibility.Collapsed;
                 PanelOnline.Visibility = Visibility.Visible;
+                PanelDownloaded.Visibility = Visibility.Collapsed;
+
+                lastnavbtn = btn; // set last button to this button
                 // Load search panel
-                if(List_ArtistSearch.ItemsSource == null && List_AlbumSearch.ItemsSource == null && List_SongSearch.ItemsSource == null)
+                if (List_ArtistSearch.ItemsSource == null && List_AlbumSearch.ItemsSource == null && List_SongSearch.ItemsSource == null)
                 {
                     sl.SearchAsync(Tbx_Search.Text);
                 }
             }
-            else if(btn.Name == "NavOffline")
+            else if (btn.Name == "NavOffline")
+            {
+                Style_ChangeButtonBackground(btn, "AccentIndigo"); // highlight this button
+                Style_ChangeButtonBackground(lastnavbtn); // clear previous button
+
+                PanelHome.Visibility = Visibility.Collapsed;
+                PanelOnline.Visibility = Visibility.Collapsed;
+                PanelDownloaded.Visibility = Visibility.Visible;
+
+                lastnavbtn = btn; // set last button to this button
+
+                // Load downloaded panel
+                if (List_DownloadedSong.ItemsSource == null)
+                {
+                    var list = new ObservableCollection<DownloadedSong>(db.DownloadedSong.OrderByDescending(d => d.Id).ToList());
+                    List_DownloadedSong.ItemsSource = list;
+                }
+            }
+            else if (btn.Name == "NavPlaylist")
             {
 
-            }else if(btn.Name == "NavPlaylist")
+            }
+            else if (btn.Name == "NavSettings")
             {
 
-            }else if(btn.Name == "NavSettings")
+            }
+            else if (btn.Name == "NavDebug")
             {
 
-            }else if(btn.Name == "NavDebug")
-            {
-
-            }else if(btn.Name == "NavExit")
+            }
+            else if (btn.Name == "NavExit")
             {
 
             }
 
         }
 
-        private void Style_ChangeButtonBackground(Button btn,string res = "Tranparent")
+        private void Style_ChangeButtonBackground(Button btn, string res = "Tranparent")
         {
             if (btn == null)
                 return;
@@ -411,7 +458,7 @@ namespace Floatly
         {
             await Notification.ShowNotification("anjay");
         }
-        private void ShowNotification(object sender,string message)
+        private void ShowNotification(object sender, string message)
         {
             Notification.IsBusy = true;
             NotificationText.Text = message;
@@ -450,6 +497,148 @@ namespace Floatly
         private void Btn_Search_Click(object sender, RoutedEventArgs e)
         {
             sl.SearchAsync(Tbx_Search.Text);
+        }
+
+        private async void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem mi && mi.DataContext is Floatly.Models.ApiModel.HomeSong song)
+            {
+                if (mi.Header.ToString() == "Add to Queue")
+                {
+                    var artist = await Api.ApiLibrary.GetArtist(song.ArtistId);
+                    var queue = new Queue
+                    {
+                        Title = song.Title,
+                        Artist = song.Artist,
+                        Music = song.Music,
+                        Lyrics = song.Lyrics,
+                        Cover = song.Cover,
+                        Banner = song.Banner,
+                        SongLength = song.SongLength,
+                        ArtistBio = artist.Bio,
+                        ArtistCover = artist.CoverImagePath,
+                        CreatedAt = DateTime.Now,
+                    };
+                    await db.Queue.AddAsync(queue);
+                    await db.SaveChangesAsync();
+                    Notification.ShowNotification($"{song.Title} is added to queue");
+                }
+                else if (mi.Header.ToString() == "Play Next")
+                {
+                    var artist = await Api.ApiLibrary.GetArtist(song.ArtistId);
+                    var queue = new Queue
+                    {
+                        Title = song.Title,
+                        Artist = song.Artist,
+                        Music = song.Music,
+                        Lyrics = song.Lyrics,
+                        Cover = song.Cover,
+                        Banner = song.Banner,
+                        SongLength = song.SongLength,
+                        ArtistBio = artist.Bio,
+                        ArtistCover = artist.CoverImagePath,
+                        CreatedAt = DateTime.Now,
+                    };
+                    await db.Queue.AddAsync(queue);
+                    await db.SaveChangesAsync();
+                    // move to first position
+                    var allQueue = db.Queue.OrderBy(q => q.Id).ToList();
+                    if (allQueue.Count > 1)
+                    {
+                        db.Queue.Remove(queue);
+                        await db.SaveChangesAsync();
+                        db.Queue.Add(queue); // add again to make it last
+                        await db.SaveChangesAsync();
+                    }
+                    Notification.ShowNotification($"{song.Title} will be played next");
+                }
+                else if (mi.Header.ToString() == "Download Song")
+                {
+                    var downloadFolder = Prefs.DownloadDirectory;
+                    if (!Directory.Exists(downloadFolder))
+                    {
+                        Directory.CreateDirectory(downloadFolder);
+                    }
+                    var httpClient = new HttpClient();
+                    var musicData = await httpClient.GetByteArrayAsync(song.Music);
+                    var filePath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(musicData)}.mp3");
+                    await File.WriteAllBytesAsync(filePath, musicData);
+
+                    var lyricdata = await httpClient.GetByteArrayAsync(song.Lyrics);
+                    var lyricPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(lyricdata)}.srt");
+                    await File.WriteAllBytesAsync(lyricPath, lyricdata);
+
+                    var coverData = await httpClient.GetByteArrayAsync(song.Cover);
+                    var coverPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(coverData)}.png");
+                    await File.WriteAllBytesAsync(coverPath, coverData);
+
+                    var bannerData = await httpClient.GetByteArrayAsync(song.Banner);
+                    var bannerPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(bannerData)}_banner.png");
+                    await File.WriteAllBytesAsync(bannerPath, bannerData);
+
+                    var artist = await Api.ApiLibrary.GetArtist(song.ArtistId);
+                    var artistCoverData = await httpClient.GetByteArrayAsync(artist.CoverImagePath);
+                    var artistCoverPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(artistCoverData)}_artistcover.png");
+                    await File.WriteAllBytesAsync(artistCoverPath, artistCoverData);
+
+                    var Downloaded = new DownloadedSong
+                    {
+                        Artist = song.Artist,
+                        ArtistId = song.ArtistId,
+                        ArtistBio = artist.Bio,
+                        ArtistCover = artistCoverPath,
+                        Title = song.Title,
+                        Music = filePath,
+                        Lyrics = lyricPath,
+                        Cover = coverPath,
+                        Banner = bannerPath,
+                        CreatedAt = DateTime.Now,
+                    };
+
+                    await db.DownloadedSong.AddAsync(Downloaded);
+                    await db.SaveChangesAsync();
+
+                    Notification.ShowNotification($"Downloaded {song.Artist} cover to {downloadFolder}");
+                }
+
+            }
+            else if (sender is MenuItem miof && miof.DataContext is DownloadedSong offlinesong)
+            {
+                if (miof.Header.ToString() == "Delete Song")
+                {
+                    var downloaded = db.DownloadedSong.Find(offlinesong.Id);
+                    if (downloaded != null)
+                    {
+                        db.DownloadedSong.Remove(downloaded);
+                        await db.SaveChangesAsync();
+                        // also delete the files
+                        try
+                        {
+                            if (File.Exists(downloaded.Music))
+                            {
+                                // TODO add if song is played then stop music first before deleting,it will make redundancy if not
+                                File.Delete(downloaded.Music);
+                            }
+                            if (File.Exists(downloaded.Lyrics))
+                                File.Delete(downloaded.Lyrics);
+                            if (File.Exists(downloaded.Cover))
+                                File.Delete(downloaded.Cover);
+                            if (File.Exists(downloaded.Banner))
+                                File.Delete(downloaded.Banner);
+                            if (File.Exists(downloaded.ArtistCover))
+                                File.Delete(downloaded.ArtistCover);
+                        }
+                        catch (Exception ex)
+                        {
+                            Notification.ShowNotification($"Error deleting files: {ex.Message}");
+                        }
+                        // refresh list
+                        var list = new ObservableCollection<DownloadedSong>(db.DownloadedSong.OrderByDescending(d => d.Id).ToList());
+                        List_DownloadedSong.ItemsSource = list;
+                        Notification.ShowNotification($"Deleted {offlinesong.Title} from downloaded songs");
+                    }
+                }
+            }
         }
     }
 }
