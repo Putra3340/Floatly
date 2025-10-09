@@ -67,10 +67,12 @@
     <None Remove="Assets\Images\icon-pause.png" />
     <None Remove="Assets\Images\icon-playlist.png" />
     <None Remove="Assets\Images\icon-prev.png" />
+    <None Remove="Assets\Images\icon-refresh.png" />
     <None Remove="Assets\Images\icon-resume.png" />
     <None Remove="Assets\Images\icon-search.png" />
     <None Remove="Assets\Images\icon-settings.png" />
     <None Remove="Assets\Images\icon-shuffle.png" />
+    <None Remove="Assets\Images\icon-user.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -141,10 +143,12 @@
     <Resource Include="Assets\Images\icon-pause.png" />
     <Resource Include="Assets\Images\icon-playlist.png" />
     <Resource Include="Assets\Images\icon-prev.png" />
+    <Resource Include="Assets\Images\icon-refresh.png" />
     <Resource Include="Assets\Images\icon-resume.png" />
     <Resource Include="Assets\Images\icon-search.png" />
     <Resource Include="Assets\Images\icon-settings.png" />
     <Resource Include="Assets\Images\icon-shuffle.png" />
+    <Resource Include="Assets\Images\icon-user.png" />
   </ItemGroup>
 
 </Project>

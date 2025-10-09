@@ -1,7 +1,9 @@
 ﻿using Floatly.Api;
 using Floatly.Models.ApiModel;
+using Floatly.Models.Database;
 using Floatly.Models.Form;
 using Floatly.Utils;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -20,14 +22,16 @@ namespace Floatly.Utils
 {
     public class ServerLibrary
     {
+        FloatlyClientContext db = new();
         private ItemsControl songlist;
         private ItemsControl artistlist;
         private ItemsControl albumlist;
         private ListBox SongListSearch;
         private ListBox ArtistListSearch;
         private ListBox AlbumListSearch;
+        private ListBox DownloadedSong;
 
-        public ServerLibrary(ItemsControl songlist,ItemsControl artistlist,ItemsControl albumlist,ListBox searchsonglist,ListBox searchartistlist,ListBox searchalbumlist)
+        public ServerLibrary(ItemsControl songlist, ItemsControl artistlist, ItemsControl albumlist, ListBox searchsonglist, ListBox searchartistlist, ListBox searchalbumlist, ListBox downloadedsong)
         {
             this.songlist = songlist;
             this.artistlist = artistlist;
@@ -36,15 +40,16 @@ namespace Floatly.Utils
             this.SongListSearch = searchsonglist;
             this.ArtistListSearch = searchartistlist;
             this.AlbumListSearch = searchalbumlist;
+
+            this.DownloadedSong = downloadedsong;
         }
 
         // This is a default value to prevent errors, and for filtering
         // maybe dont set it again if already set (Issue #2)
         // 4 October 2025 - This is i can do to optimize it a bit, the memory usage is still high,but it will low eventually - #Issue #2
+        // 9 October 2025 - I think this is not with this part of code that was heavy, i think its the form itself
         Library lib_home = null;
         Library _allSearchResults = new();
-        private int _pageSize = 5;
-        private int _currentPage = 1;
 
         public async Task LoadHome()
         {
@@ -77,6 +82,12 @@ namespace Floatly.Utils
             SongListSearch.UpdateLayout();
             ArtistListSearch.UpdateLayout();
             AlbumListSearch.UpdateLayout();
+        }
+
+        public async Task GetDownloadedSongs()
+        {
+            DownloadedSong.ItemsSource = await db.DownloadedSong.OrderDescending().ToListAsync();
+            DownloadedSong.UpdateLayout();
         }
     }
 }

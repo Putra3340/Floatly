@@ -1,4 +1,5 @@
 ﻿using Floatly.Api;
+using Floatly.Utils;
 using StringExt;
 using System;
 using System.Collections.Generic;
@@ -30,8 +31,46 @@ namespace Floatly
                     e.Cancel = true;
                 }
             };
+            _ = isOnline();
         }
+        private async Task isOnline()
+        {
+            var http = new System.Net.Http.HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(1) // shorter timeout
+            };
 
+            try
+            {
+                var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                var res = await http.GetAsync(Prefs.ServerUrl + "/api/info", cts.Token);
+
+                if (res.IsSuccessStatusCode)
+                {
+                    return;
+                }
+                else
+                {
+                    GoOffline("There is a problem with the connection, switching to offline mode.");
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                GoOffline("Connection timed out, switching to offline mode.");
+            }
+            catch
+            {
+                GoOffline("An error occurred, switching to offline mode.");
+            }
+
+            void GoOffline(string message)
+            {
+                Prefs.OnlineMode = false;
+                Prefs.LoginToken = "OFFLINEUSER";
+                Notification.ShowNotification(message);
+                this.Close();
+            }
+        }
         private void UsernameBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             UsernamePlaceholder.Visibility =

@@ -21,6 +21,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 namespace Floatly
@@ -43,14 +44,15 @@ namespace Floatly
         {
             InitializeComponent();
 
-            sl = new ServerLibrary(List_Song, List_Artist, List_Album, List_SongSearch, List_ArtistSearch, List_AlbumSearch);
-            sl.LoadHome();
+            sl = new ServerLibrary(List_Song, List_Artist, List_Album, List_SongSearch, List_ArtistSearch, List_AlbumSearch, List_DownloadedSong);
+            _ = sl.LoadHome();
             UpdateGreeting();
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
             timer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
             timer.Tick += Timer_Tick;
             Notification.NotificationRaised += ShowNotification;
-
+            Prefs.OnlineModeChanged += OfflineMode;
+            lastnavbtn = NavHome; // default to home
             this.Loaded += async (s, e) =>
             {
                 if (!await UserData.LoadLoginData()) // check if saved data still valid, if it doesnt then show login and update the autologin
@@ -81,6 +83,7 @@ namespace Floatly
                     {
                         goto auth; // re-authenticate
                     }
+                    Lbl_Username.Content = Prefs.LoginUsername == "" ? "Anonymous" : Prefs.LoginUsername;
                     this.Effect = null;
                 }
                 else
@@ -89,7 +92,7 @@ namespace Floatly
                 }
             };
             PlayerCard.DataContext = plc;
-            StartSlider(); // Put this here so we dont create new useless threads
+            timer.Start();
         }
 
         private async void SongButton_Click(object sender, MouseButtonEventArgs e)
@@ -133,7 +136,6 @@ namespace Floatly
                     plc.Artist = offlinesong.Artist;
                     plc.Banner = offlinesong.Banner;
                     MusicPlayer.Play(offlinesong.Music, offlinesong.Lyrics);
-                    Api.Api.Play(offlinesong.Id);
                     plc.ArtistBanner = offlinesong.ArtistCover;
                     plc.ArtistBio = offlinesong.ArtistBio.Substring(0, 100) + "...";
                     return;
@@ -234,23 +236,11 @@ namespace Floatly
         {
             Application.Current.Shutdown();
         }
-        private async Task StartSlider()
-        {
-            while (true)
-            {
-                if (MusicPlayer.Player.NaturalDuration.HasTimeSpan)
-                {
-                    Slider_Progress.Maximum = MusicPlayer.Player.NaturalDuration.TimeSpan.TotalSeconds;
-                    timer.Start();
-                    break;
-                }
-                await Task.Delay(100);
-            }
-        }
         private void Timer_Tick(object sender, EventArgs e)
         {
             if (!isDragging && MusicPlayer.Player.NaturalDuration.HasTimeSpan)
             {
+                Slider_Progress.Maximum = MusicPlayer.Player.NaturalDuration.TimeSpan.TotalSeconds;
                 Slider_Progress.Value = MusicPlayer.Player.Position.TotalSeconds;
                 Label_CurrentTime.Text = MusicPlayer.Player.Position.ToString(@"mm\:ss");
                 Label_TotalTime.Text = MusicPlayer.Player.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
@@ -309,6 +299,11 @@ namespace Floatly
         Button lastnavbtn = null; // we use this to make navigate is dynamic
         private void Nav_Click(object sender, RoutedEventArgs e) // put it on one single function to reduce redundancy  
         {
+            if (!Prefs.OnlineMode)
+            {
+                Notification.ShowNotification("You are in offline mode");
+                return;
+            }
             // always init other panel to collapsed first and dont put any data loading here
             var btn = sender as Button;
             if (btn == null || btn.Name.IsNullOrEmpty())
@@ -354,11 +349,7 @@ namespace Floatly
                 lastnavbtn = btn; // set last button to this button
 
                 // Load downloaded panel
-                if (List_DownloadedSong.ItemsSource == null)
-                {
-                    var list = new ObservableCollection<DownloadedSong>(db.DownloadedSong.OrderByDescending(d => d.Id).ToList());
-                    List_DownloadedSong.ItemsSource = list;
-                }
+                sl.GetDownloadedSongs();
             }
             else if (btn.Name == "NavPlaylist")
             {
@@ -440,29 +431,35 @@ namespace Floatly
 
         private void CollapsePlayerCard_Click(object sender, RoutedEventArgs e)
         {
-            Grid_Main_PlayerCard.Width = new GridLength(0);     // collapse right column
-            Grid_Main_MiddleContent.Width = new GridLength(1, GridUnitType.Star); // take all leftover space
+            if (Grid_Main_PlayerCard.Width.Value == 0) // if collapsed
+            {
+                Grid_Main_PlayerCard.Width = new GridLength(300); // restore to 300
+                Grid_Main_MiddleContent.Width = new GridLength(1, GridUnitType.Star); // take all leftover space
+                ((ImageBrush)Icon_CollapsePlayerCard.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-close.png"));
+                return;
+            }
+            else
+            {
+                Grid_Main_PlayerCard.Width = new GridLength(0); // collapse
+                Grid_Main_MiddleContent.Width = new GridLength(1, GridUnitType.Star); // take all leftover space
+                ((ImageBrush)Icon_CollapsePlayerCard.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-arrow-left.png"));
+                return;
+            }
 
-            Btn_ShowPlayerCard.Visibility = Visibility.Visible;
-            Ico_ShowPlayerCard.Visibility = Visibility.Visible;
-        }
-        private void UnCollapsePlayerCard_Click(object sender, RoutedEventArgs e)
-        {
-            Grid_Main_PlayerCard.Width = new GridLength(370);   // restore original size
-            Grid_Main_MiddleContent.Width = new GridLength(1, GridUnitType.Star); // still fills leftover
-
-            Btn_ShowPlayerCard.Visibility = Visibility.Collapsed;
-            Ico_ShowPlayerCard.Visibility = Visibility.Collapsed;
         }
         private async void DebugMenu_Click(object sender, RoutedEventArgs e)
         {
-            await Notification.ShowNotification("anjay");
+
         }
-        private void ShowNotification(object sender, string message)
+        private void ShowNotification(object sender, (string message, string resname) args)
         {
             Notification.IsBusy = true;
-            NotificationText.Text = message;
+            NotificationText.Text = args.message;
 
+            var resbrush = (Brush)FindResource(args.resname);
+            if (resbrush == null) // should never happen
+                return;
+            NotificationPanel.Background = resbrush;
             // Slide in
             var slideIn = new ThicknessAnimation
             {
@@ -638,6 +635,76 @@ namespace Floatly
                         Notification.ShowNotification($"Deleted {offlinesong.Title} from downloaded songs");
                     }
                 }
+            }
+        }
+
+        private void OfflineMode(object sender, EventArgs a)
+        {
+            Style_ChangeButtonBackground(NavOffline, "AccentIndigo"); // highlight this button
+            Style_ChangeButtonBackground(lastnavbtn); // clear previous button
+
+            PanelHome.Visibility = Visibility.Collapsed;
+            PanelOnline.Visibility = Visibility.Collapsed;
+            PanelDownloaded.Visibility = Visibility.Visible;
+
+            lastnavbtn = NavOffline; // set last button to this button
+
+            // Load downloaded panel
+            if (List_DownloadedSong.ItemsSource == null)
+            {
+                var list = new ObservableCollection<DownloadedSong>(db.DownloadedSong.OrderByDescending(d => d.Id).ToList());
+                List_DownloadedSong.ItemsSource = list;
+            }
+        }
+
+        private void RefreshDownloadedSong_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Notification.ShowNotification("Reloading Offline Library");
+            sl.GetDownloadedSongs();
+        }
+
+        private async void UserAction_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Prefs.OnlineMode)
+            {
+            // Re Auth
+            auth:
+                Prefs.LoginToken = ""; // clear token first
+                Prefs.LoginUsername = "";
+                Prefs.isRegister = false; // reset
+                LoginWindow login = new LoginWindow
+                {
+                    Owner = this, // important!
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                RegisterWindow register = new RegisterWindow
+                {
+                    Owner = this, // important!
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                this.Effect = new System.Windows.Media.Effects.BlurEffect()
+                {
+                    Radius = 20
+                };
+                login.ShowDialog();
+                if (Prefs.isRegister)
+                {
+                    register.ShowDialog();
+                }
+                if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
+                {
+                    goto auth; // re-authenticate
+                }
+                Lbl_Username.Content = Prefs.LoginUsername == "" ? "Anonymous" : Prefs.LoginUsername;
+                this.Effect = null;
+                if(Prefs.LoginToken != "")
+                {
+                    Notification.ShowNotification("Login successful");
+                }
+            }
+            else
+            {
+                Prefs.OnlineMode = true;
             }
         }
     }

@@ -33,6 +33,9 @@
         <SolidColorBrush x:Key="SecondaryText" Color="#a5b4fc"/>
         <!-- Muted / secondary text -->
         <SolidColorBrush x:Key="Tranparent" Color="Transparent"/>
+
+        <SolidColorBrush x:Key="NotificationDanger" Color="#EF4444"/>
+        
     </Application.Resources>
 
 </Application>

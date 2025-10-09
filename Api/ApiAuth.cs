@@ -33,6 +33,7 @@ namespace Floatly.Api
             using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             string token = doc.RootElement.GetProperty("token").GetString();
             Prefs.LoginToken = token;
+            Prefs.LoginUsername = email;
             MessageBox.Show("Login successful");
             UserData.SaveLoginData(await response.Content.ReadAsStringAsync());
         }
@@ -53,6 +54,7 @@ namespace Floatly.Api
             using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             string token = doc.RootElement.GetProperty("token").GetString();
             Prefs.LoginToken = token;
+            Prefs.LoginUsername = username;
             MessageBox.Show("Registration successful");
         }
         public async static Task<bool> AutoLogin(string token)

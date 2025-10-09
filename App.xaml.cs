@@ -22,6 +22,7 @@ namespace Floatly
             {
                 File.WriteAllText("dispatcher.log",
                     $"[Dispatcher]\n{DateTime.Now}\n{ex.Exception.Message}\n{ex.Exception.StackTrace}");
+                MessageBox.Show("An error occured", $"{ex.Exception.Message}", MessageBoxButton.OK, MessageBoxImage.Error);
                 ex.Handled = true; // Prevent crash if possible
             };
 
