@@ -163,10 +163,6 @@ namespace Floatly
                 Label_Greeting.Text = "Good Morning!";
             }
         }
-        private void Label_Debug_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-
-        }
         private void OnLyricsChanged(object sender, string newLyrics)
         {
             Dispatcher.Invoke(() => Label_ActiveLyrics.Text = newLyrics);
@@ -183,24 +179,6 @@ namespace Floatly
                 fw.Hide();
             }
         }
-
-        private void Label_About_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            MessageBox.Show("🎵 Floatly\r\n" +
-                "A lightweight local music player made with ❤️ in C# and XAML.\r\n\r\n" +
-                "Credits:\r\n" +
-                "Main Developer: Putra3340\r\n\r\n" +
-                "Icons & Artwork: - \r\n\r\n" +
-                "Libraries:\r\n" +
-                " - .NET WPF\r\n" +
-                " - System.Text.Json\r\n" +
-                " - MediaPlayer (WPF)\r\n\r\n" +
-                "Special Thanks:\r\n" +
-                " - Internet\r\n" +
-                " - All artists whose music brings this app to life\r\n\r\n" +
-                $"© {DateTime.Now.Year} Floatly Project. All rights reserved.");
-        }
-
         private void Window_Closed(object sender, EventArgs e)
         {
             fw.Close();
@@ -266,21 +244,6 @@ namespace Floatly
                 Label_CurrentTime.Text = TimeSpan.FromSeconds(Slider_Progress.Value).ToString(@"mm\:ss");
             }
         }
-
-        private void Label_Settings_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            cw.ShowDialog();
-        }
-
-        private void LoadOnlineLibrary_Click(object sender, MouseButtonEventArgs e)
-        {
-            //Prefs.OnlineMode = true;
-            //sl.ClearLibrary(SongList);
-            //sl.LoadLibrary(Window_Title, SongList, scrollview);
-            PanelHome.Visibility = Visibility.Collapsed;
-            PanelOnline.Visibility = Visibility.Visible;
-        }
-
         bool ispaused = false;
         private void Button_PlayPause_Click(object sender, RoutedEventArgs e)
         {
@@ -648,12 +611,12 @@ namespace Floatly
             PanelDownloaded.Visibility = Visibility.Visible;
 
             lastnavbtn = NavOffline; // set last button to this button
-
+            Lbl_Username.Content = "Offline";
+            Lbl_LogoutOnline.Content = "Go Online";
             // Load downloaded panel
             if (List_DownloadedSong.ItemsSource == null)
             {
-                var list = new ObservableCollection<DownloadedSong>(db.DownloadedSong.OrderByDescending(d => d.Id).ToList());
-                List_DownloadedSong.ItemsSource = list;
+                sl.GetDownloadedSongs();
             }
         }
 
@@ -705,6 +668,22 @@ namespace Floatly
             else
             {
                 Prefs.OnlineMode = true;
+                // goto online mode
+                Style_ChangeButtonBackground(NavHome, "AccentIndigo"); // highlight this button
+                Style_ChangeButtonBackground(lastnavbtn); // clear previous button
+
+                PanelHome.Visibility = Visibility.Visible;
+                PanelOnline.Visibility = Visibility.Collapsed;
+                PanelDownloaded.Visibility = Visibility.Collapsed;
+
+                lastnavbtn = NavHome; // set last button to this button
+                Lbl_Username.Content = "Anonymous";
+                Lbl_LogoutOnline.Content = "Logout";
+                // Load downloaded panel
+                if (List_Song.ItemsSource == null)
+                {
+                    await sl.LoadHome();
+                }
             }
         }
     }

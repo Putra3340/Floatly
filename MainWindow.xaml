@@ -94,7 +94,7 @@
                     </Border.OpacityMask>
                 </Border>
                 <Label x:Name="Lbl_Username" Content="Username6969" Foreground="{DynamicResource SecondaryText}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Grid.Column="1" FontFamily="/Assets/Fonts/Geist/#Geist"/>
-                <Label Content="Logout" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Grid.Column="2" FontFamily="/Assets/Fonts/Geist/#Geist" PreviewMouseDown="UserAction_PreviewMouseDown"/>
+                <Label x:Name="Lbl_LogoutOnline" Content="Logout" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Grid.Column="2" FontFamily="/Assets/Fonts/Geist/#Geist" PreviewMouseDown="UserAction_PreviewMouseDown"/>
                 <Label Content="Floatly" Foreground="{DynamicResource SecondaryText}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Grid.Column="3"/>
                 <!--  HOLY SHI, I CAN MANIPULATE IT LIKE INPUT PLACEHOLDER  -->
                 <!-- Minimize button at the right -->
