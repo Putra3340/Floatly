@@ -183,7 +183,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200" x:Name="Grid_Main_SideBar"/>
                 <ColumnDefinition Width="*" x:Name="Grid_Main_MiddleContent"/>
-                <ColumnDefinition Width="390" x:Name="Grid_Main_PlayerCard"/>
+                <ColumnDefinition Width="Auto" x:Name="Grid_Main_PlayerCard" MinWidth="390" MaxWidth="600"/>
             </Grid.ColumnDefinitions>
             <!-- SIDEBAR -->
             <Border Background="{DynamicResource SidebarBg}" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,0,1,0">
@@ -1606,8 +1606,9 @@ Focusable="False">
                             </Style>
                         </ScrollViewer.Resources>
                         <StackPanel Margin="25">
-                            <Rectangle Height="243" RadiusX="16" RadiusY="16" Margin="0,0,0,15" HorizontalAlignment="Center" Width="320">
-                                <!-- or desired width -->
+                            <Rectangle Height="243" RadiusX="16" RadiusY="16" Margin="0,0,0,15" HorizontalAlignment="Stretch" Width="Auto" Stretch="Fill">
+
+                            <!-- or desired width -->
                                 <Rectangle.Fill>
                                     <ImageBrush Stretch="UniformToFill" ImageSource="{Binding Banner}"/>
                                 </Rectangle.Fill>
@@ -1768,10 +1769,10 @@ Focusable="False">
                                 </Grid>
                                 <!-- Bit Buggy on Slider-->
                                 <Slider x:Name="Slider_Progress"
-        HorizontalAlignment="Center"
+        HorizontalAlignment="Stretch"
         VerticalAlignment="Center"
-        Width="320"
-                                   Height="16"
+        Height="16"
+        Margin="0,-18,0,5"
         Minimum="0"
         Maximum="100"
         ValueChanged="Slider_Progress_ValueChanged"

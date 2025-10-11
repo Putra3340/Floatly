@@ -397,6 +397,8 @@ namespace Floatly
             if (Grid_Main_PlayerCard.Width.Value == 0) // if collapsed
             {
                 Grid_Main_PlayerCard.Width = new GridLength(300); // restore to 300
+                Grid_Main_PlayerCard.MinWidth = 390f;
+                Grid_Main_PlayerCard.MaxWidth = 600f; //idk
                 Grid_Main_MiddleContent.Width = new GridLength(1, GridUnitType.Star); // take all leftover space
                 ((ImageBrush)Icon_CollapsePlayerCard.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-close.png"));
                 return;
@@ -404,6 +406,8 @@ namespace Floatly
             else
             {
                 Grid_Main_PlayerCard.Width = new GridLength(0); // collapse
+                Grid_Main_PlayerCard.MinWidth = 0f;
+                Grid_Main_PlayerCard.MaxWidth = 600f; //idk
                 Grid_Main_MiddleContent.Width = new GridLength(1, GridUnitType.Star); // take all leftover space
                 ((ImageBrush)Icon_CollapsePlayerCard.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-arrow-left.png"));
                 return;
@@ -660,13 +664,18 @@ namespace Floatly
                 }
                 Lbl_Username.Content = Prefs.LoginUsername == "" ? "Anonymous" : Prefs.LoginUsername;
                 this.Effect = null;
-                if(Prefs.LoginToken != "")
+                if (Prefs.LoginToken != "")
                 {
                     Notification.ShowNotification("Login successful");
                 }
             }
             else
             {
+                if(!await isOnline())
+                {
+                    Notification.ShowNotification("Still offline, check your connection");
+                    return;
+                }
                 Prefs.OnlineMode = true;
                 // goto online mode
                 Style_ChangeButtonBackground(NavHome, "AccentIndigo"); // highlight this button
@@ -684,6 +693,38 @@ namespace Floatly
                 {
                     await sl.LoadHome();
                 }
+            }
+        }
+        private async Task<bool> isOnline()
+        {
+            var http = new System.Net.Http.HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(1) // shorter timeout
+            };
+
+            try
+            {
+                var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                var res = await http.GetAsync(Prefs.ServerUrl + "/api/info", cts.Token);
+
+                if (res.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return false;
+
+            }
+            catch
+            {
+                return false;
+
             }
         }
     }
