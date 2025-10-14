@@ -53,17 +53,7 @@ namespace Floatly.Utils
 
         public async Task LoadHome()
         {
-            lib_home ??= await ApiLibrary.GetHomeLibrary();
             // It's better to avoid forcing GC.Collect() for production code unless absolutely necessary.
-            songlist.ItemsSource = lib_home.Songs.Take(5).ToList();
-            artistlist.ItemsSource = lib_home.Artists.Take(3).ToList();
-            albumlist.ItemsSource = lib_home.Albums.Take(5).ToList();
-            songlist.UpdateLayout();
-            artistlist.UpdateLayout();
-            albumlist.UpdateLayout();
-        }
-        public async Task LoadHomeMax()
-        {
             lib_home ??= await ApiLibrary.GetHomeLibrary();
             songlist.ItemsSource = lib_home.Songs.ToList();
             artistlist.ItemsSource = lib_home.Artists.ToList();
@@ -72,7 +62,6 @@ namespace Floatly.Utils
             artistlist.UpdateLayout();
             albumlist.UpdateLayout();
         }
-
         public async Task SearchAsync(string query)
         {
             _allSearchResults = await ApiLibrary.Search(query);

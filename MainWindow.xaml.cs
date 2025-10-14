@@ -194,15 +194,22 @@ namespace Floatly
         private async void Maximize_Click(object sender, RoutedEventArgs e)
         {
             WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : (WindowState.Maximized);
-            if (WindowState == WindowState.Normal)
+            // i think its the best we update scrollviewer when maximize/restore
+            if (WindowState == WindowState.Maximized)
             {
-                await sl.LoadHome();
+                Grid_Item_Home_SongArtist.Height = GridLength.Auto;
+                PlayerCard_GridSplitter.Visibility = Visibility.Visible;
             }
             else
             {
-                await sl.LoadHomeMax();
+                
+                Grid_Item_Home_SongArtist.Height = new GridLength(320);
+                PlayerCard_GridSplitter.Visibility = Visibility.Hidden;
+                if (Grid_Main_PlayerCard.Width != new GridLength(0)) // holy i fix it
+                {
+                    Grid_Main_PlayerCard.Width = new GridLength(390);
+                }
             }
-            // i think its the best we update scrollviewer when maximize/restore
             List_Song.UpdateLayout();
             List_Artist.UpdateLayout();
             List_Album.UpdateLayout();
