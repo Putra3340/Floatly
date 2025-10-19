@@ -13,10 +13,7 @@ namespace Floatly.Utils
         {
             using (MD5 md5 = MD5.Create())
             {
-                // Compute the hash
                 byte[] hashBytes = md5.ComputeHash(data);
-
-                // Convert to hex string
                 return BitConverter.ToString(hashBytes).Replace("-", "").ToLowerInvariant();
             }
         }

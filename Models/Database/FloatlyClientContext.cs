@@ -37,7 +37,6 @@ public partial class FloatlyClientContext : DbContext
 
         modelBuilder.Entity<Queue>(entity =>
         {
-            entity.Property(e => e.Artist).HasMaxLength(100);
             entity.Property(e => e.ArtistBio).HasColumnType("text");
             entity.Property(e => e.CreatedAt).HasColumnType("datetime");
             entity.Property(e => e.SongLength)

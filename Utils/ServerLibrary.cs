@@ -78,5 +78,11 @@ namespace Floatly.Utils
             DownloadedSong.ItemsSource = await db.DownloadedSong.OrderDescending().ToListAsync();
             DownloadedSong.UpdateLayout();
         }
+
+        public async Task GetQueueSong()
+        {
+            DownloadedSong.ItemsSource = await QueueManager.GetQueueList();
+            DownloadedSong.UpdateLayout();
+        }
     }
 }

@@ -13,7 +13,7 @@ public partial class DownloadedSong
 
     public int? ArtistId { get; set; }
 
-    public string ArtistBio { get; set; } = null!;
+    public string? ArtistBio { get; set; }
 
     public string? ArtistCover { get; set; }
 

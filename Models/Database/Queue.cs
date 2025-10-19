@@ -11,6 +11,12 @@ public partial class Queue
 
     public string? Artist { get; set; }
 
+    public int? ArtistId { get; set; }
+
+    public string? ArtistBio { get; set; }
+
+    public string? ArtistCover { get; set; }
+
     public string? Music { get; set; }
 
     public string? Lyrics { get; set; }
@@ -23,7 +29,5 @@ public partial class Queue
 
     public DateTime? CreatedAt { get; set; }
 
-    public string? ArtistCover { get; set; }
-
-    public string? ArtistBio { get; set; }
+    public int? Status { get; set; }
 }

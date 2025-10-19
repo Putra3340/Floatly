@@ -3,6 +3,7 @@ using Floatly.Models.ApiModel;
 using Floatly.Models.Database;
 using Floatly.Models.Form;
 using Floatly.Utils;
+using Microsoft.EntityFrameworkCore;
 using StringExt;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,13 @@ namespace Floatly
             _ = sl.LoadHome();
             UpdateGreeting();
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
+
+            // apparently this fix long load when firsttime connecting to db
+            using (var ctx = new FloatlyClientContext())
+            {
+                ctx.Database.GetDbConnection().Open();
+                ctx.DownloadedSong.FirstOrDefault(); // triggers model & query compilation
+            }
             timer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
             timer.Tick += Timer_Tick;
             Notification.NotificationRaised += ShowNotification;
@@ -93,6 +101,7 @@ namespace Floatly
             };
             PlayerCard.DataContext = plc;
             timer.Start();
+            QueueManager.ClearQueue();
         }
 
         private async void SongButton_Click(object sender, MouseButtonEventArgs e)
@@ -120,6 +129,18 @@ namespace Floatly
             {
                 if (sender is Button btnonline && btnonline.DataContext is Floatly.Models.ApiModel.HomeSong onlinesong)
                 {
+                    await QueueManager.AddSongToQueue(new Queue
+                    {
+                        Title = onlinesong.Title,
+                        Artist = onlinesong.Artist,
+                        Music = onlinesong.Music,
+                        Lyrics = onlinesong.Lyrics,
+                        Cover = onlinesong.Cover,
+                        Banner = onlinesong.Banner,
+                        SongLength = onlinesong.SongLength,
+                        CreatedAt = DateTime.Now,
+                        Status = (int)QueueManager.QueueStatus.Current, // set as current song because it plays immediately
+                    });
                     plc.Title = onlinesong.Title;
                     plc.Artist = onlinesong.Artist;
                     plc.Banner = onlinesong.Banner;
@@ -489,6 +510,7 @@ namespace Floatly
                         ArtistBio = artist.Bio,
                         ArtistCover = artist.CoverImagePath,
                         CreatedAt = DateTime.Now,
+                        Status = (int)QueueManager.QueueStatus.Next,
                     };
                     await db.Queue.AddAsync(queue);
                     await db.SaveChangesAsync();
