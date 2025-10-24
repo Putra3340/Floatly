@@ -2,6 +2,7 @@
 using System.IO;
 using System.Numerics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 
@@ -35,6 +36,12 @@ namespace Floatly.Utils
         public static MediaPlayer Player => _player;
 
         public static string currentlyricpath = ""; // This will hold the current lyrics path (for debugging purposes)
+        public static VideoDrawing videoDrawing = new VideoDrawing
+        {
+            Rect = new Rect(0, 0, 1280, 720),
+            Player = _player
+        };
+        public static Image VideoPlayer = null;
         public async static void Play(string filePath,string lyricspath)
         {
             // Setup lyrics first

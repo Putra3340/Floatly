@@ -151,4 +151,8 @@
     <Resource Include="Assets\Images\icon-user.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Assets\Videos\" />
+  </ItemGroup>
+
 </Project>

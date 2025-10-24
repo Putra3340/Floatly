@@ -102,6 +102,7 @@ namespace Floatly
             PlayerCard.DataContext = plc;
             timer.Start();
             QueueManager.ClearQueue();
+            MusicPlayer.VideoPlayer = VideoDisplay;
         }
 
         private async void SongButton_Click(object sender, MouseButtonEventArgs e)
