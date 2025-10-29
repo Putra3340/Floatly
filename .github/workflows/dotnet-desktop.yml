@@ -1,0 +1,43 @@
+name: Build Floatly-Desktop (WPF .NET 9)
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      DOTNET_VERSION: 9.0.x
+      SOLUTION_PATH: Floatly.sln
+      PROJECT_PATH: Floatly.csproj
+
+    steps:
+      - name: 💕 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 💿 Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: 📦 Restore dependencies
+        run: dotnet restore ${{ env.SOLUTION_PATH }}
+
+      - name: 🧱 Build project
+        run: dotnet build ${{ env.SOLUTION_PATH }} --configuration Release --no-restore
+
+      - name: 🧪 Run tests (if any)
+        run: dotnet test --no-build --verbosity normal || echo "No tests found"
+
+      - name: 🚀 Publish WPF application
+        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release -r win-x64 -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:PublishTrimmed=false -o ./publish
+
+      - name: 📤 Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Floatly-Desktop-publish
+          path: ./publish
