@@ -34,7 +34,14 @@ namespace Floatly
             }
         }
         // online mode (use online songs)
-        public static string ServerUrl { get; set; } = "https://localhost:7156"; // server url for online mode localhost for development
+
+#if DEBUG
+        public static string ServerUrl { get; set; } = "https://localhost:7156"; // debug server
+#elif PRODUCTION
+        public static string ServerUrl { get; set; } = "https://floatly.starhost.web.id"; // production server
+#else
+        public static string ServerUrl { get; set; } = "http://localhost:5000"; // self-host server
+#endif
         public static string TempDirectory { get; set; } = System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data" ,"Temp"); // temporary directory for downloaded songs
         public static string DownloadDirectory { get; set; } = System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data" ,"Downloads");
     }

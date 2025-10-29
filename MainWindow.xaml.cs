@@ -43,66 +43,74 @@ namespace Floatly
         public static TextBlock Window_Title = new(); // default title
         public MainWindow()
         {
-            InitializeComponent();
-
-            sl = new ServerLibrary(List_Song, List_Artist, List_Album, List_SongSearch, List_ArtistSearch, List_AlbumSearch, List_DownloadedSong);
-            _ = sl.LoadHome();
-            UpdateGreeting();
-            MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
-
-            // apparently this fix long load when firsttime connecting to db
-            using (var ctx = new FloatlyClientContext())
+            try
             {
-                ctx.Database.GetDbConnection().Open();
-                ctx.DownloadedSong.FirstOrDefault(); // triggers model & query compilation
+                InitializeComponent();
+
+                sl = new ServerLibrary(List_Song, List_Artist, List_Album, List_SongSearch, List_ArtistSearch, List_AlbumSearch, List_DownloadedSong);
+                _ = sl.LoadHome();
+                UpdateGreeting();
+                MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
+
+                // apparently this fix long load when first time connecting to db
+                using (var ctx = new FloatlyClientContext())
+                {
+                    ctx.Database.EnsureCreatedAsync().Wait();
+                    ctx.Database.GetDbConnection().Open();
+                    ctx.DownloadedSong.FirstOrDefault(); // triggers model & query compilation
+                }
+                timer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
+                timer.Tick += Timer_Tick;
+                Notification.NotificationRaised += ShowNotification;
+                Prefs.OnlineModeChanged += OfflineMode;
+                lastnavbtn = NavHome; // default to home
+                this.Loaded += async (s, e) =>
+                {
+                    if (!await UserData.LoadLoginData()) // check if saved data still valid, if it doesnt then show login and update the autologin
+                    {
+                    // AUTH
+                    auth:
+                        Prefs.isRegister = false; // reset
+                        LoginWindow login = new LoginWindow
+                        {
+                            Owner = this, // important!
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        };
+                        RegisterWindow register = new RegisterWindow
+                        {
+                            Owner = this, // important!
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        };
+                        this.Effect = new System.Windows.Media.Effects.BlurEffect()
+                        {
+                            Radius = 20
+                        };
+                        login.ShowDialog();
+                        if (Prefs.isRegister)
+                        {
+                            register.ShowDialog();
+                        }
+                        if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
+                        {
+                            goto auth; // re-authenticate
+                        }
+                        Lbl_Username.Content = Prefs.LoginUsername == "" ? "Anonymous" : Prefs.LoginUsername;
+                        this.Effect = null;
+                    }
+                    else
+                    {
+                        await Notification.ShowNotification("Login successful");
+                    }
+                };
+                PlayerCard.DataContext = plc;
+                timer.Start();
+                QueueManager.ClearQueue();
             }
-            timer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
-            timer.Tick += Timer_Tick;
-            Notification.NotificationRaised += ShowNotification;
-            Prefs.OnlineModeChanged += OfflineMode;
-            lastnavbtn = NavHome; // default to home
-            this.Loaded += async (s, e) =>
+            catch (Exception ex)
             {
-                if (!await UserData.LoadLoginData()) // check if saved data still valid, if it doesnt then show login and update the autologin
-                {
-                // AUTH
-                auth:
-                    Prefs.isRegister = false; // reset
-                    LoginWindow login = new LoginWindow
-                    {
-                        Owner = this, // important!
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    };
-                    RegisterWindow register = new RegisterWindow
-                    {
-                        Owner = this, // important!
-                        WindowStartupLocation = WindowStartupLocation.CenterOwner
-                    };
-                    this.Effect = new System.Windows.Media.Effects.BlurEffect()
-                    {
-                        Radius = 20
-                    };
-                    login.ShowDialog();
-                    if (Prefs.isRegister)
-                    {
-                        register.ShowDialog();
-                    }
-                    if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
-                    {
-                        goto auth; // re-authenticate
-                    }
-                    Lbl_Username.Content = Prefs.LoginUsername == "" ? "Anonymous" : Prefs.LoginUsername;
-                    this.Effect = null;
-                }
-                else
-                {
-                    await Notification.ShowNotification("Login successful");
-                }
-            };
-            PlayerCard.DataContext = plc;
-            timer.Start();
-            QueueManager.ClearQueue();
-            MusicPlayer.VideoPlayer = VideoDisplay;
+                File.WriteAllText("mainwindow.log", ex.ToString());
+                throw;
+            }
         }
 
         private async void SongButton_Click(object sender, MouseButtonEventArgs e)

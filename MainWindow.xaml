@@ -8,7 +8,18 @@
         Title="Floatly" Height="720" Width="1280" Closed="Window_Closed"
         Icon="/Assets/Images/icon-logo.png"
         AllowsTransparency="True"
-        WindowStyle="None">
+        WindowStyle="None"
+        >
+    <Window.Background> <!-- Temporary -->
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="#1A1040" Offset="0.0"/>
+            <!-- Deep violet -->
+            <GradientStop Color="#2C1E78" Offset="0.5"/>
+            <!-- Subtle mid blend -->
+            <GradientStop Color="#0D1B4F" Offset="1.0"/>
+            <!-- Midnight blue -->
+        </LinearGradientBrush>
+    </Window.Background>
     <Window.Resources>
         <Style TargetType="ContextMenu" x:Key="DarkContextMenu">
             <Setter Property="Background" Value="{DynamicResource SidebarBg}"/>
@@ -69,8 +80,8 @@
         </ContextMenu>
     </Window.Resources>
     <Grid>
-        <Image Name="VideoDisplay" Stretch="Uniform" />
-        <Grid Background="{DynamicResource BackgroundDark}" Visibility="Visible" Opacity="0.8">
+        <Image Name="VideoDisplay" Stretch="Uniform" /> <!-- TODO = You know -->
+        <Grid Visibility="Visible" Opacity="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>
                 <RowDefinition Height="*"/>
@@ -455,7 +466,7 @@
                     </StackPanel>
                 </Border>
                 <!-- MAIN ITEM CONTENT -->
-                <Grid Grid.Column="1" Grid.Row="1" Background="{DynamicResource BackgroundDark}" x:Name="PanelHome" Visibility="Visible">
+                <Grid Grid.Column="1" Grid.Row="1" x:Name="PanelHome" Visibility="Visible">
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="100"/>
@@ -465,7 +476,7 @@
                     </Grid.RowDefinitions>
 
                     <TextBlock Text="Welcome" Margin="20,10,0,0" Foreground="{DynamicResource PrimaryText}" x:Name="Label_Greeting" FontSize="36" VerticalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Bold"/>
-                    <Border Background="{DynamicResource BackgroundDark}" Grid.Row="1" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
+                    <Border Grid.Row="1" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
                         <StackPanel>
 
                             <Grid>
@@ -572,7 +583,7 @@ VerticalAlignment="Center"/>
                                                     </Button.Template>
                                                     <Button.Style>
                                                         <Style TargetType="Button">
-                                                            <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                            <Setter Property="Background" Value="{StaticResource Tranparent}"/>
                                                             <Setter Property="Foreground" Value="White"/>
                                                             <Style.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -645,7 +656,7 @@ ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                                     </Button.Template>
                                                     <Button.Style>
                                                         <Style TargetType="Button">
-                                                            <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                            <Setter Property="Background" Value="{StaticResource Tranparent}"/>
                                                             <Setter Property="Foreground" Value="White"/>
                                                             <Style.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -756,7 +767,7 @@ ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                                     </Button.Template>
                                                     <Button.Style>
                                                         <Style TargetType="Button">
-                                                            <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                            <Setter Property="Background" Value="{StaticResource Tranparent}"/>
                                                             <Setter Property="Foreground" Value="White"/>
                                                             <Style.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -814,7 +825,7 @@ RenderingBias="Quality" />
                     </Border>
 
                 </Grid>
-                <Grid Grid.Column="1" Grid.Row="1" Background="{DynamicResource BackgroundDark}" x:Name="PanelOnline" Visibility="Collapsed">
+                <Grid Grid.Column="1" Grid.Row="1" Background="{DynamicResource Tranparent}" x:Name="PanelOnline" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="100"/>
                         <RowDefinition Height="50"/>
@@ -937,7 +948,7 @@ RenderingBias="Quality" />
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto" MinWidth="100"/>
                         </Grid.ColumnDefinitions>
-                        <Border Background="{DynamicResource BackgroundDark}" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
+                        <Border Background="{DynamicResource Tranparent}" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
@@ -1016,7 +1027,7 @@ VerticalAlignment="Center"/>
                                                 </Button.Template>
                                                 <Button.Style>
                                                     <Style TargetType="Button">
-                                                        <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                        <Setter Property="Background" Value="{StaticResource Tranparent}"/>
                                                         <Setter Property="Foreground" Value="White"/>
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
@@ -1076,7 +1087,7 @@ VerticalAlignment="Center"/>
                                             </Button.Template>
                                             <Button.Style>
                                                 <Style TargetType="Button">
-                                                    <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                    <Setter Property="Background" Value="{StaticResource Tranparent}"/>
                                                     <Setter Property="Foreground" Value="White"/>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
@@ -1129,7 +1140,7 @@ VerticalAlignment="Center"/>
                                             </Button.Template>
                                             <Button.Style>
                                                 <Style TargetType="Button">
-                                                    <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                    <Setter Property="Background" Value="{StaticResource Tranparent}"/>
                                                     <Setter Property="Foreground" Value="White"/>
                                                     <Style.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
@@ -1148,7 +1159,7 @@ VerticalAlignment="Center"/>
 
 
                 </Grid>
-                <Grid Grid.Column="1" Grid.Row="1" Background="{DynamicResource BackgroundDark}" x:Name="PanelDownloaded" Visibility="Collapsed">
+                <Grid Grid.Column="1" Grid.Row="1" Background="{DynamicResource Tranparent}" x:Name="PanelDownloaded" Visibility="Collapsed">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="100"/>
                         <RowDefinition Height="30"/>
@@ -1174,7 +1185,7 @@ VerticalAlignment="Center"/>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Border Background="{DynamicResource BackgroundDark}" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
+                        <Border Background="{DynamicResource Tranparent}" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
@@ -1318,7 +1329,7 @@ VerticalAlignment="Center"/>
                                                 </Button.Template>
                                                 <Button.Style>
                                                     <Style TargetType="Button">
-                                                        <Setter Property="Background" Value="{StaticResource BackgroundDark}"/>
+                                                        <Setter Property="Background" Value="{StaticResource Tranparent}"/>
                                                         <Setter Property="Foreground" Value="White"/>
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
@@ -1354,7 +1365,7 @@ VerticalAlignment="Center"/>
                   ShowsPreview="True"
                           Visibility="Collapsed"
                           x:Name="PlayerCard_GridSplitter"/>
-                <Border Background="{DynamicResource BackgroundSecondary}" Grid.Row="1" Grid.Column="2" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="1,0,0,0" Name="PlayerCard">
+                <Border Background="{DynamicResource Tranparent}" Grid.Row="1" Grid.Column="2" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="1,0,0,0" Name="PlayerCard">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>

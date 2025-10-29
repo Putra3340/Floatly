@@ -9,16 +9,16 @@
         <!-- Main background -->
         <SolidColorBrush x:Key="BackgroundSecondary" Color="#1a1a2e"/>
         <!-- Cards / popovers -->
-        <SolidColorBrush x:Key="SidebarBg" Color="#0f0f23"/>
+        <SolidColorBrush x:Key="SidebarBg" Color="#60141423"/>
         <!-- Sidebar background -->
-        <SolidColorBrush x:Key="BackgroundMuted" Color="#16213e"/>
+        <SolidColorBrush x:Key="BackgroundMuted" Color="#1AFFFFFF"/>
         <!-- Inputs / borders -->
 
         <!-- Primary / Accent Colors -->
         <SolidColorBrush x:Key="AccentIndigo" Color="#6366f1"/>
         <!-- Primary indigo -->
-        <SolidColorBrush x:Key="AccentPurple" Color="#8b5cf6"/>
-        <SolidColorBrush x:Key="AccentPurpleHover" Color="#608b5cf6"/>
+        <SolidColorBrush x:Key="AccentPurple" Color="#A273FF"/>
+        <SolidColorBrush x:Key="AccentPurpleHover" Color="#A273FF"/>
         <!-- Secondary accent -->
         <SolidColorBrush x:Key="AccentDeepIndigo" Color="#4f46e5"/>
         <!-- Charts / highlights -->
@@ -30,7 +30,7 @@
         <!-- Text -->
         <SolidColorBrush x:Key="PrimaryText" Color="#FFFFFF"/>
         <!-- Main text -->
-        <SolidColorBrush x:Key="SecondaryText" Color="#a5b4fc"/>
+        <SolidColorBrush x:Key="SecondaryText" Color="#B7B8CC"/>
         <!-- Muted / secondary text -->
         <SolidColorBrush x:Key="Tranparent" Color="Transparent"/>
 
