@@ -47,7 +47,7 @@ namespace Floatly
             {
                 InitializeComponent();
 
-                sl = new ServerLibrary(List_Song, List_Artist, List_Album, List_SongSearch, List_ArtistSearch, List_AlbumSearch, List_DownloadedSong);
+                sl = new ServerLibrary(List_Song, List_Artist, List_Album, List_SongSearch, List_ArtistSearch, List_AlbumSearch, List_DownloadedSong, List_QueuedSong);
                 _ = sl.LoadHome();
                 UpdateGreeting();
                 MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
@@ -102,9 +102,21 @@ namespace Floatly
                         await Notification.ShowNotification("Login successful");
                     }
                 };
-                PlayerCard.DataContext = plc;
                 timer.Start();
-                QueueManager.ClearQueue();
+                //QueueManager.ClearQueue(); i think we didnt need this
+
+                // so when app started we load the last played song from queue
+                var lastsong = QueueManager.GetCurrentSong().Result;
+                if(lastsong != null)
+                {
+                    plc.Title = lastsong.Title;
+                    plc.Artist = lastsong.Artist;
+                    plc.Banner = lastsong.Banner;
+                    plc.ArtistBanner = lastsong.ArtistCover;
+                    plc.ArtistBio = lastsong.ArtistBio.Substring(0, 100) + "..." ?? "";
+                }
+                PlayerCard.DataContext = plc;
+
             }
             catch (Exception ex)
             {
@@ -138,6 +150,15 @@ namespace Floatly
             {
                 if (sender is Button btnonline && btnonline.DataContext is Floatly.Models.ApiModel.HomeSong onlinesong)
                 {
+                    
+                    plc.Title = onlinesong.Title;
+                    plc.Artist = onlinesong.Artist;
+                    plc.Banner = onlinesong.Banner;
+                    MusicPlayer.Play(onlinesong.Music, onlinesong.Lyrics);
+                    Api.Api.Play(onlinesong.Id);
+                    var artist = await Api.ApiLibrary.GetArtist(onlinesong.ArtistId);
+                    plc.ArtistBanner = artist.CoverImagePath;
+                    plc.ArtistBio = artist.Bio.Substring(0, 100) + "...";
                     await QueueManager.AddSongToQueue(new Queue
                     {
                         Title = onlinesong.Title,
@@ -147,17 +168,11 @@ namespace Floatly
                         Cover = onlinesong.Cover,
                         Banner = onlinesong.Banner,
                         SongLength = onlinesong.SongLength,
+                        ArtistBio = artist.Bio,
+                        ArtistCover = artist.CoverImagePath,
                         CreatedAt = DateTime.Now,
                         Status = (int)QueueManager.QueueStatus.Current, // set as current song because it plays immediately
                     });
-                    plc.Title = onlinesong.Title;
-                    plc.Artist = onlinesong.Artist;
-                    plc.Banner = onlinesong.Banner;
-                    MusicPlayer.Play(onlinesong.Music, onlinesong.Lyrics);
-                    Api.Api.Play(onlinesong.Id);
-                    var artist = await Api.ApiLibrary.GetArtist(onlinesong.ArtistId);
-                    plc.ArtistBanner = artist.CoverImagePath;
-                    plc.ArtistBio = artist.Bio.Substring(0, 100) + "...";
                     return;
                 }
                 else if (sender is Button btnoffline && btnoffline.DataContext is DownloadedSong offlinesong) // play on offline
@@ -318,6 +333,8 @@ namespace Floatly
                 PanelHome.Visibility = Visibility.Visible;
                 PanelOnline.Visibility = Visibility.Collapsed;
                 PanelDownloaded.Visibility = Visibility.Collapsed;
+                PanelQueue.Visibility = Visibility.Collapsed;
+
 
                 lastnavbtn = btn; // set last button to this button
             }
@@ -329,6 +346,8 @@ namespace Floatly
                 PanelHome.Visibility = Visibility.Collapsed;
                 PanelOnline.Visibility = Visibility.Visible;
                 PanelDownloaded.Visibility = Visibility.Collapsed;
+                PanelQueue.Visibility = Visibility.Collapsed;
+
 
                 lastnavbtn = btn; // set last button to this button
                 // Load search panel
@@ -345,11 +364,27 @@ namespace Floatly
                 PanelHome.Visibility = Visibility.Collapsed;
                 PanelOnline.Visibility = Visibility.Collapsed;
                 PanelDownloaded.Visibility = Visibility.Visible;
+                PanelQueue.Visibility = Visibility.Collapsed;
 
                 lastnavbtn = btn; // set last button to this button
 
                 // Load downloaded panel
                 sl.GetDownloadedSongs();
+            }
+            else if (btn.Name == "NavQueue")
+            {
+                Style_ChangeButtonBackground(btn, "AccentIndigo"); // highlight this button
+                Style_ChangeButtonBackground(lastnavbtn); // clear previous button
+
+                PanelHome.Visibility = Visibility.Collapsed;
+                PanelOnline.Visibility = Visibility.Collapsed;
+                PanelDownloaded.Visibility = Visibility.Collapsed;
+                PanelQueue.Visibility = Visibility.Visible;
+
+                lastnavbtn = btn; // set last button to this button
+
+                // Load queue panel
+                sl.GetQueueSong();
             }
             else if (btn.Name == "NavPlaylist")
             {

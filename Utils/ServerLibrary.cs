@@ -30,8 +30,9 @@ namespace Floatly.Utils
         private ListBox ArtistListSearch;
         private ListBox AlbumListSearch;
         private ListBox DownloadedSong;
+        private ListBox QueuedSong;
 
-        public ServerLibrary(ItemsControl songlist, ItemsControl artistlist, ItemsControl albumlist, ListBox searchsonglist, ListBox searchartistlist, ListBox searchalbumlist, ListBox downloadedsong)
+        public ServerLibrary(ItemsControl songlist, ItemsControl artistlist, ItemsControl albumlist, ListBox searchsonglist, ListBox searchartistlist, ListBox searchalbumlist, ListBox downloadedsong, ListBox queuedsong)
         {
             this.songlist = songlist;
             this.artistlist = artistlist;
@@ -42,6 +43,8 @@ namespace Floatly.Utils
             this.AlbumListSearch = searchalbumlist;
 
             this.DownloadedSong = downloadedsong;
+
+            this.QueuedSong = queuedsong;
         }
 
         // This is a default value to prevent errors, and for filtering
@@ -81,8 +84,8 @@ namespace Floatly.Utils
 
         public async Task GetQueueSong()
         {
-            DownloadedSong.ItemsSource = await QueueManager.GetQueueList();
-            DownloadedSong.UpdateLayout();
+            QueuedSong.ItemsSource = await QueueManager.GetQueueList();
+            QueuedSong.UpdateLayout();
         }
     }
 }
