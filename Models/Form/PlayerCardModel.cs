@@ -43,6 +43,8 @@ namespace Floatly.Models.Form
             get => artistbio;
             set { artistbio = value; OnPropertyChanged(); }
         }
+        public string NextQueueImage { get; set; } = "/Assets/Images/banner-default.jpg";
+        public string NextQueueTitle { get; set; } = "Next Up Title";
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));

@@ -35,9 +35,10 @@ namespace Floatly
         }
         private async Task isOnline()
         {
+            this.IsEnabled = false;
             var http = new System.Net.Http.HttpClient
             {
-                Timeout = TimeSpan.FromSeconds(1) // shorter timeout
+                Timeout = TimeSpan.FromSeconds(5) // shorter timeout
             };
 
             try
@@ -47,7 +48,8 @@ namespace Floatly
 
                 if (res.IsSuccessStatusCode)
                 {
-                    return;
+                    this.IsEnabled = true;
+                     return;
                 }
                 else
                 {

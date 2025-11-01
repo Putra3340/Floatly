@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -62,6 +63,19 @@ namespace Floatly.Api
             };
             return JsonSerializer.Deserialize<Library>(result, options);
         }
-
+        public static async Task<List<Models.Database.Queue>> GetNextQueue()
+        {
+            var client = new HttpClient();
+            var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7156/api/getqueue");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string result = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            List<Models.Database.Queue> queues = JsonSerializer.Deserialize<List<Models.Database.Queue>>(result, options);
+            return queues;
+        }
     }
 }

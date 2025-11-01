@@ -1,4 +1,5 @@
-﻿using Floatly.Models.Database;
+﻿using Floatly.Api;
+using Floatly.Models.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,6 +76,30 @@ namespace Floatly.Utils
         public static async Task<List<Queue>> GetQueueList()
         {
             return db.Queue.OrderBy(q => q.Id).ToList();
+        }
+        public static async Task<Queue> GetNextSong()
+        {
+            Queue ret = null;
+            ret = db.Queue.FirstOrDefault(x => x.Status == (int)QueueStatus.Next);
+            if (ret == null)
+                ret = db.Queue.FirstOrDefault(x => x.Status == (int)QueueStatus.NextGenerated);
+            if (ret == null)
+            {
+                ret = db.Queue.FirstOrDefault(x => x.Status == (int)QueueStatus.Current);
+            }
+            if(ret == null)
+            {
+                var x = await ApiLibrary.GetNextQueue();
+                foreach(var song in x)
+                {
+                    song.Status = (int)QueueStatus.NextGenerated;
+                    song.CreatedAt = DateTime.Now;
+                    db.Queue.Add(song);
+                }
+                ret = db.Queue.FirstOrDefault(x => x.Status == (int)QueueStatus.NextGenerated);
+            }
+            // Ensure its not null
+            return ret;
         }
     }
 }

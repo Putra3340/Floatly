@@ -535,29 +535,13 @@
          VirtualizingStackPanel.IsVirtualizing="True"
          VirtualizingStackPanel.VirtualizationMode="Recycling"
          ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent" Grid.Row="1" BorderThickness="0" IsHitTestVisible="True">
-                                        <!-- Remove selection & focus border -->
-                                        <ListBox.ItemContainerStyle>
-                                            <Style TargetType="ListBoxItem">
-                                                <Setter Property="BorderThickness" Value="0"/>
-                                                <Setter Property="Background" Value="Transparent"/>
-                                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                                <Setter Property="Padding" Value="0"/>
-                                                <Setter Property="Margin" Value="0"/>
-                                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="ListBoxItem">
-                                                            <ContentPresenter/>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </ListBox.ItemContainerStyle>
+                                         ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent" Grid.Row="1" BorderThickness="0" IsHitTestVisible="True" ItemContainerStyle="{DynamicResource CustomListBoxItemStyle}" >
+                                        <ListBox.Resources>
+                                            <Style TargetType="ScrollBar" BasedOn="{StaticResource CustomScrollBarStyle}" />
+                                        </ListBox.Resources>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <Button PreviewMouseDown="SongButton_Click" HorizontalContentAlignment="Stretch" Margin="10,0,10,0" IsHitTestVisible="True">
+                                                <Button PreviewMouseDown="SongButton_Click" HorizontalContentAlignment="Stretch" Margin="10,0,10,0" IsHitTestVisible="True" Style="{StaticResource CustomButtonStyle}">
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
 
@@ -609,24 +593,6 @@ VerticalAlignment="Center"/>
                                                         </Grid>
 
                                                     </Grid>
-                                                    <Button.Template>
-                                                        <ControlTemplate TargetType="Button">
-                                                            <Border Background="{TemplateBinding Background}" CornerRadius="10">
-                                                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Button.Template>
-                                                    <Button.Style>
-                                                        <Style TargetType="Button">
-                                                            <Setter Property="Background" Value="{StaticResource Tranparent}"/>
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                            <Style.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
-                                                                </Trigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Button.Style>
                                                 </Button>
 
                                             </DataTemplate>
@@ -636,29 +602,13 @@ VerticalAlignment="Center"/>
 VirtualizingStackPanel.IsVirtualizing="True"
 VirtualizingStackPanel.VirtualizationMode="Recycling"
 ScrollViewer.VerticalScrollBarVisibility="Disabled"
-                                ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent" Grid.Row="1" BorderThickness="0" IsHitTestVisible="True" Grid.Column="1">
-                                        <!-- Remove selection & focus border -->
-                                        <ListBox.ItemContainerStyle>
-                                            <Style TargetType="ListBoxItem">
-                                                <Setter Property="BorderThickness" Value="0"/>
-                                                <Setter Property="Background" Value="Transparent"/>
-                                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-                                                <Setter Property="Padding" Value="0"/>
-                                                <Setter Property="Margin" Value="0"/>
-                                                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                                                <Setter Property="VerticalContentAlignment" Value="Center"/>
-                                                <Setter Property="Template">
-                                                    <Setter.Value>
-                                                        <ControlTemplate TargetType="ListBoxItem">
-                                                            <ContentPresenter/>
-                                                        </ControlTemplate>
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </Style>
-                                        </ListBox.ItemContainerStyle>
+                                ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent" Grid.Row="1" BorderThickness="0" IsHitTestVisible="True" Grid.Column="1" ItemContainerStyle="{DynamicResource CustomListBoxItemStyle}">
+                                        <ListBox.Resources>
+                                            <Style TargetType="ScrollBar" BasedOn="{StaticResource CustomScrollBarStyle}" />
+                                        </ListBox.Resources>
                                         <ListBox.ItemTemplate>
                                             <DataTemplate>
-                                                <Button PreviewMouseDown="SongButton_Click" HorizontalContentAlignment="Stretch" Margin="10,20,10,0" MinWidth="250" Padding="0,0,0,0">
+                                                <Button PreviewMouseDown="SongButton_Click" HorizontalContentAlignment="Stretch" Margin="10,20,10,0" MinWidth="250" Padding="0,0,0,0" Style="{StaticResource CustomButtonStyle}">
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="*"/>
@@ -682,24 +632,6 @@ ScrollViewer.VerticalScrollBarVisibility="Disabled"
     Foreground="{DynamicResource SecondaryText}"/>
                                                         </StackPanel>
                                                     </Grid>
-                                                    <Button.Template>
-                                                        <ControlTemplate TargetType="Button">
-                                                            <Border Background="{TemplateBinding Background}">
-                                                                <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Button.Template>
-                                                    <Button.Style>
-                                                        <Style TargetType="Button">
-                                                            <Setter Property="Background" Value="{StaticResource Tranparent}"/>
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                            <Style.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
-                                                                </Trigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Button.Style>
                                                 </Button>
 
                                             </DataTemplate>
@@ -1898,10 +1830,10 @@ RenderingBias="Quality" />
                                     </TextBlock>
                                     <Rectangle Height="80" Width="Auto" Grid.Row="4">
                                         <Rectangle.Fill>
-                                            <ImageBrush ImageSource="/Assets/Images/banner-default.jpg"/>
+                                            <ImageBrush Stretch="UniformToFill" ImageSource="{Binding NextQueueImage}"/>
                                         </Rectangle.Fill>
                                     </Rectangle>
-                                    <TextBlock Text="Nothing in the queue.." Height="80" Width="Auto" Grid.Row="4" FontSize="24" Foreground="{DynamicResource PrimaryText}" Margin="45,40,0,0"/>
+                                    <TextBlock Text="{Binding NextQueueTitle}" Height="80" Width="Auto" Grid.Row="4" FontSize="24" Foreground="{DynamicResource PrimaryText}" Margin="45,40,0,0"/>
                                 </Grid>
                             </StackPanel>
                         </ScrollViewer>
