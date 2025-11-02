@@ -16,15 +16,14 @@ namespace Floatly.Utils
         };
         public static List<(int lyricindex, TimeSpan start, TimeSpan end, string text, string text2)> lyricslist = new(); // This will hold the parsed lyrics
         #region Events
-        private static string _currentActiveLyrics = "";
         public static string CurrentActiveLyrics
         {
-            get => _currentActiveLyrics;
+            get => field;
             set
             {
-                if (_currentActiveLyrics != value)
+                if (field != value)
                 {
-                    _currentActiveLyrics = value;
+                    field = value;
                     CurrentLyricsChanged?.Invoke(null, value);
                 }
             }

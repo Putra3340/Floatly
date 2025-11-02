@@ -46,7 +46,7 @@ namespace Floatly
             try
             {
                 InitializeComponent();
-
+                Prefs.Initialize(); // initialize prefs
                 sl = new ServerLibrary(List_Song, List_Artist, List_Album, List_SongSearch, List_ArtistSearch, List_AlbumSearch, List_DownloadedSong, List_QueuedSong);
                 _ = sl.LoadHome();
                 UpdateGreeting();

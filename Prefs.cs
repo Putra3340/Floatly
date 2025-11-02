@@ -12,16 +12,15 @@ namespace Floatly
         public static string LoginToken = "";
         public static string LoginUsername = "";
         public static bool isRegister { get; set; } = false; // is user logged in
-        private static bool _onlineMode = true;
         public static event EventHandler OnlineModeChanged;
         public static bool OnlineMode
         {
-            get => _onlineMode;
+            get => field;
             set
             {
-                if (_onlineMode == value) return; // no change, no need to invoke
+                if (field == value) return; // no change, no need to invoke
 
-                _onlineMode = value;
+                field = value;
 
                 if (!value)
                 {
@@ -32,7 +31,7 @@ namespace Floatly
                 // invoke the event
                 OnlineModeChanged?.Invoke(null, null);
             }
-        }
+        } = true;
         // online mode (use online songs)
 
 #if DEBUG
@@ -44,5 +43,18 @@ namespace Floatly
 #endif
         public static string TempDirectory { get; set; } = System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data" ,"Temp"); // temporary directory for downloaded songs
         public static string DownloadDirectory { get; set; } = System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data" ,"Downloads");
+
+        public static void Initialize()
+        {
+            // Create necessary directories
+            if (!Directory.Exists(TempDirectory))
+            {
+                Directory.CreateDirectory(TempDirectory);
+            }
+            if (!Directory.Exists(DownloadDirectory))
+            {
+                Directory.CreateDirectory(DownloadDirectory);
+            }
+        }
     }
 }

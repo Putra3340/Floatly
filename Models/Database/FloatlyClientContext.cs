@@ -23,7 +23,7 @@ public partial class FloatlyClientContext : DbContext
     {
     #if DEBUG
             optionsBuilder.UseSqlServer(
-                "Data Source=DESKTOP-86R216N;Initial Catalog=FloatlyClient;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
+                "Data Source=WIN-BNOFJBSA8BF;Initial Catalog=FloatlyClient;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
     #else
             optionsBuilder.UseSqlite("Data Source=database.db");
     #endif
