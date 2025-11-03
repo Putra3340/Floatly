@@ -34,80 +34,43 @@ namespace Floatly
     {
         FloatingWindow fw = new(); // make just one instance of FloatingWindow (maybe its bad idea to create this here but whatever)
         ConfigurationWindow cw = null; // just one instance of ConfigurationWindow
-        ServerLibrary sl = null; // make just one instance of ServerLibrary (i didnt initialize first because the component didnt initialized yet)
-        PlayerCard plc = new();
         FloatlyClientContext db = new(); // database context
 
-        DispatcherTimer timer = new DispatcherTimer(); // for slider
+        DispatcherTimer slidertimer = new DispatcherTimer(); // for slider
         bool isDragging = false; // dragging slider
-        public static TextBlock Window_Title = new(); // default title
+
+        public static MainWindow Instance { get; private set; } // singleton pattern
+        public static PlayerCard plc = new(); // player card model
+        public static bool SetBlur { get => field; set { field = value; Instance?.Blur(value); } } = true; // default true
         public MainWindow()
         {
             try
             {
                 InitializeComponent();
-                Prefs.Initialize(); // initialize prefs
-                sl = new ServerLibrary(List_Song, List_Artist, List_Album, List_SongSearch, List_ArtistSearch, List_AlbumSearch, List_DownloadedSong, List_QueuedSong);
-                _ = sl.LoadHome();
-                UpdateGreeting();
-                MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
-
-                // apparently this fix long load when first time connecting to db
-                using (var ctx = new FloatlyClientContext())
-                {
-                    ctx.Database.EnsureCreatedAsync().Wait();
-                    ctx.Database.GetDbConnection().Open();
-                    ctx.DownloadedSong.FirstOrDefault(); // triggers model & query compilation
-                }
-                timer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
-                timer.Tick += Timer_Tick;
-                Notification.NotificationRaised += ShowNotification;
-                Prefs.OnlineModeChanged += OfflineMode;
-                lastnavbtn = NavHome; // default to home
+                Instance = this; // set singleton instance
                 this.Loaded += async (s, e) =>
                 {
-                    if (!await UserData.LoadLoginData()) // check if saved data still valid, if it doesnt then show login and update the autologin
+                    await Prefs.Initialize(); // initialize prefs
+                    await Prefs.isOnline(); // check online status on load
+                    if (List_Song.ItemsSource == null)
                     {
-                    // AUTH
-                    auth:
-                        Prefs.isRegister = false; // reset
-                        LoginWindow login = new LoginWindow
-                        {
-                            Owner = this, // important!
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        };
-                        RegisterWindow register = new RegisterWindow
-                        {
-                            Owner = this, // important!
-                            WindowStartupLocation = WindowStartupLocation.CenterOwner
-                        };
-                        this.Effect = new System.Windows.Media.Effects.BlurEffect()
-                        {
-                            Radius = 20
-                        };
-                        login.ShowDialog();
-                        if (Prefs.isRegister)
-                        {
-                            register.ShowDialog();
-                        }
-                        if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
-                        {
-                            goto auth; // re-authenticate
-                        }
-                        Lbl_Username.Content = Prefs.LoginUsername == "" ? "Anonymous" : Prefs.LoginUsername;
-                        this.Effect = null;
+                        await ServerLibrary.LoadHome();
                     }
-                    else
-                    {
-                        await Notification.ShowNotification("Login successful");
-                    }
+                    await Prefs.ShowLogin(); // show login if needed
                 };
-                timer.Start();
-                //QueueManager.ClearQueue(); i think we didnt need this
+                UpdateGreeting();
+                slidertimer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
+                slidertimer.Tick += SliderTimer_Tick;
 
+                MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
+                MusicPlayer.Player.MediaEnded += Player_MediaEnded;
+                Notification.NotificationRaised += ShowNotification;
+                Prefs.OnlineModeChanged += OfflineMode;
+                slidertimer.Start();
+                lastnavbtn = NavHome; // default to home
                 // so when app started we load the last played song from queue
                 var lastsong = QueueManager.GetCurrentSong().Result;
-                if(lastsong != null)
+                if (lastsong != null)
                 {
                     plc.Title = lastsong.Title;
                     plc.Artist = lastsong.Artist;
@@ -116,7 +79,6 @@ namespace Floatly
                     plc.ArtistBio = lastsong.ArtistBio.Substring(0, 100) + "..." ?? "";
                 }
                 PlayerCard.DataContext = plc;
-
             }
             catch (Exception ex)
             {
@@ -125,106 +87,23 @@ namespace Floatly
             }
         }
 
-        private async void SongButton_Click(object sender, MouseButtonEventArgs e)
+        private void Player_MediaEnded(object? sender, EventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Right)
-            {
-                // show context menu
-                if (sender is Button btn && btn.DataContext is Floatly.Models.ApiModel.HomeSong song)
-                {
-                    ContextMenu cm = this.FindResource("SongContextMenu") as ContextMenu;
-                    cm.DataContext = song; // set the context menu data context to the song
-                    cm.PlacementTarget = btn; // set the placement target to the button
-                    cm.IsOpen = true;
-                }
-                else if (sender is Button btnn && btnn.DataContext is DownloadedSong offlinesong)
-                {
-                    ContextMenu cm = this.FindResource("SongOfflineContextMenu") as ContextMenu;
-                    cm.DataContext = offlinesong; // set the context menu data context to the song
-                    cm.PlacementTarget = btnn; // set the placement target to the button
-                    cm.IsOpen = true;
-                }
-                return;
-            }
-            else if (e.ChangedButton == MouseButton.Left)
-            {
-                if (sender is Button btnonline && btnonline.DataContext is Floatly.Models.ApiModel.HomeSong onlinesong)
-                {
-                    
-                    plc.Title = onlinesong.Title;
-                    plc.Artist = onlinesong.Artist;
-                    plc.Banner = onlinesong.Banner;
-                    MusicPlayer.Play(onlinesong.Music, onlinesong.Lyrics);
-                    Api.Api.Play(onlinesong.Id);
-                    var artist = await Api.ApiLibrary.GetArtist(onlinesong.ArtistId);
-                    plc.ArtistBanner = artist.CoverImagePath;
-                    plc.ArtistBio = artist.Bio.Substring(0, 100) + "...";
-                    await QueueManager.AddSongToQueue(new Queue
-                    {
-                        Title = onlinesong.Title,
-                        Artist = onlinesong.Artist,
-                        Music = onlinesong.Music,
-                        Lyrics = onlinesong.Lyrics,
-                        Cover = onlinesong.Cover,
-                        Banner = onlinesong.Banner,
-                        SongLength = onlinesong.SongLength,
-                        ArtistBio = artist.Bio,
-                        ArtistCover = artist.CoverImagePath,
-                        CreatedAt = DateTime.Now,
-                        Status = (int)QueueManager.QueueStatus.Current, // set as current song because it plays immediately
-                    });
-                    return;
-                }
-                else if (sender is Button btnoffline && btnoffline.DataContext is DownloadedSong offlinesong) // play on offline
-                {
-                    plc.Title = offlinesong.Title;
-                    plc.Artist = offlinesong.Artist;
-                    plc.Banner = offlinesong.Banner;
-                    MusicPlayer.Play(offlinesong.Music, offlinesong.Lyrics);
-                    plc.ArtistBanner = offlinesong.ArtistCover;
-                    plc.ArtistBio = offlinesong.ArtistBio.Substring(0, 100) + "...";
-                    return;
-                }
-            }
-
-        }
-        private void UpdateGreeting()
-        {
-            var now = DateTime.Now;
-            if (now.Hour <= 23)
-            {
-                Label_Greeting.Text = "Good Night!";
-            }
-            if (now.Hour <= 19)
-            {
-                Label_Greeting.Text = "Good Evening!";
-            }
-            if (now.Hour <= 14)
-            {
-                Label_Greeting.Text = "Good Afternoon!";
-            }
-            if (now.Hour <= 10)
-            {
-                Label_Greeting.Text = "Good Morning!";
-            }
-        }
-        private void OnLyricsChanged(object sender, string newLyrics)
-        {
-            Dispatcher.Invoke(() => Label_ActiveLyrics.Text = newLyrics);
+            NotImplemented_Click(sender, null);
         }
 
-        private void Label_ActiveLyrics_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void NotImplemented_Click(object sender, RoutedEventArgs e)
         {
-            if (!fw.IsVisible)
-            {
-                fw.Show();
-            }
-            else
-            {
-                fw.Hide();
-            }
+            MessageBox.Show("Opps this feature is in todo!");
         }
-        private void Window_Closed(object sender, EventArgs e)
+
+        private async void DebugMenu_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        #region Basic Form Logic
+        private void Window_Closed(object sender, EventArgs e) // idk but keep it here TODO
         {
             fw.Close();
         }
@@ -247,7 +126,7 @@ namespace Floatly
             }
             else
             {
-                
+
                 Grid_Item_Home_SongArtist.Height = new GridLength(320);
                 PlayerCard_GridSplitter.Visibility = Visibility.Hidden;
                 if (Grid_Main_PlayerCard.Width != new GridLength(0)) // holy i fix it
@@ -266,51 +145,19 @@ namespace Floatly
         {
             Application.Current.Shutdown();
         }
-        private void Timer_Tick(object sender, EventArgs e)
+        #endregion
+
+        #region Custom Form Logic
+        private void Blur(bool enable)
         {
-            if (!isDragging && MusicPlayer.Player.NaturalDuration.HasTimeSpan)
-            {
-                Slider_Progress.Maximum = MusicPlayer.Player.NaturalDuration.TimeSpan.TotalSeconds;
-                Slider_Progress.Value = MusicPlayer.Player.Position.TotalSeconds;
-                Label_CurrentTime.Text = MusicPlayer.Player.Position.ToString(@"mm\:ss");
-                Label_TotalTime.Text = MusicPlayer.Player.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
-            }
+            this.Effect = enable
+                ? new System.Windows.Media.Effects.BlurEffect { Radius = 20 }
+                : null;
         }
 
-        private void Slider_Progress_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            isDragging = true;
-        }
+        #endregion
 
-        private void Slider_Progress_PreviewMouseUp(object sender, MouseButtonEventArgs e)
-        {
-            isDragging = false;
-            MusicPlayer.Player.Position = TimeSpan.FromSeconds(Slider_Progress.Value);
-        }
-
-        // Optional: live update while dragging
-        private void Slider_Progress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (isDragging)
-            {
-                Label_CurrentTime.Text = TimeSpan.FromSeconds(Slider_Progress.Value).ToString(@"mm\:ss");
-            }
-        }
-        bool ispaused = false;
-        private void Button_PlayPause_Click(object sender, RoutedEventArgs e)
-        {
-            if (ispaused)
-            {
-                MusicPlayer.Player.Play();
-                ispaused = false;
-            }
-            else
-            {
-                MusicPlayer.Player.Pause();
-                ispaused = true;
-            }
-
-        }
+        #region Navigation
         Button lastnavbtn = null; // we use this to make navigate is dynamic
         private void Nav_Click(object sender, RoutedEventArgs e) // put it on one single function to reduce redundancy  
         {
@@ -353,7 +200,7 @@ namespace Floatly
                 // Load search panel
                 if (List_ArtistSearch.ItemsSource == null && List_AlbumSearch.ItemsSource == null && List_SongSearch.ItemsSource == null)
                 {
-                    sl.SearchAsync(Tbx_Search.Text);
+                    ServerLibrary.SearchAsync(Tbx_Search.Text);
                 }
             }
             else if (btn.Name == "NavOffline")
@@ -369,7 +216,7 @@ namespace Floatly
                 lastnavbtn = btn; // set last button to this button
 
                 // Load downloaded panel
-                sl.GetDownloadedSongs();
+                ServerLibrary.GetDownloadedSongs();
             }
             else if (btn.Name == "NavQueue")
             {
@@ -384,7 +231,7 @@ namespace Floatly
                 lastnavbtn = btn; // set last button to this button
 
                 // Load queue panel
-                sl.GetQueueSong();
+                ServerLibrary.GetQueueSong();
             }
             else if (btn.Name == "NavPlaylist")
             {
@@ -458,12 +305,75 @@ namespace Floatly
             btn.Style = newStyle;
 
         }
+        #endregion
 
-        private void NotImplemented_Click(object sender, RoutedEventArgs e)
+        #region Lyrics Thing
+        private void OnLyricsChanged(object sender, string newLyrics)
         {
-            MessageBox.Show("Opps this feature is in todo!");
+            Dispatcher.Invoke(() => Label_ActiveLyrics.Text = newLyrics);
         }
+        private void Label_ActiveLyrics_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (!fw.IsVisible)
+            {
+                fw.Show();
+            }
+            else
+            {
+                fw.Hide();
+            }
+        }
+        #endregion
 
+        #region Player Slider
+        private void SliderTimer_Tick(object sender, EventArgs e)
+        {
+            if (!isDragging && MusicPlayer.Player.NaturalDuration.HasTimeSpan)
+            {
+                Slider_Progress.Maximum = MusicPlayer.Player.NaturalDuration.TimeSpan.TotalSeconds;
+                Slider_Progress.Value = MusicPlayer.Player.Position.TotalSeconds;
+                Label_CurrentTime.Text = MusicPlayer.Player.Position.ToString(@"mm\:ss");
+                Label_TotalTime.Text = MusicPlayer.Player.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
+            }
+        }
+        private void Slider_Progress_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            isDragging = true;
+        }
+        private void Slider_Progress_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            isDragging = false;
+            MusicPlayer.Player.Position = TimeSpan.FromSeconds(Slider_Progress.Value);
+        }
+        private void Slider_Progress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (isDragging)
+            {
+                Label_CurrentTime.Text = TimeSpan.FromSeconds(Slider_Progress.Value).ToString(@"mm\:ss");
+            }
+        }
+        #endregion
+
+        #region Player Controls
+
+        // Play/Pause Toggle
+        bool ispaused = false;
+        private void Button_PlayPause_Click(object sender, RoutedEventArgs e)
+        {
+            if (ispaused)
+            {
+                MusicPlayer.Player.Play(); // TODO
+                ispaused = false;
+            }
+            else
+            {
+                MusicPlayer.Player.Pause();
+                ispaused = true;
+            }
+        }
+        #endregion
+
+        #region Player Card Behaviour
         private void CollapsePlayerCard_Click(object sender, RoutedEventArgs e)
         {
             if (Grid_Main_PlayerCard.Width.Value == 0) // if collapsed
@@ -486,10 +396,9 @@ namespace Floatly
             }
 
         }
-        private async void DebugMenu_Click(object sender, RoutedEventArgs e)
-        {
+        #endregion
 
-        }
+        #region Notification
         private void ShowNotification(object sender, (string message, string resname) args)
         {
             Notification.IsBusy = true;
@@ -529,12 +438,127 @@ namespace Floatly
 
             NotificationPanel.BeginAnimation(Border.MarginProperty, slideIn);
         }
+        #endregion
 
-        private void Btn_Search_Click(object sender, RoutedEventArgs e)
+        #region Mode Switching
+        private void OfflineMode(object sender, EventArgs a)
         {
-            sl.SearchAsync(Tbx_Search.Text);
+            Style_ChangeButtonBackground(NavOffline, "AccentIndigo"); // highlight this button
+            Style_ChangeButtonBackground(lastnavbtn); // clear previous button
+
+            PanelHome.Visibility = Visibility.Collapsed;
+            PanelOnline.Visibility = Visibility.Collapsed;
+            PanelDownloaded.Visibility = Visibility.Visible;
+
+            lastnavbtn = NavOffline; // set last button to this button
+            Lbl_Username.Content = "Offline";
+            Lbl_LogoutOnline.Content = "Go Online";
+            // Load downloaded panel
+            if (List_DownloadedSong.ItemsSource == null)
+            {
+                ServerLibrary.GetDownloadedSongs();
+            }
         }
 
+        private async void UserAction_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (Prefs.OnlineMode)
+            {
+            // Re Auth
+            auth:
+                Prefs.LoginToken = ""; // clear token first
+                Prefs.LoginUsername = "";
+                Prefs.isRegister = false; // reset
+                LoginWindow login = new LoginWindow
+                {
+                    Owner = this, // important!
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                RegisterWindow register = new RegisterWindow
+                {
+                    Owner = this, // important!
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                this.Effect = new System.Windows.Media.Effects.BlurEffect()
+                {
+                    Radius = 20
+                };
+                login.ShowDialog();
+                if (Prefs.isRegister)
+                {
+                    register.ShowDialog();
+                }
+                if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
+                {
+                    goto auth; // re-authenticate
+                }
+                Lbl_Username.Content = Prefs.LoginUsername == "" ? "Anonymous" : Prefs.LoginUsername;
+                this.Effect = null;
+                if (Prefs.LoginToken != "")
+                {
+                    Notification.ShowNotification("Login successful");
+                }
+            }
+            else
+            {
+                if (!await Prefs.isOnline())
+                {
+                    Notification.ShowNotification("Still offline, check your connection");
+                    return;
+                }
+                Prefs.OnlineMode = true;
+                // goto online mode
+                Style_ChangeButtonBackground(NavHome, "AccentIndigo"); // highlight this button
+                Style_ChangeButtonBackground(lastnavbtn); // clear previous button
+
+                PanelHome.Visibility = Visibility.Visible;
+                PanelOnline.Visibility = Visibility.Collapsed;
+                PanelDownloaded.Visibility = Visibility.Collapsed;
+
+                lastnavbtn = NavHome; // set last button to this button
+                Lbl_Username.Content = "Anonymous";
+                Lbl_LogoutOnline.Content = "Logout";
+                // Load downloaded panel
+                if (List_Song.ItemsSource == null)
+                {
+                    await ServerLibrary.LoadHome();
+                }
+            }
+        }
+        #endregion
+
+        #region Global Content Click Events
+        private async void SongButton_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                // show context menu
+                if (sender is Button btn && btn.DataContext is Floatly.Models.ApiModel.HomeSong song)
+                {
+                    ContextMenu cm = this.FindResource("SongContextMenu") as ContextMenu;
+                    cm.DataContext = song; // set the context menu data context to the song
+                    cm.PlacementTarget = btn; // set the placement target to the button
+                    cm.IsOpen = true;
+                }
+                else if (sender is Button btnn && btnn.DataContext is DownloadedSong offlinesong)
+                {
+                    ContextMenu cm = this.FindResource("SongOfflineContextMenu") as ContextMenu;
+                    cm.DataContext = offlinesong; // set the context menu data context to the song
+                    cm.PlacementTarget = btnn; // set the placement target to the button
+                    cm.IsOpen = true;
+                }
+                return;
+            }
+            else if (e.ChangedButton == MouseButton.Left)
+            {
+                if (sender is Button btnonline)
+                {
+                    await ServerLibrary.Play(btnonline.DataContext);
+                    return;
+                }
+            }
+
+        }
         private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (sender is MenuItem mi && mi.DataContext is Floatly.Models.ApiModel.HomeSong song)
@@ -677,128 +701,44 @@ namespace Floatly
                 }
             }
         }
+        #endregion
 
-        private void OfflineMode(object sender, EventArgs a)
+        #region Panel Home
+        private void UpdateGreeting()
         {
-            Style_ChangeButtonBackground(NavOffline, "AccentIndigo"); // highlight this button
-            Style_ChangeButtonBackground(lastnavbtn); // clear previous button
-
-            PanelHome.Visibility = Visibility.Collapsed;
-            PanelOnline.Visibility = Visibility.Collapsed;
-            PanelDownloaded.Visibility = Visibility.Visible;
-
-            lastnavbtn = NavOffline; // set last button to this button
-            Lbl_Username.Content = "Offline";
-            Lbl_LogoutOnline.Content = "Go Online";
-            // Load downloaded panel
-            if (List_DownloadedSong.ItemsSource == null)
+            var now = DateTime.Now;
+            if (now.Hour <= 23)
             {
-                sl.GetDownloadedSongs();
+                Label_Greeting.Text = "Good Night!";
+            }
+            if (now.Hour <= 19)
+            {
+                Label_Greeting.Text = "Good Evening!";
+            }
+            if (now.Hour <= 14)
+            {
+                Label_Greeting.Text = "Good Afternoon!";
+            }
+            if (now.Hour <= 10)
+            {
+                Label_Greeting.Text = "Good Morning!";
             }
         }
+        #endregion
 
+        #region Panel Search
+        private async void Btn_Search_Click(object sender, RoutedEventArgs e)
+        {
+            await ServerLibrary.SearchAsync(Tbx_Search.Text);
+        }
+        #endregion
+
+        #region Panel Downloaded
         private void RefreshDownloadedSong_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             Notification.ShowNotification("Reloading Offline Library");
-            sl.GetDownloadedSongs();
+            ServerLibrary.GetDownloadedSongs();
         }
-
-        private async void UserAction_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (Prefs.OnlineMode)
-            {
-            // Re Auth
-            auth:
-                Prefs.LoginToken = ""; // clear token first
-                Prefs.LoginUsername = "";
-                Prefs.isRegister = false; // reset
-                LoginWindow login = new LoginWindow
-                {
-                    Owner = this, // important!
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                RegisterWindow register = new RegisterWindow
-                {
-                    Owner = this, // important!
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                this.Effect = new System.Windows.Media.Effects.BlurEffect()
-                {
-                    Radius = 20
-                };
-                login.ShowDialog();
-                if (Prefs.isRegister)
-                {
-                    register.ShowDialog();
-                }
-                if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
-                {
-                    goto auth; // re-authenticate
-                }
-                Lbl_Username.Content = Prefs.LoginUsername == "" ? "Anonymous" : Prefs.LoginUsername;
-                this.Effect = null;
-                if (Prefs.LoginToken != "")
-                {
-                    Notification.ShowNotification("Login successful");
-                }
-            }
-            else
-            {
-                if(!await isOnline())
-                {
-                    Notification.ShowNotification("Still offline, check your connection");
-                    return;
-                }
-                Prefs.OnlineMode = true;
-                // goto online mode
-                Style_ChangeButtonBackground(NavHome, "AccentIndigo"); // highlight this button
-                Style_ChangeButtonBackground(lastnavbtn); // clear previous button
-
-                PanelHome.Visibility = Visibility.Visible;
-                PanelOnline.Visibility = Visibility.Collapsed;
-                PanelDownloaded.Visibility = Visibility.Collapsed;
-
-                lastnavbtn = NavHome; // set last button to this button
-                Lbl_Username.Content = "Anonymous";
-                Lbl_LogoutOnline.Content = "Logout";
-                // Load downloaded panel
-                if (List_Song.ItemsSource == null)
-                {
-                    await sl.LoadHome();
-                }
-            }
-        }
-        private async Task<bool> isOnline()
-        {
-            var http = new System.Net.Http.HttpClient
-            {
-                Timeout = TimeSpan.FromSeconds(1) // shorter timeout
-            };
-
-            try
-            {
-                var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
-                var res = await http.GetAsync(Prefs.ServerUrl + "/api/info", cts.Token);
-
-                if (res.IsSuccessStatusCode)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (TaskCanceledException)
-            {
-                return false;
-
-            }
-            catch
-            {
-                return false;
-
-            }
-        }
+        #endregion
     }
 }

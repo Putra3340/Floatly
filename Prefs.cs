@@ -1,9 +1,14 @@
-﻿using System;
+﻿using Floatly.Models.Database;
+using Floatly.Utils;
+using Microsoft.EntityFrameworkCore;
+using StringExt;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace Floatly
 {
@@ -44,7 +49,7 @@ namespace Floatly
         public static string TempDirectory { get; set; } = System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data" ,"Temp"); // temporary directory for downloaded songs
         public static string DownloadDirectory { get; set; } = System.IO.Path.Combine(Directory.GetCurrentDirectory(),"Data" ,"Downloads");
 
-        public static void Initialize()
+        public static async Task Initialize()
         {
             // Create necessary directories
             if (!Directory.Exists(TempDirectory))
@@ -54,6 +59,85 @@ namespace Floatly
             if (!Directory.Exists(DownloadDirectory))
             {
                 Directory.CreateDirectory(DownloadDirectory);
+            }
+
+            // apparently this fix long load when first time connecting to db
+            using (var ctx = new FloatlyClientContext())
+            {
+                ctx.Database.EnsureCreatedAsync().Wait();
+                ctx.Database.GetDbConnection().Open();
+                ctx.DownloadedSong.FirstOrDefault(); // triggers model & query compilation
+            }
+
+            // Server library initialization
+            ServerLibrary.Initialize();
+        }
+
+        public static async Task ShowLogin()
+        {
+            if (!await UserData.LoadLoginData()) // check if saved data still valid, if it doesnt then show login and update the autologin
+            {
+            auth:
+                Prefs.isRegister = false;
+                LoginWindow login = new LoginWindow
+                {
+                    Owner = MainWindow.Instance, // important!
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                RegisterWindow register = new RegisterWindow
+                {
+                    Owner = MainWindow.Instance, // important!
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                MainWindow.SetBlur = true;
+                login.ShowDialog();
+                if (Prefs.isRegister)
+                {
+                    register.ShowDialog();
+                }
+                if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
+                {
+                    goto auth; // re-authenticate
+                }
+                MainWindow.Instance.Lbl_Username.Content = Prefs.LoginUsername == "" ? "Anonymous" : Prefs.LoginUsername;
+                MainWindow.SetBlur = false;
+            }
+            else
+            {
+                await Notification.ShowNotification("Login successful");
+            }
+        }
+
+        public static async Task<bool> isOnline()
+        {
+            var http = new System.Net.Http.HttpClient
+            {
+                Timeout = TimeSpan.FromSeconds(3) // shorter timeout
+            };
+
+            try
+            {
+                var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                var res = await http.GetAsync(Prefs.ServerUrl + "/api/info", cts.Token);
+
+                if (res.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (TaskCanceledException)
+            {
+                return false;
+
+            }
+            catch
+            {
+                return false;
+
             }
         }
     }

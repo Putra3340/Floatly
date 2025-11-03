@@ -64,7 +64,6 @@ namespace Floatly.Utils
                         else
                             CurrentActiveLyrics = entry.text + "\n" + entry.text2;
                     }
-
                 };
                 timer.Start();
             }

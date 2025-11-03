@@ -11,38 +11,32 @@ namespace Floatly.Models.Form
 
     public class PlayerCard : INotifyPropertyChanged
     {
-        private string title;
         public string Title
         {
-            get => title;
-            set { title = value; OnPropertyChanged(); }
+            get => field;
+            set { field = value; OnPropertyChanged(); }
         }
-
-        private string artist;
         public string Artist
         {
-            get => artist;
-            set { artist = value; OnPropertyChanged(); }
+            get => field;
+            set { field = value; OnPropertyChanged(); }
         }
 
-        private string banner = "/Assets/Images/banner-default.jpg";
         public string Banner
         {
-            get => banner;
-            set { banner = value; OnPropertyChanged(); }
-        }
-        private string artistbanner = "/Assets/Images/banner-default.jpg";
+            get => field;
+            set { field = value; OnPropertyChanged(); }
+        } = "/Assets/Images/banner-default.jpg";
         public string ArtistBanner
         {
-            get => artistbanner;
-            set { artistbanner = value; OnPropertyChanged(); }
-        }
-        private string artistbio = "/Assets/Images/banner-default.jpg";
+            get => field;
+            set { field = value; OnPropertyChanged(); }
+        } = "/Assets/Images/banner-default.jpg";
         public string ArtistBio
         {
-            get => artistbio;
-            set { artistbio = value; OnPropertyChanged(); }
-        }
+            get => field;
+            set { field = value; OnPropertyChanged(); }
+        } = "/Assets/Images/banner-default.jpg";
         public string NextQueueImage { get; set; } = "/Assets/Images/banner-default.jpg";
         public string NextQueueTitle { get; set; } = "Next Up Title";
         public event PropertyChangedEventHandler PropertyChanged;

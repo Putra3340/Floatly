@@ -27,6 +27,11 @@ Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTIN
 - https://floatly.putrartx.my.id
 - [Floatly Self-Host Server](https://github.com/Putra3340/Floatly-Server)
 
+
+## Code Style
+- Minimize direct Mainwindow.instance use Mainwindow.variable or Mainwindow.Method() instead.
+- .NET 10 features must be used where possible.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
