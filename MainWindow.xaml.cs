@@ -1,5 +1,6 @@
 ﻿using Floatly.Api;
 using Floatly.Models.ApiModel;
+using Floatly.Models.ApiModels;
 using Floatly.Models.Database;
 using Floatly.Models.Form;
 using Floatly.Utils;
@@ -41,6 +42,7 @@ namespace Floatly
 
         public static MainWindow Instance { get; private set; } // singleton pattern
         public static PlayerCard plc = new(); // player card model
+        public List<Grid> ListPanelGrid = new();
         public static bool SetBlur { get => field; set { field = value; Instance?.Blur(value); } } = true; // default true
         public MainWindow()
         {
@@ -68,17 +70,23 @@ namespace Floatly
                 Prefs.OnlineModeChanged += OfflineMode;
                 slidertimer.Start();
                 lastnavbtn = NavHome; // default to home
-                // so when app started we load the last played song from queue
-                var lastsong = QueueManager.GetCurrentSong().Result;
-                if (lastsong != null)
-                {
-                    plc.Title = lastsong.Title;
-                    plc.Artist = lastsong.Artist;
-                    plc.Banner = lastsong.Banner;
-                    plc.ArtistBanner = lastsong.ArtistCover;
-                    plc.ArtistBio = lastsong.ArtistBio.Substring(0, 100) + "..." ?? "";
-                }
+
+                // so when app started we load the last played song from queue TODO BUGS
+                //var lastsong = QueueManager.GetCurrentSong().Result;
+                //if (lastsong != null)
+                //{
+                //    plc.Title = lastsong.Title;
+                //    plc.Artist = lastsong.Artist;
+                //    plc.Banner = lastsong.Banner;
+                //    plc.ArtistBanner = lastsong.ArtistCover;
+                //    plc.ArtistBio = lastsong.ArtistBio.Substring(0, 100) + "..." ?? "";
+                //}
                 PlayerCard.DataContext = plc;
+                ListPanelGrid.Add(PanelHome);
+                ListPanelGrid.Add(PanelOnline);
+                ListPanelGrid.Add(PanelDownloaded);
+                ListPanelGrid.Add(PanelQueue);
+                ListPanelGrid.Add(PanelArtist);
             }
             catch (Exception ex)
             {
@@ -176,26 +184,14 @@ namespace Floatly
             {
                 Style_ChangeButtonBackground(btn, "AccentIndigo"); // highlight this button
                 Style_ChangeButtonBackground(lastnavbtn); // clear previous button
-
-                PanelHome.Visibility = Visibility.Visible;
-                PanelOnline.Visibility = Visibility.Collapsed;
-                PanelDownloaded.Visibility = Visibility.Collapsed;
-                PanelQueue.Visibility = Visibility.Collapsed;
-
-
+                CollapseGridExcept(PanelHome);
                 lastnavbtn = btn; // set last button to this button
             }
             else if (btn.Name == "NavSearch")
             {
                 Style_ChangeButtonBackground(btn, "AccentIndigo"); // highlight this button
                 Style_ChangeButtonBackground(lastnavbtn); // clear previous button
-
-                PanelHome.Visibility = Visibility.Collapsed;
-                PanelOnline.Visibility = Visibility.Visible;
-                PanelDownloaded.Visibility = Visibility.Collapsed;
-                PanelQueue.Visibility = Visibility.Collapsed;
-
-
+                CollapseGridExcept(PanelOnline);
                 lastnavbtn = btn; // set last button to this button
                 // Load search panel
                 if (List_ArtistSearch.ItemsSource == null && List_AlbumSearch.ItemsSource == null && List_SongSearch.ItemsSource == null)
@@ -207,14 +203,8 @@ namespace Floatly
             {
                 Style_ChangeButtonBackground(btn, "AccentIndigo"); // highlight this button
                 Style_ChangeButtonBackground(lastnavbtn); // clear previous button
-
-                PanelHome.Visibility = Visibility.Collapsed;
-                PanelOnline.Visibility = Visibility.Collapsed;
-                PanelDownloaded.Visibility = Visibility.Visible;
-                PanelQueue.Visibility = Visibility.Collapsed;
-
+                CollapseGridExcept(PanelDownloaded);
                 lastnavbtn = btn; // set last button to this button
-
                 // Load downloaded panel
                 ServerLibrary.GetDownloadedSongs();
             }
@@ -222,14 +212,8 @@ namespace Floatly
             {
                 Style_ChangeButtonBackground(btn, "AccentIndigo"); // highlight this button
                 Style_ChangeButtonBackground(lastnavbtn); // clear previous button
-
-                PanelHome.Visibility = Visibility.Collapsed;
-                PanelOnline.Visibility = Visibility.Collapsed;
-                PanelDownloaded.Visibility = Visibility.Collapsed;
-                PanelQueue.Visibility = Visibility.Visible;
-
+                CollapseGridExcept(PanelQueue);
                 lastnavbtn = btn; // set last button to this button
-
                 // Load queue panel
                 ServerLibrary.GetQueueSong();
             }
@@ -247,7 +231,7 @@ namespace Floatly
             }
             else if (btn.Name == "NavExit")
             {
-
+                Close_Click(null,null);
             }
 
         }
@@ -304,6 +288,21 @@ namespace Floatly
             // Assign the new style to the button
             btn.Style = newStyle;
 
+        }
+
+        private void CollapseGridExcept(Grid except)
+        {
+            foreach (var grid in ListPanelGrid)
+            {
+                if (grid != except)
+                    grid.Visibility = Visibility.Collapsed;
+                else
+                    grid.Visibility = Visibility.Visible; 
+            }
+        }
+        public void OpenArtistPage(Artist artist)
+        {
+            CollapseGridExcept(PanelArtist);
         }
         #endregion
 
@@ -543,8 +542,8 @@ namespace Floatly
                 else if (sender is Button btnn && btnn.DataContext is DownloadedSong offlinesong)
                 {
                     ContextMenu cm = this.FindResource("SongOfflineContextMenu") as ContextMenu;
-                    cm.DataContext = offlinesong; // set the context menu data context to the song
-                    cm.PlacementTarget = btnn; // set the placement target to the button
+                    cm.DataContext = offlinesong;
+                    cm.PlacementTarget = btnn;
                     cm.IsOpen = true;
                 }
                 return;
@@ -553,7 +552,10 @@ namespace Floatly
             {
                 if (sender is Button btnonline)
                 {
-                    await ServerLibrary.Play(btnonline.DataContext);
+                    if (btnonline.DataContext is HomeSong || btnonline.DataContext is DownloadedSong)
+                        await ServerLibrary.Play(btnonline.DataContext);
+                    else if (btnonline.DataContext is HomeArtist)
+                        await ServerLibrary.GetArtist(btnonline.DataContext);
                     return;
                 }
             }

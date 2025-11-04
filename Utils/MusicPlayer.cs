@@ -43,6 +43,7 @@ namespace Floatly.Utils
         public static Image VideoPlayer = null;
         public async static void Play(string filePath,string lyricspath)
         {
+            
             // Setup lyrics first
             timer.Stop();
             CurrentActiveLyrics = ""; // Clear current lyrics
@@ -53,18 +54,7 @@ namespace Floatly.Utils
             {
                 _player.Open(new Uri(filePath, UriKind.RelativeOrAbsolute));
                 _player.Play();
-                timer.Tick += (s, e) =>
-                {
-                    // support when player position changed
-                    var entry = lyricslist.FirstOrDefault(x => _player.Position >= x.start && _player.Position <= x.end);
-                    if (!string.IsNullOrEmpty(entry.text)) // or check entry.start != default
-                    {
-                        if(entry.text == "NULL")
-                            CurrentActiveLyrics = "Oops You caught us";
-                        else
-                            CurrentActiveLyrics = entry.text + "\n" + entry.text2;
-                    }
-                };
+                timer.Tick += LyricsTick;
                 timer.Start();
             }
             catch (Exception ex)
@@ -72,6 +62,19 @@ namespace Floatly.Utils
                 MessageBox.Show($"Error playing music: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        public static void LyricsTick(object s, EventArgs e)
+        {
+            // support when player position changed
+            var entry = lyricslist.FirstOrDefault(x => _player.Position >= x.start && _player.Position <= x.end);
+            if (!string.IsNullOrEmpty(entry.text)) // or check entry.start != default
+            {
+                if (entry.text == "NULL")
+                    CurrentActiveLyrics = "Oops You caught us";
+                else
+                    CurrentActiveLyrics = entry.text + "\n" + entry.text2;
+            }
+        }
+        public static async void Resume() => _player.Play();
 
         public static void Pause() => _player.Pause();
 

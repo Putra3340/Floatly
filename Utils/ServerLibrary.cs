@@ -128,7 +128,15 @@ namespace Floatly.Utils
                 plc.ArtistBanner = offlinesong.ArtistCover;
                 plc.ArtistBio = offlinesong.ArtistBio.Substring(0, 100) + "...";
             }
-            
+        }
+        public static async Task GetArtist(object artist)
+        {
+            if (artist is HomeArtist a)
+            {
+                var artistnew = await ApiLibrary.GetArtist(a.Id);
+                MainWindow.Instance.OpenArtistPage(artistnew);
+            }
+            return;
         }
         #endregion
     }

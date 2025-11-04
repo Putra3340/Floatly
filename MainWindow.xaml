@@ -462,7 +462,7 @@
                                     <TextBlock Text="Debug Menu" Foreground="{DynamicResource PrimaryText}" FontSize="14" Grid.Column="1" VerticalAlignment="Center" Margin="0,10,10,10" IsHitTestVisible="False" FontFamily="/Assets/Fonts/Geist/#Geist"/>
                                 </Grid>
                             </StackPanel>
-                            <Button Content="" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Row="8"  Margin="0,8,0,8">
+                            <Button x:Name="NavExit" Content="" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Nav_Click" Grid.Row="8"  Margin="0,8,0,8">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Border CornerRadius="10" Background="{TemplateBinding Background}">
@@ -791,6 +791,26 @@ RenderingBias="Quality" />
                         </StackPanel>
                     </Border>
 
+                </Grid>
+                <Grid Grid.Column="1" Grid.Row="1" x:Name="PanelArtist" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <!-- Greeting -->
+                        <RowDefinition Height="*"/>
+                        <!-- Scrollable content -->
+                    </Grid.RowDefinitions>
+                    <Grid Margin="20">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Rectangle x:Name="Artist_Cover" Width="200" Height="200">
+                            <Rectangle.Fill>
+                                <ImageBrush ImageSource="/Assets/Images/icon-user.png"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
+                        <TextBlock Grid.Column="1" Text="Artist Name" Foreground="White" FontFamily="/Assets/Fonts/Geist/#Geist" FontSize="28" VerticalAlignment="Bottom"/>
+                    </Grid>
                 </Grid>
                 <Grid Grid.Column="1" Grid.Row="1" Background="{DynamicResource Tranparent}" x:Name="PanelOnline" Visibility="Collapsed">
                     <Grid.RowDefinitions>
