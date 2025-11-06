@@ -31,6 +31,7 @@ Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTIN
 ## Code Style
 - Minimize direct Mainwindow.instance use Mainwindow.variable or Mainwindow.Method() instead.
 - .NET 10 features must be used where possible.
+- Never use Api/Database Model directly to bind/set datacontext UI elements to Always use Form Model (see [PlayerCardModel.cs](Models/Form/PlayerCardModel.cs) and [StaticBindingModel.cs](Models/Form/StaticBindingModel.cs)).
 
 ## License
 

@@ -1,5 +1,4 @@
 ﻿using Floatly.Api;
-using Floatly.Models.ApiModel;
 using Floatly.Models.Database;
 using Floatly.Models.Form;
 using Floatly.Utils;
@@ -7,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -44,37 +44,49 @@ namespace Floatly.Utils
             AlbumListSearch = MainWindow.Instance.List_AlbumSearch;
             DownloadedSong = MainWindow.Instance.List_DownloadedSong;
             QueuedSong = MainWindow.Instance.List_QueuedSong;
-            plc = MainWindow.plc;
+            plc = StaticBinding.plc;
         }
 
         // This is a default value to prevent errors, and for filtering
         // maybe dont set it again if already set (Issue #2)
         // 4 October 2025 - This is i can do to optimize it a bit, the memory usage is still high,but it will low eventually - #Issue #2
         // 9 October 2025 - I think this is not with this part of code that was heavy, i think its the form itself
-        private static Library lib_home = null;
-        private static Library _allSearchResults = new();
+        
 
         #region Fetch
         public static async Task LoadHome()
         {
             // It's better to avoid forcing GC.Collect() for production code unless absolutely necessary.
-            lib_home ??= await ApiLibrary.GetHomeLibrary();
-            songlist.ItemsSource = lib_home.Songs.ToList();
-            artistlist.ItemsSource = lib_home.Artists.ToList();
-            albumlist.ItemsSource = lib_home.Albums.ToList();
-            songlist.UpdateLayout();
-            artistlist.UpdateLayout();
-            albumlist.UpdateLayout();
+            var lib = await ApiLibrary.GetHomeLibrary();
+            StaticBinding.HomeSong.Clear();
+            foreach (var song in lib.Songs)
+                StaticBinding.HomeSong.Add(song);
+            StaticBinding.HomeAlbum.Clear();
+            foreach(var album in lib.Albums)
+                StaticBinding.HomeAlbum.Add(album);
+            StaticBinding.HomeArtist.Clear();
+            foreach (var artist in lib.Artists)
+                StaticBinding.HomeArtist.Add(artist);
+            songlist.ItemsSource = StaticBinding.HomeSong;
+            artistlist.ItemsSource = StaticBinding.HomeArtist;
+            albumlist.ItemsSource = StaticBinding.HomeAlbum;
         }
         public static async Task SearchAsync(string query)
         {
-            _allSearchResults = await ApiLibrary.Search(query);
-            SongListSearch.ItemsSource = _allSearchResults.Songs.Take(20).ToList();
-            ArtistListSearch.ItemsSource = _allSearchResults.Artists.ToList();
-            AlbumListSearch.ItemsSource = _allSearchResults.Albums.ToList();
-            SongListSearch.UpdateLayout();
-            ArtistListSearch.UpdateLayout();
-            AlbumListSearch.UpdateLayout();
+            var lib = await ApiLibrary.Search(query);
+            StaticBinding.SearchSong.Clear();
+            foreach (var song in lib.Songs)
+                StaticBinding.SearchSong.Add(song);
+            StaticBinding.SearchAlbum.Clear();
+            foreach (var album in lib.Albums)
+                StaticBinding.SearchAlbum.Add(album);
+            StaticBinding.SearchArtist.Clear();
+            foreach (var artist in lib.Artists)
+                StaticBinding.SearchArtist.Add(artist);
+
+            SongListSearch.ItemsSource = StaticBinding.SearchSong;
+            ArtistListSearch.ItemsSource = StaticBinding.SearchArtist;
+            AlbumListSearch.ItemsSource = StaticBinding.SearchAlbum;
         }
 
         public static async Task GetDownloadedSongs()
@@ -94,27 +106,27 @@ namespace Floatly.Utils
         // Play song from either online or offline Directly
         public static async Task Play(object song)
         {
-            if(song is HomeSong onlinesong)
+            if(song is Song onlinesong)
             {
                 plc.Title = onlinesong.Title;
-                plc.Artist = onlinesong.Artist;
+                plc.Artist = onlinesong.ArtistName;
                 plc.Banner = onlinesong.Banner;
                 MusicPlayer.Play(onlinesong.Music, onlinesong.Lyrics);
                 _ = Api.Api.Play(onlinesong.Id); // Fire and forget
                 var artist = await Api.ApiLibrary.GetArtist(onlinesong.ArtistId);
-                plc.ArtistBanner = artist.CoverImagePath;
+                plc.ArtistBanner = artist.CoverUrl;
                 plc.ArtistBio = artist.Bio.Substring(0, 100) + "...";
                 await QueueManager.AddSongToQueue(new Queue
                 {
                     Title = onlinesong.Title,
-                    Artist = onlinesong.Artist,
+                    Artist = onlinesong.ArtistName,
                     Music = onlinesong.Music,
                     Lyrics = onlinesong.Lyrics,
                     Cover = onlinesong.Cover,
                     Banner = onlinesong.Banner,
                     SongLength = onlinesong.SongLength,
                     ArtistBio = artist.Bio,
-                    ArtistCover = artist.CoverImagePath,
+                    ArtistCover = artist.CoverUrl,
                     CreatedAt = DateTime.Now,
                     Status = (int)QueueManager.QueueStatus.Current, // set as current song because it plays immediately
                 });
@@ -131,7 +143,7 @@ namespace Floatly.Utils
         }
         public static async Task GetArtist(object artist)
         {
-            if (artist is HomeArtist a)
+            if (artist is Artist a)
             {
                 var artistnew = await ApiLibrary.GetArtist(a.Id);
                 MainWindow.Instance.OpenArtistPage(artistnew);

@@ -1,5 +1,4 @@
-﻿using Floatly.Models.ApiModel;
-using Floatly.Utils;
+﻿using Floatly.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;

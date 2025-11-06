@@ -1,6 +1,4 @@
 ﻿using Floatly.Api;
-using Floatly.Models.ApiModel;
-using Floatly.Models.ApiModels;
 using Floatly.Models.Database;
 using Floatly.Models.Form;
 using Floatly.Utils;
@@ -41,7 +39,6 @@ namespace Floatly
         bool isDragging = false; // dragging slider
 
         public static MainWindow Instance { get; private set; } // singleton pattern
-        public static PlayerCard plc = new(); // player card model
         public List<Grid> ListPanelGrid = new();
         public static bool SetBlur { get => field; set { field = value; Instance?.Blur(value); } } = true; // default true
         public MainWindow()
@@ -81,7 +78,7 @@ namespace Floatly
                 //    plc.ArtistBanner = lastsong.ArtistCover;
                 //    plc.ArtistBio = lastsong.ArtistBio.Substring(0, 100) + "..." ?? "";
                 //}
-                PlayerCard.DataContext = plc;
+                PlayerCard.DataContext = StaticBinding.plc;
                 ListPanelGrid.Add(PanelHome);
                 ListPanelGrid.Add(PanelOnline);
                 ListPanelGrid.Add(PanelDownloaded);
@@ -532,7 +529,7 @@ namespace Floatly
             if (e.ChangedButton == MouseButton.Right)
             {
                 // show context menu
-                if (sender is Button btn && btn.DataContext is Floatly.Models.ApiModel.HomeSong song)
+                if (sender is Button btn && btn.DataContext is Song song)
                 {
                     ContextMenu cm = this.FindResource("SongContextMenu") as ContextMenu;
                     cm.DataContext = song; // set the context menu data context to the song
@@ -552,9 +549,9 @@ namespace Floatly
             {
                 if (sender is Button btnonline)
                 {
-                    if (btnonline.DataContext is HomeSong || btnonline.DataContext is DownloadedSong)
+                    if (btnonline.DataContext is Song || btnonline.DataContext is DownloadedSong)
                         await ServerLibrary.Play(btnonline.DataContext);
-                    else if (btnonline.DataContext is HomeArtist)
+                    else if (btnonline.DataContext is Artist)
                         await ServerLibrary.GetArtist(btnonline.DataContext);
                     return;
                 }
@@ -563,7 +560,7 @@ namespace Floatly
         }
         private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is MenuItem mi && mi.DataContext is Floatly.Models.ApiModel.HomeSong song)
+            if (sender is MenuItem mi && mi.DataContext is Song song)
             {
                 if (mi.Header.ToString() == "Add to Queue")
                 {
@@ -571,14 +568,14 @@ namespace Floatly
                     var queue = new Queue
                     {
                         Title = song.Title,
-                        Artist = song.Artist,
+                        Artist = song.ArtistName,
                         Music = song.Music,
                         Lyrics = song.Lyrics,
                         Cover = song.Cover,
                         Banner = song.Banner,
                         SongLength = song.SongLength,
                         ArtistBio = artist.Bio,
-                        ArtistCover = artist.CoverImagePath,
+                        ArtistCover = artist.CoverUrl,
                         CreatedAt = DateTime.Now,
                         Status = (int)QueueManager.QueueStatus.Next,
                     };
@@ -592,14 +589,14 @@ namespace Floatly
                     var queue = new Queue
                     {
                         Title = song.Title,
-                        Artist = song.Artist,
+                        Artist = song.ArtistName,
                         Music = song.Music,
                         Lyrics = song.Lyrics,
                         Cover = song.Cover,
                         Banner = song.Banner,
                         SongLength = song.SongLength,
                         ArtistBio = artist.Bio,
-                        ArtistCover = artist.CoverImagePath,
+                        ArtistCover = artist.CoverUrl,
                         CreatedAt = DateTime.Now,
                     };
                     await db.Queue.AddAsync(queue);
@@ -640,13 +637,13 @@ namespace Floatly
                     await File.WriteAllBytesAsync(bannerPath, bannerData);
 
                     var artist = await Api.ApiLibrary.GetArtist(song.ArtistId);
-                    var artistCoverData = await httpClient.GetByteArrayAsync(artist.CoverImagePath);
+                    var artistCoverData = await httpClient.GetByteArrayAsync(artist.CoverUrl);
                     var artistCoverPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(artistCoverData)}_artistcover.png");
                     await File.WriteAllBytesAsync(artistCoverPath, artistCoverData);
 
                     var Downloaded = new DownloadedSong
                     {
-                        Artist = song.Artist,
+                        Artist = song.ArtistName,
                         ArtistId = song.ArtistId,
                         ArtistBio = artist.Bio,
                         ArtistCover = artistCoverPath,
@@ -661,7 +658,7 @@ namespace Floatly
                     await db.DownloadedSong.AddAsync(Downloaded);
                     await db.SaveChangesAsync();
 
-                    Notification.ShowNotification($"Downloaded {song.Artist} cover to {downloadFolder}");
+                    Notification.ShowNotification($"Downloaded {song.ArtistName} cover to {downloadFolder}");
                 }
 
             }

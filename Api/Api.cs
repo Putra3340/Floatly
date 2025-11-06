@@ -7,7 +7,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
-using Floatly.Models.ApiModel;
 namespace Floatly.Api
 {
     public static class Api

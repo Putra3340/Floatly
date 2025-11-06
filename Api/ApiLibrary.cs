@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Floatly.Models.Form;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
-using Floatly.Models.ApiModel;
-using Floatly.Models.ApiModels;
 namespace Floatly.Api
 {
     public static class ApiLibrary
