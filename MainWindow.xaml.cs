@@ -51,11 +51,11 @@ namespace Floatly
                 {
                     await Prefs.Initialize(); // initialize prefs
                     await Prefs.isOnline(); // check online status on load
+                    await Prefs.ShowLogin(); // show login if needed
                     if (List_Song.ItemsSource == null)
                     {
                         await ServerLibrary.LoadHome();
                     }
-                    await Prefs.ShowLogin(); // show login if needed
                 };
                 UpdateGreeting();
                 slidertimer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
@@ -164,7 +164,7 @@ namespace Floatly
 
         #region Navigation
         Button lastnavbtn = null; // we use this to make navigate is dynamic
-        private void Nav_Click(object sender, RoutedEventArgs e) // put it on one single function to reduce redundancy  
+        private async void Nav_Click(object sender, RoutedEventArgs e) // put it on one single function to reduce redundancy  
         {
             if (!Prefs.OnlineMode)
             {
@@ -353,18 +353,19 @@ namespace Floatly
         #region Player Controls
 
         // Play/Pause Toggle
-        bool ispaused = false;
         private void Button_PlayPause_Click(object sender, RoutedEventArgs e)
         {
-            if (ispaused)
+            if (MusicPlayer.isPaused)
             {
-                MusicPlayer.Player.Play(); // TODO
-                ispaused = false;
+                MusicPlayer.Player.Play();
+                MusicPlayer.isPaused = false;
+                ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
             }
             else
             {
                 MusicPlayer.Player.Pause();
-                ispaused = true;
+                MusicPlayer.isPaused = true;
+                ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-pause.png"));
             }
         }
         #endregion
@@ -397,14 +398,15 @@ namespace Floatly
         #region Notification
         private void ShowNotification(object sender, (string message, string resname) args)
         {
-            Notification.IsBusy = true;
             NotificationText.Text = args.message;
 
             var resbrush = (Brush)FindResource(args.resname);
-            if (resbrush == null) // should never happen
+            if (resbrush == null)
                 return;
+
             NotificationPanel.Background = resbrush;
-            // Slide in
+
+            // Slide-in animation
             var slideIn = new ThicknessAnimation
             {
                 From = new Thickness(0, 0, -500, 0),
@@ -413,27 +415,31 @@ namespace Floatly
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
 
-            slideIn.Completed += (s, e) =>
+            slideIn.Completed += async (s, e) =>
             {
-                // Start slide-out AFTER 3s
+                // Wait for display time (3s)
+                await Task.Delay(3000);
+
+                // Slide-out animation
                 var slideOut = new ThicknessAnimation
                 {
                     From = new Thickness(0, 0, 0, 0),
                     To = new Thickness(0, 0, -500, 0),
-                    BeginTime = TimeSpan.FromSeconds(3), // wait before sliding out
                     Duration = TimeSpan.FromSeconds(0.5),
                     EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
                 };
+
                 slideOut.Completed += (s2, e2) =>
                 {
                     Notification.IsBusy = false;
                 };
-                NotificationPanel.BeginAnimation(Border.MarginProperty, slideOut);
 
+                NotificationPanel.BeginAnimation(Border.MarginProperty, slideOut);
             };
 
             NotificationPanel.BeginAnimation(Border.MarginProperty, slideIn);
         }
+
         #endregion
 
         #region Mode Switching
@@ -550,7 +556,10 @@ namespace Floatly
                 if (sender is Button btnonline)
                 {
                     if (btnonline.DataContext is Song || btnonline.DataContext is DownloadedSong)
+                    {
                         await ServerLibrary.Play(btnonline.DataContext);
+                        ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
+                    }
                     else if (btnonline.DataContext is Artist)
                         await ServerLibrary.GetArtist(btnonline.DataContext);
                     return;
@@ -658,7 +667,7 @@ namespace Floatly
                     await db.DownloadedSong.AddAsync(Downloaded);
                     await db.SaveChangesAsync();
 
-                    Notification.ShowNotification($"Downloaded {song.ArtistName} cover to {downloadFolder}");
+                    Notification.ShowNotification($"Downloaded {song.ArtistName}-{song.Title}");
                 }
 
             }
@@ -677,6 +686,7 @@ namespace Floatly
                             if (File.Exists(downloaded.Music))
                             {
                                 // TODO add if song is played then stop music first before deleting,it will make redundancy if not
+                                // 12 November - Detach first
                                 File.Delete(downloaded.Music);
                             }
                             if (File.Exists(downloaded.Lyrics))
@@ -690,7 +700,7 @@ namespace Floatly
                         }
                         catch (Exception ex)
                         {
-                            Notification.ShowNotification($"Error deleting files: {ex.Message}");
+                            MessageBox.Show($"Error deleting files: {ex.Message}");
                         }
                         // refresh list
                         var list = new ObservableCollection<DownloadedSong>(db.DownloadedSong.OrderByDescending(d => d.Id).ToList());

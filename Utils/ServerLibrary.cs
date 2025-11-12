@@ -51,7 +51,7 @@ namespace Floatly.Utils
         // maybe dont set it again if already set (Issue #2)
         // 4 October 2025 - This is i can do to optimize it a bit, the memory usage is still high,but it will low eventually - #Issue #2
         // 9 October 2025 - I think this is not with this part of code that was heavy, i think its the form itself
-        
+        // 6 November 2025 - After refactoring ApiLibrary and other parts, memory usage is now hopefully more stable
 
         #region Fetch
         public static async Task LoadHome()
@@ -83,7 +83,6 @@ namespace Floatly.Utils
             StaticBinding.SearchArtist.Clear();
             foreach (var artist in lib.Artists)
                 StaticBinding.SearchArtist.Add(artist);
-
             SongListSearch.ItemsSource = StaticBinding.SearchSong;
             ArtistListSearch.ItemsSource = StaticBinding.SearchArtist;
             AlbumListSearch.ItemsSource = StaticBinding.SearchAlbum;
@@ -111,11 +110,14 @@ namespace Floatly.Utils
                 plc.Title = onlinesong.Title;
                 plc.Artist = onlinesong.ArtistName;
                 plc.Banner = onlinesong.Banner;
-                MusicPlayer.Play(onlinesong.Music, onlinesong.Lyrics);
-                _ = Api.Api.Play(onlinesong.Id); // Fire and forget
+
+                // Get the music binary URL
+                var musicbin = await ApiLibrary.Play(onlinesong.Id, "96k");
+                MusicPlayer.Play(musicbin, onlinesong.Lyrics);
+
                 var artist = await Api.ApiLibrary.GetArtist(onlinesong.ArtistId);
                 plc.ArtistBanner = artist.CoverUrl;
-                plc.ArtistBio = artist.Bio.Substring(0, 100) + "...";
+                plc.ArtistBio = artist.Bio.Substring(0, 10) + "...";
                 await QueueManager.AddSongToQueue(new Queue
                 {
                     Title = onlinesong.Title,
@@ -138,7 +140,7 @@ namespace Floatly.Utils
                 plc.Banner = offlinesong.Banner;
                 MusicPlayer.Play(offlinesong.Music, offlinesong.Lyrics);
                 plc.ArtistBanner = offlinesong.ArtistCover;
-                plc.ArtistBio = offlinesong.ArtistBio.Substring(0, 100) + "...";
+                plc.ArtistBio = offlinesong.ArtistBio.Substring(0, 10) + "...";
             }
         }
         public static async Task GetArtist(object artist)

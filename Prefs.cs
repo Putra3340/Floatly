@@ -71,6 +71,9 @@ namespace Floatly
 
             // Server library initialization
             ServerLibrary.Initialize();
+
+            // start notification worker
+            _ = Notification.BackgroundNotificationWorker(); 
         }
 
         public static async Task ShowLogin()
@@ -104,7 +107,7 @@ namespace Floatly
             }
             else
             {
-                await Notification.ShowNotification("Login successful");
+                Notification.ShowNotification("Login successful");
             }
         }
 

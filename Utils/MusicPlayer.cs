@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Floatly.Api;
+using System;
 using System.IO;
 using System.Numerics;
 using System.Windows;
@@ -41,7 +42,10 @@ namespace Floatly.Utils
             Player = _player
         };
         public static Image VideoPlayer = null;
-        public async static void Play(string filePath,string lyricspath)
+
+        public static bool isPaused = false;
+
+        public async static void Play(string songpath,string lyricspath)
         {
             
             // Setup lyrics first
@@ -52,7 +56,7 @@ namespace Floatly.Utils
             currentlyricpath = lyricspath; // for debugging purposes
             try
             {
-                _player.Open(new Uri(filePath, UriKind.RelativeOrAbsolute));
+                _player.Open(new Uri(songpath, UriKind.RelativeOrAbsolute));
                 _player.Play();
                 timer.Tick += LyricsTick;
                 timer.Start();

@@ -50,6 +50,23 @@ namespace Floatly.Api
             };
             return JsonSerializer.Deserialize<Artist>(result, options);
         }
+        public async static Task<string> Play(int songid, string bitrate)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, _serverurl + "/api/play");
+            var collection = new List<KeyValuePair<string, string>>();
+            collection.Add(new("token", Prefs.LoginToken));
+            collection.Add(new("songId", songid.ToString()));
+            collection.Add(new("bitrate", "96k")); // temporary fix for bitrate selection
+            var content = new FormUrlEncodedContent(collection);
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                string a = (await response.Content.ReadAsStringAsync());
+                throw new Exception(await response.Content.ReadAsStringAsync());
+            }
+            return await response.Content.ReadAsStringAsync();
+        }
         public static async Task<Library> Search(string searchbytext)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v2/search?anycontent=" + searchbytext);

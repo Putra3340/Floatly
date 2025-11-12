@@ -1988,9 +1988,9 @@ VerticalAlignment="Center"/>
                                                         </Style>
                                                     </Button.Style>
                                                 </Button>
-                                                <Border Background="White" Width="20" Height="20" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                                                <Border x:Name="Icon_PlayPause" Background="White" Width="20" Height="20" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
                                                     <Border.OpacityMask>
-                                                        <ImageBrush ImageSource="/Assets/Images/icon-resume.png"/>
+                                                        <ImageBrush ImageSource="/Assets/Images/icon-pause.png"/>
                                                     </Border.OpacityMask>
                                                 </Border>
                                                 <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="3">
