@@ -51,11 +51,11 @@ namespace Floatly
                 {
                     await Prefs.Initialize(); // initialize prefs
                     await Prefs.isOnline(); // check online status on load
-                    await Prefs.ShowLogin(); // show login if needed
                     if (List_Song.ItemsSource == null)
                     {
                         await ServerLibrary.LoadHome();
                     }
+                    await Prefs.ShowLogin(); // show login if needed
                 };
                 UpdateGreeting();
                 slidertimer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support

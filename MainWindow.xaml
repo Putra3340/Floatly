@@ -1303,7 +1303,7 @@ VerticalAlignment="Center"/>
     FontWeight="SemiBold"
     FontSize="18"
     Foreground="{DynamicResource PrimaryText}"/>
-                                                        <TextBlock Text="{Binding Artist}" 
+                                                        <TextBlock Text="{Binding ArtistName}" 
     FontSize="14"
     Foreground="{DynamicResource SecondaryText}"/>
                                                     </StackPanel>

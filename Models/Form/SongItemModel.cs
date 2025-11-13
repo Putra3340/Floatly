@@ -35,6 +35,8 @@ namespace Floatly.Models.Form
         public int? ArtistId { get => field; set { field = value; OnPropertyChanged(); } }
         public DateOnly? ReleaseDate { get => field; set { field = value; OnPropertyChanged(); } }
         public string? CoverUrl { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? TotalPlays { get => field; set { field = value; OnPropertyChanged(); } }
+
         public DateTime? CreatedAt { get => field; set { field = value; OnPropertyChanged(); } }
         public DateTime? UpdatedAt { get => field; set { field = value; OnPropertyChanged(); } }
 
@@ -49,6 +51,7 @@ namespace Floatly.Models.Form
         public string? Name { get => field; set { field = value; OnPropertyChanged(); } }
         public string? Bio { get => field; set { field = value; OnPropertyChanged(); } }
         public string? CoverUrl { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? TotalPlays { get => field; set { field = value; OnPropertyChanged(); } }
         public DateTime? CreatedAt { get => field; set { field = value; OnPropertyChanged(); } }
         public DateTime? UpdatedAt { get => field; set { field = value; OnPropertyChanged(); } }
         public event PropertyChangedEventHandler? PropertyChanged;
