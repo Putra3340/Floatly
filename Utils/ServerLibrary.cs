@@ -96,8 +96,13 @@ namespace Floatly.Utils
 
         public static async Task GetQueueSong()
         {
-            QueuedSong.ItemsSource = await QueueManager.GetQueueList();
-            QueuedSong.UpdateLayout();
+            //var queue = await QueueManager.FetchGeneratedQueue();
+            //StaticBinding.QueuedSong.Clear();
+            //foreach (var q in queue)
+            //{
+            //    StaticBinding.QueuedSong.Add(q);
+            //}
+            //QueuedSong.ItemsSource = StaticBinding.QueuedSong;
         }
         #endregion
 

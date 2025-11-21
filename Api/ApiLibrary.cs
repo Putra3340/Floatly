@@ -79,7 +79,7 @@ namespace Floatly.Api
             };
             return JsonSerializer.Deserialize<Library>(result, options);
         }
-        public static async Task<List<Models.Database.Queue>> GetNextQueue()
+        public static async Task<List<Song>> GetNextQueue()
         {
             var client = new HttpClient();
             var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7156/api/getqueue");
@@ -90,8 +90,8 @@ namespace Floatly.Api
             {
                 PropertyNameCaseInsensitive = true
             };
-            List<Models.Database.Queue> queues = JsonSerializer.Deserialize<List<Models.Database.Queue>>(result, options);
-            return queues;
+            List<Song> songs = JsonSerializer.Deserialize<List<Song>>(result, options);
+            return songs;
         }
     }
 }

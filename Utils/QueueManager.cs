@@ -1,5 +1,6 @@
 ﻿using Floatly.Api;
 using Floatly.Models.Database;
+using Floatly.Models.Form;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,21 +36,6 @@ namespace Floatly.Utils
             db.Queue.Add(song);
             db.SaveChanges();
         }
-
-        public static async Task<Queue> PlayNext()
-        {
-            var currentSong = db.Queue.FirstOrDefault(q => q.Status == (int)QueueStatus.Current);
-            if (currentSong != null)
-            {
-                currentSong.Status = (int)QueueStatus.Previous;
-            }
-            var nextSong = db.Queue.FirstOrDefault(q => q.Status == (int)QueueStatus.Next);
-            if (nextSong != null)
-            {
-                nextSong.Status = (int)QueueStatus.Current;
-            }
-            return nextSong;
-        }
         public static async Task<Queue> GetCurrentSong()
         {
             return db.Queue.FirstOrDefault(q => q.Status == (int)QueueStatus.Current);
@@ -77,29 +63,26 @@ namespace Floatly.Utils
         {
             return db.Queue.OrderBy(q => q.Id).ToList();
         }
-        public static async Task<Queue> GetNextSong()
+        public static async Task FetchGeneratedQueue()
         {
-            Queue ret = null;
-            ret = db.Queue.FirstOrDefault(x => x.Status == (int)QueueStatus.Next);
-            if (ret == null)
-                ret = db.Queue.FirstOrDefault(x => x.Status == (int)QueueStatus.NextGenerated);
-            if (ret == null)
+            List<Song> que = await ApiLibrary.GetNextQueue();
+            foreach (var song in que)
             {
-                ret = db.Queue.FirstOrDefault(x => x.Status == (int)QueueStatus.Current);
-            }
-            if(ret == null)
-            {
-                var x = await ApiLibrary.GetNextQueue();
-                foreach(var song in x)
+                Queue q = new Queue()
                 {
-                    song.Status = (int)QueueStatus.NextGenerated;
-                    song.CreatedAt = DateTime.Now;
-                    db.Queue.Add(song);
-                }
-                ret = db.Queue.FirstOrDefault(x => x.Status == (int)QueueStatus.NextGenerated);
+                    Title = song.Title,
+                    Artist = song.ArtistName,
+                    ArtistId    = song.ArtistId,
+                    Banner = song.Banner,
+                    Cover = song.Cover,
+                    SongLength = song.SongLength,
+                    Lyrics = song.Lyrics,
+                    Music = song.Music,
+                    Status = (int)QueueStatus.NextGenerated,
+                    CreatedAt = DateTime.Now
+                };
+                db.Queue.Add(q);
             }
-            // Ensure its not null
-            return ret;
         }
     }
 }

@@ -193,7 +193,7 @@ namespace Floatly
                 // Load search panel
                 if (List_ArtistSearch.ItemsSource == null && List_AlbumSearch.ItemsSource == null && List_SongSearch.ItemsSource == null)
                 {
-                    ServerLibrary.SearchAsync(Tbx_Search.Text);
+                    await ServerLibrary.SearchAsync(Tbx_Search.Text);
                 }
             }
             else if (btn.Name == "NavOffline")
@@ -203,7 +203,7 @@ namespace Floatly
                 CollapseGridExcept(PanelDownloaded);
                 lastnavbtn = btn; // set last button to this button
                 // Load downloaded panel
-                ServerLibrary.GetDownloadedSongs();
+                await ServerLibrary.GetDownloadedSongs();
             }
             else if (btn.Name == "NavQueue")
             {
@@ -212,7 +212,7 @@ namespace Floatly
                 CollapseGridExcept(PanelQueue);
                 lastnavbtn = btn; // set last button to this button
                 // Load queue panel
-                ServerLibrary.GetQueueSong();
+                await ServerLibrary.GetQueueSong();
             }
             else if (btn.Name == "NavPlaylist")
             {
