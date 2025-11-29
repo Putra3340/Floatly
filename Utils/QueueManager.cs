@@ -72,7 +72,7 @@ namespace Floatly.Utils
                 {
                     Title = song.Title,
                     Artist = song.ArtistName,
-                    ArtistId    = song.ArtistId,
+                    ArtistId    = int.Parse(song.ArtistId),
                     Banner = song.Banner,
                     Cover = song.Cover,
                     SongLength = song.SongLength,

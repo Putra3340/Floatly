@@ -9,7 +9,7 @@ namespace Floatly.Models.Form
 {
     public class Song : INotifyPropertyChanged
     {
-        public int Id { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? Id { get => field; set { field = value; OnPropertyChanged(); } }
         public string? Title { get => field; set { field = value; OnPropertyChanged(); } }
         public string? Music { get => field; set { field = value; OnPropertyChanged(); } }
         public string? Lyrics { get => field; set { field = value; OnPropertyChanged(); } }
@@ -22,7 +22,7 @@ namespace Floatly.Models.Form
         public DateTime CreatedAt { get => field; set { field = value; OnPropertyChanged(); } }
 
         public string? ArtistName { get => field; set { field = value; OnPropertyChanged(); } }
-        public int ArtistId { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? ArtistId { get => field; set { field = value; OnPropertyChanged(); } }
         public string? AlbumTitle { get => field; set { field = value; OnPropertyChanged(); } }
         public int AlbumId { get => field; set { field = value; OnPropertyChanged(); } }
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -47,7 +47,7 @@ namespace Floatly.Models.Form
     }
     public class Artist : INotifyPropertyChanged
     {
-        public int Id { get => field; set { field = value; OnPropertyChanged(); } }
+        public int? Id { get => field; set { field = value; OnPropertyChanged(); } }
         public string? Name { get => field; set { field = value; OnPropertyChanged(); } }
         public string? Bio { get => field; set { field = value; OnPropertyChanged(); } }
         public string? CoverUrl { get => field; set { field = value; OnPropertyChanged(); } }

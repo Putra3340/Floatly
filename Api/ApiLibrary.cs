@@ -17,25 +17,26 @@ namespace Floatly.Api
         public static HttpClient client = new HttpClient();
         public static async Task<Library> GetHomeLibrary()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v2");
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            string result = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            try
-            {
-                return JsonSerializer.Deserialize<Library>(result, options);
+            //var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v2");
+            //var response = await client.SendAsync(request);
+            //response.EnsureSuccessStatusCode();
+            //string result = await response.Content.ReadAsStringAsync();
+            //var options = new JsonSerializerOptions
+            //{
+            //    PropertyNameCaseInsensitive = true
+            //};
+            //try
+            //{
+            //    return JsonSerializer.Deserialize<Library>(result, options);
 
-            }
-            catch (JsonException ex)
-            {
-                MessageBox.Show("Error fetching library: " + ex.Message);
-                
-            }
-            return JsonSerializer.Deserialize<Library>(result, options);
+            //}
+            //catch (JsonException ex)
+            //{
+            //    MessageBox.Show("Error fetching library: " + ex.Message);
+
+            //}
+            //return JsonSerializer.Deserialize<Library>(result, options);
+            return null;
 
         }
         public static async Task<Artist> GetArtist(int artistid)
@@ -50,26 +51,23 @@ namespace Floatly.Api
             };
             return JsonSerializer.Deserialize<Artist>(result, options);
         }
-        public async static Task<string> Play(int songid, string bitrate)
+
+        // TODO BITRATE
+        public async static Task<Song> Play(string songid, string bitrate)
         {
-            var request = new HttpRequestMessage(HttpMethod.Post, _serverurl + "/api/play");
-            var collection = new List<KeyValuePair<string, string>>();
-            collection.Add(new("token", Prefs.LoginToken));
-            collection.Add(new("songId", songid.ToString()));
-            collection.Add(new("bitrate", "96k")); // temporary fix for bitrate selection
-            var content = new FormUrlEncodedContent(collection);
-            request.Content = content;
+            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/play/" + songid);
             var response = await client.SendAsync(request);
-            if (response.StatusCode != HttpStatusCode.OK)
+            response.EnsureSuccessStatusCode();
+            string result = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
             {
-                string a = (await response.Content.ReadAsStringAsync());
-                throw new Exception(await response.Content.ReadAsStringAsync());
-            }
-            return await response.Content.ReadAsStringAsync();
+                PropertyNameCaseInsensitive = true
+            };
+            return JsonSerializer.Deserialize<Song>(result, options);
         }
         public static async Task<Library> Search(string searchbytext)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v2/search?anycontent=" + searchbytext);
+            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/search?anycontent=" + searchbytext);
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();

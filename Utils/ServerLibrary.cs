@@ -56,6 +56,7 @@ namespace Floatly.Utils
         #region Fetch
         public static async Task LoadHome()
         {
+            return;
             // It's better to avoid forcing GC.Collect() for production code unless absolutely necessary.
             var lib = await ApiLibrary.GetHomeLibrary();
             StaticBinding.HomeSong.Clear();
@@ -112,17 +113,26 @@ namespace Floatly.Utils
         {
             if(song is Song onlinesong)
             {
-                plc.Title = onlinesong.Title;
-                plc.Artist = onlinesong.ArtistName;
-                plc.Banner = onlinesong.Banner;
+                var music = await ApiLibrary.Play(onlinesong.Id, "96k");
+                plc.Title = music.Title;
+                plc.Artist = music.ArtistName;
+                plc.Banner = music.Banner;
 
                 // Get the music binary URL
-                var musicbin = await ApiLibrary.Play(onlinesong.Id, "96k");
-                MusicPlayer.Play(musicbin, onlinesong.Lyrics);
+                MusicPlayer.Play(music.Music, music.Lyrics);
 
-                var artist = await Api.ApiLibrary.GetArtist(onlinesong.ArtistId);
-                plc.ArtistBanner = artist.CoverUrl;
-                plc.ArtistBio = artist.Bio.Substring(0, 10) + "...";
+                if(music.ArtistId is null)
+                {
+                    plc.ArtistBanner = "";
+                    plc.ArtistBio = "No artist information available.";
+                    return;
+                }
+                else
+                {
+                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(onlinesong.ArtistId));
+                    plc.ArtistBanner = artist.CoverUrl;
+                    plc.ArtistBio = artist.Bio.Substring(0, 10) + "...";
+                }
                 await QueueManager.AddSongToQueue(new Queue
                 {
                     Title = onlinesong.Title,
@@ -132,8 +142,8 @@ namespace Floatly.Utils
                     Cover = onlinesong.Cover,
                     Banner = onlinesong.Banner,
                     SongLength = onlinesong.SongLength,
-                    ArtistBio = artist.Bio,
-                    ArtistCover = artist.CoverUrl,
+                    ArtistBio = plc.ArtistBio,
+                    ArtistCover = plc.ArtistBanner,
                     CreatedAt = DateTime.Now,
                     Status = (int)QueueManager.QueueStatus.Current, // set as current song because it plays immediately
                 });
@@ -152,7 +162,7 @@ namespace Floatly.Utils
         {
             if (artist is Artist a)
             {
-                var artistnew = await ApiLibrary.GetArtist(a.Id);
+                var artistnew = await ApiLibrary.GetArtist(a.Id ?? 0);
                 MainWindow.Instance.OpenArtistPage(artistnew);
             }
             return;

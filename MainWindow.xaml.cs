@@ -573,7 +573,7 @@ namespace Floatly
             {
                 if (mi.Header.ToString() == "Add to Queue")
                 {
-                    var artist = await Api.ApiLibrary.GetArtist(song.ArtistId);
+                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(song.ArtistId));
                     var queue = new Queue
                     {
                         Title = song.Title,
@@ -594,7 +594,7 @@ namespace Floatly
                 }
                 else if (mi.Header.ToString() == "Play Next")
                 {
-                    var artist = await Api.ApiLibrary.GetArtist(song.ArtistId);
+                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(song.ArtistId));
                     var queue = new Queue
                     {
                         Title = song.Title,
@@ -645,7 +645,7 @@ namespace Floatly
                     var bannerPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(bannerData)}_banner.png");
                     await File.WriteAllBytesAsync(bannerPath, bannerData);
 
-                    var artist = await Api.ApiLibrary.GetArtist(song.ArtistId);
+                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(song.ArtistId));
                     var artistCoverData = await httpClient.GetByteArrayAsync(artist.CoverUrl);
                     var artistCoverPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(artistCoverData)}_artistcover.png");
                     await File.WriteAllBytesAsync(artistCoverPath, artistCoverData);
@@ -653,7 +653,7 @@ namespace Floatly
                     var Downloaded = new DownloadedSong
                     {
                         Artist = song.ArtistName,
-                        ArtistId = song.ArtistId,
+                        ArtistId = int.Parse(song.ArtistId),
                         ArtistBio = artist.Bio,
                         ArtistCover = artistCoverPath,
                         Title = song.Title,
