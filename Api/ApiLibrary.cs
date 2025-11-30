@@ -17,25 +17,25 @@ namespace Floatly.Api
         public static HttpClient client = new HttpClient();
         public static async Task<Library> GetHomeLibrary()
         {
-            //var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v2");
-            //var response = await client.SendAsync(request);
-            //response.EnsureSuccessStatusCode();
-            //string result = await response.Content.ReadAsStringAsync();
-            //var options = new JsonSerializerOptions
-            //{
-            //    PropertyNameCaseInsensitive = true
-            //};
-            //try
-            //{
-            //    return JsonSerializer.Deserialize<Library>(result, options);
+            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string result = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            try
+            {
+                return JsonSerializer.Deserialize<Library>(result, options);
 
-            //}
-            //catch (JsonException ex)
-            //{
-            //    MessageBox.Show("Error fetching library: " + ex.Message);
+            }
+            catch (JsonException ex)
+            {
+                MessageBox.Show("Error fetching library: " + ex.Message);
 
-            //}
-            //return JsonSerializer.Deserialize<Library>(result, options);
+            }
+            return JsonSerializer.Deserialize<Library>(result, options);
             return null;
 
         }

@@ -56,7 +56,6 @@ namespace Floatly.Utils
         #region Fetch
         public static async Task LoadHome()
         {
-            return;
             // It's better to avoid forcing GC.Collect() for production code unless absolutely necessary.
             var lib = await ApiLibrary.GetHomeLibrary();
             StaticBinding.HomeSong.Clear();
@@ -129,7 +128,7 @@ namespace Floatly.Utils
                 }
                 else
                 {
-                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(onlinesong.ArtistId));
+                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(music.ArtistId));
                     plc.ArtistBanner = artist.CoverUrl;
                     plc.ArtistBio = artist.Bio.Substring(0, 10) + "...";
                 }
