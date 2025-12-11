@@ -49,9 +49,9 @@ namespace Floatly.Utils
 
         // This is a default value to prevent errors, and for filtering
         // maybe dont set it again if already set (Issue #2)
+        // 6 November 2025 - After refactoring ApiLibrary and other parts, memory usage is now hopefully more stable
         // 4 October 2025 - This is i can do to optimize it a bit, the memory usage is still high,but it will low eventually - #Issue #2
         // 9 October 2025 - I think this is not with this part of code that was heavy, i think its the form itself
-        // 6 November 2025 - After refactoring ApiLibrary and other parts, memory usage is now hopefully more stable
 
         #region Fetch
         public static async Task LoadHome()

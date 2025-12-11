@@ -1901,13 +1901,21 @@ VerticalAlignment="Center"/>
                                 <TextBlock x:Name="Label_SongTitle" Text="{Binding Title}" Foreground="{DynamicResource PrimaryText}" FontSize="24" HorizontalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" Margin="0,0,0,10"/>
                                 <TextBlock x:Name="Label_ArtistName" Text="{Binding Artist}" Foreground="{DynamicResource PrimaryText}" FontSize="16" HorizontalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Light" Margin="0,0,0,10"/>
                                 <StackPanel Margin="0,10,0,0">
-                                    <Grid HorizontalAlignment="Stretch" Height="85">
+                                    <Grid HorizontalAlignment="Stretch" Height="120">
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-
-                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="0">
+                                        <Grid Margin="0,0,0,20">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ComboBox Grid.Column="0"/>
+                                            <ComboBox Grid.Column="1"/>
+                                        </Grid>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"></ColumnDefinition>
@@ -1915,7 +1923,10 @@ VerticalAlignment="Center"/>
                                                     <ColumnDefinition Width="*"></ColumnDefinition>
                                                     <ColumnDefinition Width="*"></ColumnDefinition>
                                                     <ColumnDefinition Width="*"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                                    <ColumnDefinition Width="*"></ColumnDefinition>
                                                 </Grid.ColumnDefinitions>
+                                                <!-- Add to playlist-->
                                                 <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="0">
                                                     <Button.Template>
                                                         <ControlTemplate TargetType="Button">
@@ -1936,13 +1947,12 @@ VerticalAlignment="Center"/>
                                                         </Style>
                                                     </Button.Style>
                                                 </Button>
-                                                <!-- Shuffle button -->
                                                 <Border Background="White" Width="20" Height="20" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
                                                     <Border.OpacityMask>
-                                                        <ImageBrush ImageSource="/Assets/Images/icon-shuffle.png"/>
+                                                        <ImageBrush ImageSource="/Assets/Images/icon-addplaylist.png"/>
                                                     </Border.OpacityMask>
                                                 </Border>
-                                                <!-- Previous Button -->
+                                                <!-- Shuffle button -->
                                                 <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="1">
                                                     <Button.Template>
                                                         <ControlTemplate TargetType="Button">
@@ -1965,10 +1975,36 @@ VerticalAlignment="Center"/>
                                                 </Button>
                                                 <Border Background="White" Width="20" Height="20" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
                                                     <Border.OpacityMask>
+                                                        <ImageBrush ImageSource="/Assets/Images/icon-shuffle.png"/>
+                                                    </Border.OpacityMask>
+                                                </Border>
+                                                <!-- Previous Button -->
+                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="2">
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Background" Value="Transparent"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                                <Border Background="White" Width="20" Height="20" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                                                    <Border.OpacityMask>
                                                         <ImageBrush ImageSource="/Assets/Images/icon-prev.png"/>
                                                     </Border.OpacityMask>
                                                 </Border>
-                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_PlayPause_Click" Grid.Column="2">
+                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_PlayPause_Click" Grid.Column="3">
                                                     <Button.Template>
                                                         <ControlTemplate TargetType="Button">
                                                             <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -1988,34 +2024,9 @@ VerticalAlignment="Center"/>
                                                         </Style>
                                                     </Button.Style>
                                                 </Button>
-                                                <Border x:Name="Icon_PlayPause" Background="White" Width="20" Height="20" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                                                <Border x:Name="Icon_PlayPause" Background="White" Width="20" Height="20" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
                                                     <Border.OpacityMask>
                                                         <ImageBrush ImageSource="/Assets/Images/icon-pause.png"/>
-                                                    </Border.OpacityMask>
-                                                </Border>
-                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="3">
-                                                    <Button.Template>
-                                                        <ControlTemplate TargetType="Button">
-                                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
-                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                            </Border>
-                                                        </ControlTemplate>
-                                                    </Button.Template>
-                                                    <Button.Style>
-                                                        <Style TargetType="Button">
-                                                            <Setter Property="Background" Value="Transparent"/>
-                                                            <Setter Property="Foreground" Value="White"/>
-                                                            <Style.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
-                                                                </Trigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </Button.Style>
-                                                </Button>
-                                                <Border Background="White" Width="20" Height="20" Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
-                                                    <Border.OpacityMask>
-                                                        <ImageBrush ImageSource="/Assets/Images/icon-next.png"/>
                                                     </Border.OpacityMask>
                                                 </Border>
                                                 <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="4">
@@ -2040,7 +2051,57 @@ VerticalAlignment="Center"/>
                                                 </Button>
                                                 <Border Background="White" Width="20" Height="20" Grid.Column="4" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
                                                     <Border.OpacityMask>
+                                                        <ImageBrush ImageSource="/Assets/Images/icon-next.png"/>
+                                                    </Border.OpacityMask>
+                                                </Border>
+                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="5">
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Background" Value="Transparent"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                                <Border Background="White" Width="20" Height="20" Grid.Column="5" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                                                    <Border.OpacityMask>
                                                         <ImageBrush ImageSource="/Assets/Images/icon-loop.png"/>
+                                                    </Border.OpacityMask>
+                                                </Border>
+                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="6">
+                                                    <Button.Template>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                            </Border>
+                                                        </ControlTemplate>
+                                                    </Button.Template>
+                                                    <Button.Style>
+                                                        <Style TargetType="Button">
+                                                            <Setter Property="Background" Value="Transparent"/>
+                                                            <Setter Property="Foreground" Value="White"/>
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Button.Style>
+                                                </Button>
+                                                <Border Background="White" Width="20" Height="20" Grid.Column="6" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                                                    <Border.OpacityMask>
+                                                        <ImageBrush x:Name="Icon_Liked" ImageSource="/Assets/Images/icon-love-blank.png"/>
                                                     </Border.OpacityMask>
                                                 </Border>
                                             </Grid>
@@ -2048,8 +2109,8 @@ VerticalAlignment="Center"/>
                                         </StackPanel>
 
 
-                                        <TextBlock Text="00:00" x:Name="Label_CurrentTime" Foreground="{DynamicResource PrimaryText}" FontSize="14" HorizontalAlignment="Left" Margin="0,0,10,0" VerticalAlignment="Center" Grid.Row="1"/>
-                                        <TextBlock Text="00:00" x:Name="Label_TotalTime" Foreground="{DynamicResource PrimaryText}" FontSize="14" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Grid.Row="1"/>
+                                        <TextBlock Text="00:00" x:Name="Label_CurrentTime" Foreground="{DynamicResource PrimaryText}" FontSize="14" HorizontalAlignment="Left" Margin="0,0,10,0" VerticalAlignment="Center" Grid.Row="2"/>
+                                        <TextBlock Text="00:00" x:Name="Label_TotalTime" Foreground="{DynamicResource PrimaryText}" FontSize="14" HorizontalAlignment="Right" Margin="0,0,10,0" VerticalAlignment="Center" Grid.Row="2"/>
                                     </Grid>
                                     <!-- Bit Buggy on Slider-->
                                     <Slider x:Name="Slider_Progress"

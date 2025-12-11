@@ -54,6 +54,7 @@
     <None Remove="Assets\Fonts\Geist\Geist-Thin.otf" />
     <None Remove="Assets\Fonts\Geist\Geist-ThinItalic.otf" />
     <None Remove="Assets\Images\banner-default.jpg" />
+    <None Remove="Assets\Images\icon-addplaylist.png" />
     <None Remove="Assets\Images\icon-arrow-left.png" />
     <None Remove="Assets\Images\icon-close.png" />
     <None Remove="Assets\Images\icon-debug.png" />
@@ -62,6 +63,8 @@
     <None Remove="Assets\Images\icon-logo.png" />
     <None Remove="Assets\Images\icon-logout.png" />
     <None Remove="Assets\Images\icon-loop.png" />
+    <None Remove="Assets\Images\icon-love-blank.png" />
+    <None Remove="Assets\Images\icon-love.png" />
     <None Remove="Assets\Images\icon-maximize.png" />
     <None Remove="Assets\Images\icon-minimize.png" />
     <None Remove="Assets\Images\icon-next.png" />
@@ -130,6 +133,7 @@
     <Resource Include="Assets\Fonts\Geist\Geist-Thin.otf" />
     <Resource Include="Assets\Fonts\Geist\Geist-ThinItalic.otf" />
     <Resource Include="Assets\Images\banner-default.jpg" />
+    <Resource Include="Assets\Images\icon-addplaylist.png" />
     <Resource Include="Assets\Images\icon-arrow-left.png" />
     <Resource Include="Assets\Images\icon-close.png" />
     <Resource Include="Assets\Images\icon-debug.png" />
@@ -138,6 +142,8 @@
     <Resource Include="Assets\Images\icon-logo.png" />
     <Resource Include="Assets\Images\icon-logout.png" />
     <Resource Include="Assets\Images\icon-loop.png" />
+    <Resource Include="Assets\Images\icon-love-blank.png" />
+    <Resource Include="Assets\Images\icon-love.png" />
     <Resource Include="Assets\Images\icon-maximize.png" />
     <Resource Include="Assets\Images\icon-minimize.png" />
     <Resource Include="Assets\Images\icon-next.png" />
