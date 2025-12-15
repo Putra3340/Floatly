@@ -65,6 +65,18 @@ namespace Floatly.Api
             };
             return JsonSerializer.Deserialize<Song>(result, options);
         }
+        public async static Task<List<LyricItem>> GetLyric(string songid)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/lyrics/" + songid);
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string result = await response.Content.ReadAsStringAsync();
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            return JsonSerializer.Deserialize<List<LyricItem>>(result, options);
+        }
         public static async Task<Library> Search(string searchbytext)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/search?anycontent=" + searchbytext);

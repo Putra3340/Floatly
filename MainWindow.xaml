@@ -1890,7 +1890,7 @@ VerticalAlignment="Center"/>
                                 <Style TargetType="ScrollBar" BasedOn="{StaticResource CustomScrollBarStyle}" />
                             </ScrollViewer.Resources>
                             <StackPanel Margin="25">
-                                <Rectangle Height="243" RadiusX="16" RadiusY="16" Margin="0,0,0,15" HorizontalAlignment="Stretch" x:Name="PlayerCard_PlayerPanel">
+                                <Rectangle Height="223" RadiusX="16" RadiusY="16" Margin="0,0,0,15" HorizontalAlignment="Stretch" x:Name="PlayerCard_PlayerPanel">
 
                                     <!-- or desired width -->
                                     <Rectangle.Fill>
@@ -1898,7 +1898,17 @@ VerticalAlignment="Center"/>
                                     </Rectangle.Fill>
                                 </Rectangle>
 
-                                <TextBlock x:Name="Label_SongTitle" Text="{Binding Title}" Foreground="{DynamicResource PrimaryText}" FontSize="24" HorizontalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" Margin="0,0,0,10"/>
+                                <Viewbox Stretch="Uniform" MaxHeight="40">
+                                    <TextBlock
+        x:Name="Label_SongTitle"
+        Text="{Binding Title}"
+        Foreground="{DynamicResource PrimaryText}"
+        FontSize="24"
+        FontFamily="/Assets/Fonts/Geist/#Geist"
+        TextAlignment="Center"
+        TextWrapping="Wrap"/>
+                                </Viewbox>
+
                                 <TextBlock x:Name="Label_ArtistName" Text="{Binding Artist}" Foreground="{DynamicResource PrimaryText}" FontSize="16" HorizontalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Light" Margin="0,0,0,10"/>
                                 <StackPanel Margin="0,10,0,0">
                                     <Grid HorizontalAlignment="Stretch" Height="120">
@@ -1907,13 +1917,62 @@ VerticalAlignment="Center"/>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-                                        <Grid Margin="0,0,0,20">
+                                        <Grid Margin="0,0,0,0">
                                             <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
                                                 <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <ComboBox Grid.Column="0"/>
-                                            <ComboBox Grid.Column="1"/>
+                                            <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="FullScreen_Click" Grid.Column="0">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <Border Background="White" Width="20" Height="20" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                                                <Border.OpacityMask>
+                                                    <ImageBrush ImageSource="/Assets/Images/icon-equalizer.png"/>
+                                                </Border.OpacityMask>
+                                            </Border>
+                                            <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="2">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        </Border>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Background" Value="Transparent"/>
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
+                                            <Border Background="White" Width="20" Height="20" Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                                                <Border.OpacityMask>
+                                                    <ImageBrush ImageSource="/Assets/Images/icon-fullscreen.png"/>
+                                                </Border.OpacityMask>
+                                            </Border>
                                         </Grid>
                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Row="1">
                                             <Grid>

@@ -24,6 +24,9 @@ namespace Floatly.Models.Form
         public static ObservableCollection<Artist> SearchArtist = new();
         public static ObservableCollection<Album> SearchAlbum = new();
 
+        // Lyrics
+        public static ObservableCollection<LyricItem> LyricItems = new();
+
         // Download
         public static ObservableCollection<Song> DownloadSong = new();
 

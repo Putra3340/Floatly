@@ -7,7 +7,7 @@ using System.Windows.Media;
 
 namespace Floatly.Models.Form
 {
-    public class Song : INotifyPropertyChanged
+    public class Song : INotifyPropertyChanged 
     {
         public string? Id { get => field; set { field = value; OnPropertyChanged(); } }
         public string? Title { get => field; set { field = value; OnPropertyChanged(); } }
@@ -54,6 +54,13 @@ namespace Floatly.Models.Form
         public string? TotalPlays { get => field; set { field = value; OnPropertyChanged(); } }
         public DateTime? CreatedAt { get => field; set { field = value; OnPropertyChanged(); } }
         public DateTime? UpdatedAt { get => field; set { field = value; OnPropertyChanged(); } }
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+    }
+    public class LyricItem : INotifyPropertyChanged
+    {
+        public string Language { get => field; set { field = value; OnPropertyChanged(); } }
+        public string Content { get => field; set {field = value; OnPropertyChanged();} }
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

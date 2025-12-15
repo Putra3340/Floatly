@@ -136,7 +136,7 @@ namespace Floatly.Utils
                 {
                     Title = onlinesong.Title,
                     Artist = onlinesong.ArtistName,
-                    Music = onlinesong.Music,
+                    Music = onlinesong.Music, 
                     Lyrics = onlinesong.Lyrics,
                     Cover = onlinesong.Cover,
                     Banner = onlinesong.Banner,

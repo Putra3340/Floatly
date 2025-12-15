@@ -58,6 +58,8 @@
     <None Remove="Assets\Images\icon-arrow-left.png" />
     <None Remove="Assets\Images\icon-close.png" />
     <None Remove="Assets\Images\icon-debug.png" />
+    <None Remove="Assets\Images\icon-equalizer.png" />
+    <None Remove="Assets\Images\icon-fullscreen.png" />
     <None Remove="Assets\Images\icon-home.png" />
     <None Remove="Assets\Images\icon-library.png" />
     <None Remove="Assets\Images\icon-logo.png" />
@@ -137,6 +139,8 @@
     <Resource Include="Assets\Images\icon-arrow-left.png" />
     <Resource Include="Assets\Images\icon-close.png" />
     <Resource Include="Assets\Images\icon-debug.png" />
+    <Resource Include="Assets\Images\icon-equalizer.png" />
+    <Resource Include="Assets\Images\icon-fullscreen.png" />
     <Resource Include="Assets\Images\icon-home.png" />
     <Resource Include="Assets\Images\icon-library.png" />
     <Resource Include="Assets\Images\icon-logo.png" />

@@ -1,4 +1,5 @@
 ﻿using Floatly.Api;
+using Floatly.Forms;
 using Floatly.Models.Database;
 using Floatly.Models.Form;
 using Floatly.Utils;
@@ -33,6 +34,7 @@ namespace Floatly
     {
         FloatingWindow fw = new(); // make just one instance of FloatingWindow (maybe its bad idea to create this here but whatever)
         ConfigurationWindow cw = null; // just one instance of ConfigurationWindow
+        EqualizerWindow ew = null; // just one instance of EqualizerWindow
         FloatlyClientContext db = new(); // database context
 
         DispatcherTimer slidertimer = new DispatcherTimer(); // for slider
@@ -351,6 +353,23 @@ namespace Floatly
         #endregion
 
         #region Player Controls
+        private void FullScreen_Click(object sender, RoutedEventArgs e)
+        {
+            if(ew == null)
+            {
+                ew = new EqualizerWindow
+                {
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                ew.Closed += (s, args) => { ew = null; }; // reset instance on close
+                ew.Show();
+            }
+            else
+            {
+                ew.Focus();
+            }
+        }
 
         // Play/Pause Toggle
         private void Button_PlayPause_Click(object sender, RoutedEventArgs e)
