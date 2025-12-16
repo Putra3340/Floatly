@@ -35,6 +35,7 @@ namespace Floatly
         FloatingWindow fw = new(); // make just one instance of FloatingWindow (maybe its bad idea to create this here but whatever)
         ConfigurationWindow cw = null; // just one instance of ConfigurationWindow
         EqualizerWindow ew = null; // just one instance of EqualizerWindow
+        FullScreenWindow fsw = null; // just one instance of FullScreenWindow
         FloatlyClientContext db = new(); // database context
 
         DispatcherTimer slidertimer = new DispatcherTimer(); // for slider
@@ -354,6 +355,23 @@ namespace Floatly
 
         #region Player Controls
         private void FullScreen_Click(object sender, RoutedEventArgs e)
+        {
+            if(fsw == null)
+            {
+                fsw = new FullScreenWindow
+                {
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                fsw.Closed += (s, args) => { fsw = null; }; // reset instance on close
+                fsw.Show();
+            }
+            else
+            {
+                fsw.Focus();
+            }
+        }
+        private void Equalizer_Click(object sender, RoutedEventArgs e)
         {
             if(ew == null)
             {

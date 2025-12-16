@@ -65,6 +65,17 @@ namespace Floatly.Models.Form
         protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 
+    // Just for locally storing lyric time and text
+    public class LyricList
+    {
+        public int LyricIndex { get; set; }
+        public TimeSpan Start { get; set; }
+        public TimeSpan End { get; set; }
+
+        public string Text { get; set; } = "";
+        public string Text2 { get; set; } = "";
+    }
+
     // For only fetching, not for binding
     public class Library
     {

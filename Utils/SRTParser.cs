@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Floatly.Models.Form;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,9 +19,9 @@ namespace Floatly.Utils
      */
     public static class SRTParser
     {
-        public async static Task<List<(int lyricindex,TimeSpan start, TimeSpan end, string text, string text2)>> ParseSRT(string srtpath)
+        public async static Task<List<LyricList>> ParseSRT(string srtpath)
         {
-            var subtitles = new List<(int lyricindex,TimeSpan start, TimeSpan end, string text,string text2)>();
+            var subtitles = new List<LyricList>();
             string localPath = srtpath;
 
             if (Uri.IsWellFormedUriString(srtpath, UriKind.Absolute) && srtpath.StartsWith("http"))
@@ -56,7 +57,7 @@ namespace Floatly.Utils
                 else
                 if (string.IsNullOrWhiteSpace(line)) // this means end of the current subtitle then we add it
                 {
-                    subtitles.Add((lyricsindex -1, start, end, text, text2));
+                    subtitles.Add(new LyricList { LyricIndex = lyricsindex - 1, Start = start, End = end, Text = text, Text2 = text2 });
                     text = ""; // reset text for next subtitle
                     text2 = "";
                     continue;
@@ -77,7 +78,7 @@ namespace Floatly.Utils
             }
             if (!string.IsNullOrEmpty(text)) // idk if this fixes the bug but it should
             {
-                subtitles.Add((lyricsindex - 1, start, end, text, text2));
+                subtitles.Add(new LyricList{ LyricIndex = lyricsindex - 1, Start = start, End = end,Text = text,Text2 = text2});
             }
             return subtitles;
         }

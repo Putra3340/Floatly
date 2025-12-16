@@ -1,4 +1,5 @@
 ﻿using Floatly.Api;
+using Floatly.Models.Form;
 using System;
 using System.IO;
 using System.Numerics;
@@ -15,7 +16,7 @@ namespace Floatly.Utils
         {
             Interval = TimeSpan.FromMilliseconds(50) // more low more accuracy & heavy (also depends on the lyrics list)
         };
-        public static List<(int lyricindex, TimeSpan start, TimeSpan end, string text, string text2)> lyricslist = new(); // This will hold the parsed lyrics
+        public static List<LyricList> lyricslist = new(); // This will hold the parsed lyrics
         #region Events
         public static string CurrentActiveLyrics
         {
@@ -69,13 +70,15 @@ namespace Floatly.Utils
         public static void LyricsTick(object s, EventArgs e)
         {
             // support when player position changed
-            var entry = lyricslist.FirstOrDefault(x => _player.Position >= x.start && _player.Position <= x.end);
-            if (!string.IsNullOrEmpty(entry.text)) // or check entry.start != default
+            var entry = lyricslist.FirstOrDefault(x => _player.Position >= x.Start && _player.Position <= x.End);
+            if (entry == null)
+                return;
+            if (!string.IsNullOrEmpty(entry.Text)) // or check entry.start != default
             {
-                if (entry.text == "NULL")
+                if (entry.Text == "NULL")
                     CurrentActiveLyrics = "Oops You caught us";
                 else
-                    CurrentActiveLyrics = entry.text + "\n" + entry.text2;
+                    CurrentActiveLyrics = entry.Text + "\n" + entry.Text2;
             }
         }
         public static async void Resume() => _player.Play();

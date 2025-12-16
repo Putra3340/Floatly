@@ -1923,7 +1923,7 @@ VerticalAlignment="Center"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="FullScreen_Click" Grid.Column="0">
+                                            <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Equalizer_Click" Grid.Column="0">
                                                 <Button.Template>
                                                     <ControlTemplate TargetType="Button">
                                                         <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -1948,7 +1948,7 @@ VerticalAlignment="Center"/>
                                                     <ImageBrush ImageSource="/Assets/Images/icon-equalizer.png"/>
                                                 </Border.OpacityMask>
                                             </Border>
-                                            <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="2">
+                                            <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="FullScreen_Click" Grid.Column="2">
                                                 <Button.Template>
                                                     <ControlTemplate TargetType="Button">
                                                         <Border Background="{TemplateBinding Background}" CornerRadius="8">
