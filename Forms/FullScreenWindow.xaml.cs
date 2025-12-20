@@ -2,6 +2,7 @@
 using Floatly.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,6 +14,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Floatly.Forms
 {
@@ -26,8 +28,6 @@ namespace Floatly.Forms
             Interval = TimeSpan.FromSeconds(1)
         };
         DispatcherTimer slidertimer = new DispatcherTimer(); // for slider
-
-
         public FullScreenWindow()
         {
             InitializeComponent();
@@ -43,15 +43,40 @@ namespace Floatly.Forms
             slidertimer.Start();
             Cover.ImageSource = new ImageBrush(new BitmapImage(new Uri(StaticBinding.plc.Banner ?? "pack://application:,,,/Assets/Images/cover-placeholder.png"))).ImageSource;
 
-            LyricItems.ItemsSource = MusicPlayer.lyricslist;
+            LyricItems.ItemsSource = StaticBinding.LyricList;
+            this.Loaded += FullScreenWindow_Loaded;
         }
 
-        private void OnLyricsChanged(object? sender, string e)
+        private void FullScreenWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            //if(e.Last() == '\n')
-            //    e = e.Replace("\n", "");
-            //Dispatcher.Invoke(() => Label_ActiveLyrics.Text = e);
+            
         }
+
+        private void OnLyricsChanged(object? sender, LyricList e)
+        {
+            if (e.Text.EndsWith("\n"))
+                e.Text = e.Text.TrimEnd('\n');
+
+            LyricList? active = null;
+
+            foreach (var l in StaticBinding.LyricList)
+            {
+                l.IsActive = l.Start == e.Start; // label active lyric by comparing start time
+                if (l.IsActive)
+                    active = l;
+            }
+
+            if (active == null)
+                return;
+
+            LyricItems.Dispatcher.InvokeAsync(() =>
+            {
+                LyricItems.SelectedItem = active;   // VERY important
+                LyricItems.UpdateLayout();
+                LyricItems.ScrollIntoView(active);
+            });
+        }
+
 
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {
@@ -102,6 +127,15 @@ namespace Floatly.Forms
             {
                 Label_CurrentTime.Text = TimeSpan.FromSeconds(Slider_Progress.Value).ToString(@"mm\:ss");
             }
+        }
+
+        private void Border_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var border = (Border)sender;
+            var lyric = border.DataContext as LyricList;
+
+            if (lyric != null)
+                MusicPlayer.Player.Position = lyric.Start;
         }
     }
 }

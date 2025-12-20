@@ -16,33 +16,28 @@ namespace Floatly.Utils
         {
             Interval = TimeSpan.FromMilliseconds(50) // more low more accuracy & heavy (also depends on the lyrics list)
         };
-        public static List<LyricList> lyricslist = new(); // This will hold the parsed lyrics
+
+        // moved to static binding
+        //public static List<LyricList> lyricslist = new(); // This will hold the parsed lyrics
         #region Events
-        public static string CurrentActiveLyrics
+        public static LyricList CurrentActiveLyrics
         {
             get => field;
             set
             {
-                if (field != value)
+                if (!Equals(field, value))
                 {
                     field = value;
                     CurrentLyricsChanged?.Invoke(null, value);
                 }
             }
         }
-        public static event EventHandler<string> CurrentLyricsChanged; // This event will be triggered when the lyrics change
+
+        public static event EventHandler<LyricList> CurrentLyricsChanged;
+        // This event will be triggered when the lyrics change
         #endregion
         #region Player Thing
-        private static MediaPlayer _player = new MediaPlayer();
-        public static MediaPlayer Player => _player;
-
-        public static string currentlyricpath = ""; // This will hold the current lyrics path (for debugging purposes)
-        public static VideoDrawing videoDrawing = new VideoDrawing
-        {
-            Rect = new Rect(0, 0, 1280, 720),
-            Player = _player
-        };
-        public static Image VideoPlayer = null;
+        public static MediaPlayer Player = new MediaPlayer();
 
         public static bool isPaused = false;
 
@@ -51,14 +46,13 @@ namespace Floatly.Utils
             
             // Setup lyrics first
             timer.Stop();
-            CurrentActiveLyrics = ""; // Clear current lyrics
-            lyricslist.Clear();
-            lyricslist = await SRTParser.ParseSRT(lyricspath);
-            currentlyricpath = lyricspath; // for debugging purposes
+            CurrentActiveLyrics = null; // Clear current lyrics
+            StaticBinding.LyricList.Clear();
+            StaticBinding.LyricList = await SRTParser.ParseSRT(lyricspath);
             try
             {
-                _player.Open(new Uri(songpath, UriKind.RelativeOrAbsolute));
-                _player.Play();
+                Player.Open(new Uri(songpath, UriKind.RelativeOrAbsolute));
+                Player.Play();
                 timer.Tick += LyricsTick;
                 timer.Start();
             }
@@ -70,24 +64,21 @@ namespace Floatly.Utils
         public static void LyricsTick(object s, EventArgs e)
         {
             // support when player position changed
-            var entry = lyricslist.FirstOrDefault(x => _player.Position >= x.Start && _player.Position <= x.End);
+            var entry = StaticBinding.LyricList.FirstOrDefault(x => Player.Position >= x.Start && Player.Position <= x.End);
             if (entry == null)
                 return;
-            if (!string.IsNullOrEmpty(entry.Text)) // or check entry.start != default
+            if (!string.IsNullOrEmpty(entry.Text) || !string.IsNullOrEmpty(entry.Text2)) // or check entry.start != default
             {
-                if (entry.Text == "NULL")
-                    CurrentActiveLyrics = "Oops You caught us";
-                else
-                    CurrentActiveLyrics = entry.Text + "\n" + entry.Text2;
+                CurrentActiveLyrics = entry;
             }
         }
-        public static async void Resume() => _player.Play();
+        public static async void Resume() => Player.Play();
 
-        public static void Pause() => _player.Pause();
+        public static void Pause() => Player.Pause();
 
-        public static void Stop() => _player.Stop();
+        public static void Stop() => Player.Stop();
 
-        public static void SetVolume(double volume) => _player.Volume = volume;
+        public static void SetVolume(double volume) => Player.Volume = volume;
         #endregion
     }
 }

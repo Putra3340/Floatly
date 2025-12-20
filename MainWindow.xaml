@@ -10,14 +10,12 @@
         AllowsTransparency="True"
         WindowStyle="None"
         >
-    <Window.Background> <!-- Temporary -->
+    <!-- Dark elegant background -->
+    <Window.Background>
         <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-            <GradientStop Color="#1A1040" Offset="0.0"/>
-            <!-- Deep violet -->
-            <GradientStop Color="#2C1E78" Offset="0.5"/>
-            <!-- Subtle mid blend -->
-            <GradientStop Color="#0D1B4F" Offset="1.0"/>
-            <!-- Midnight blue -->
+            <GradientStop Color="#0A0818" Offset="0"/>
+            <GradientStop Color="#14122A" Offset="0.5"/>
+            <GradientStop Color="#05040F" Offset="1"/>
         </LinearGradientBrush>
     </Window.Background>
     <Window.Resources>

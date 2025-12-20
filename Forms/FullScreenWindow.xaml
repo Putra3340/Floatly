@@ -30,46 +30,60 @@
         </Rectangle>
 
         <!-- Lyrics overlay -->
-        <ScrollViewer VerticalScrollBarVisibility="Hidden"
-              HorizontalScrollBarVisibility="Disabled"
-              Padding="40">
+        <ListBox x:Name="LyricItems"
+         Background="Transparent"
+         BorderThickness="0"
+         Padding="40"
+         ScrollViewer.VerticalScrollBarVisibility="Hidden"
+         ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 VerticalAlignment="Center">
 
-            <ItemsControl x:Name="LyricItems">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Vertical"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Background" Value="Transparent"/>
+                    <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Padding" Value="0"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
 
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Border
-                        Margin="0,0,0,30"
-                        Padding="26"
-                        CornerRadius="18"
-                        Background="#552A6FFF"
-                        BorderBrush="#884FA3FF"
-                        BorderThickness="1"
-                        HorizontalAlignment="Center"
-                        Effect="{DynamicResource DropShadow}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border MouseLeftButtonUp="Border_MouseLeftButtonUp"
+                    Margin="0,0,0,30"
+                    Padding="26"
+                    CornerRadius="18">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="#552A6FFF"/>
+                                <Setter Property="BorderBrush" Value="#884FA3FF"/>
+                                <Setter Property="BorderThickness" Value="1"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                        <Setter Property="Background" Value="#AA7C3AED"/>
+                                        <Setter Property="BorderThickness" Value="3"/>
+                                        <Setter Property="Effect">
+                                            <Setter.Value>
+                                                <DropShadowEffect BlurRadius="25" Opacity="0.8"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
 
-                            <!-- single-line, auto-shrink -->
-                            <Viewbox Stretch="Uniform"
-                             StretchDirection="DownOnly">
-                                <TextBlock Text="{Binding Text}"
-                                   FontSize="32"
-                                   FontWeight="SemiBold"
-                                   Foreground="#EEFFFFFF"
-                                   TextWrapping="NoWrap"
-                                   TextAlignment="Center"/>
-                            </Viewbox>
-
-                        </Border>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-
-        </ScrollViewer>
+                        <Viewbox Stretch="Uniform" StretchDirection="DownOnly">
+                            <TextBlock Text="{Binding Text}"
+                               FontSize="32"
+                               FontWeight="SemiBold"
+                               Foreground="#EEFFFFFF"
+                               TextWrapping="NoWrap"
+                               TextAlignment="Center"/>
+                        </Viewbox>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
 
 

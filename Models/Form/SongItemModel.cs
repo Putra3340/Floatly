@@ -66,14 +66,23 @@ namespace Floatly.Models.Form
     }
 
     // Just for locally storing lyric time and text
-    public class LyricList
+    public class LyricList : INotifyPropertyChanged
     {
         public int LyricIndex { get; set; }
         public TimeSpan Start { get; set; }
         public TimeSpan End { get; set; }
 
+        public bool IsActive
+        {
+            get => field;
+            set { field = value; OnPropertyChanged(); }
+        }
+
         public string Text { get; set; } = "";
         public string Text2 { get; set; } = "";
+        public event PropertyChangedEventHandler PropertyChanged;
+        void OnPropertyChanged([CallerMemberName] string n = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
     }
 
     // For only fetching, not for binding

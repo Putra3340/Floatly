@@ -1,6 +1,7 @@
 ﻿using Floatly.Models.Form;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -19,9 +20,9 @@ namespace Floatly.Utils
      */
     public static class SRTParser
     {
-        public async static Task<List<LyricList>> ParseSRT(string srtpath)
+        public async static Task<ObservableCollection<LyricList>> ParseSRT(string srtpath)
         {
-            var subtitles = new List<LyricList>();
+            var subtitles = new ObservableCollection<LyricList>();
             string localPath = srtpath;
 
             if (Uri.IsWellFormedUriString(srtpath, UriKind.Absolute) && srtpath.StartsWith("http"))

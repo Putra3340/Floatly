@@ -52,8 +52,8 @@ namespace Floatly
         {
             _globalHook = Hook.GlobalEvents();
             _globalHook.KeyDown += GlobalHook_KeyDown;
-            MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
-            OnLyricsChanged(null, MusicPlayer.CurrentActiveLyrics); // just update when its showed
+            //MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
+            //OnLyricsChanged(null, MusicPlayer.CurrentActiveLyrics); // just update when its showed
         }
 
         private void OnLyricsChanged(object? sender, string e)

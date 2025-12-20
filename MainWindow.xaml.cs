@@ -307,9 +307,9 @@ namespace Floatly
         #endregion
 
         #region Lyrics Thing
-        private void OnLyricsChanged(object sender, string newLyrics)
+        private void OnLyricsChanged(object sender, LyricList lyric)
         {
-            Dispatcher.Invoke(() => Label_ActiveLyrics.Text = newLyrics);
+            Dispatcher.Invoke(() => Label_ActiveLyrics.Text = lyric.Text + (lyric.Text2.IsNotNullOrEmpty() ? $"\n{lyric.Text2}" : ""));
         }
         private void Label_ActiveLyrics_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
