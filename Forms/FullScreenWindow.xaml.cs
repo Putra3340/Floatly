@@ -57,14 +57,26 @@ namespace Floatly.Forms
             if (e.Text.EndsWith("\n"))
                 e.Text = e.Text.TrimEnd('\n');
 
-            LyricList? active = null;
 
-            foreach (var l in StaticBinding.LyricList)
+            // 20 December 2025 - WOW i can make the lyrics highlight on the center
+            LyricList? active = null;
+            LyricList? activeskip = null;
+
+            for (int i = 0; i < StaticBinding.LyricList.Count; i++)
             {
-                l.IsActive = l.Start == e.Start; // label active lyric by comparing start time
+                var l = StaticBinding.LyricList[i];
+                l.IsActive = l.Start == e.Start;
+
                 if (l.IsActive)
+                {
                     active = l;
+
+                    // 2 items after active (safe check)
+                    if (i + 2 < StaticBinding.LyricList.Count)
+                        activeskip = StaticBinding.LyricList[i + 2];
+                }
             }
+
 
             if (active == null)
                 return;
@@ -73,7 +85,11 @@ namespace Floatly.Forms
             {
                 LyricItems.SelectedItem = active;   // VERY important
                 LyricItems.UpdateLayout();
-                LyricItems.ScrollIntoView(active);
+                if (activeskip != null)
+                    LyricItems.ScrollIntoView(activeskip);
+
+                else
+                    LyricItems.ScrollIntoView(active);
             });
         }
 

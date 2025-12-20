@@ -80,6 +80,11 @@ namespace Floatly.Models.Form
 
         public string Text { get; set; } = "";
         public string Text2 { get; set; } = "";
+
+        public string CombinedText
+        {
+            get => $"{Text}\n{Text2}".Trim();
+        }
         public event PropertyChangedEventHandler PropertyChanged;
         void OnPropertyChanged([CallerMemberName] string n = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
