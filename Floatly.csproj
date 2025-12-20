@@ -62,6 +62,7 @@
     <None Remove="Assets\Images\icon-fullscreen.png" />
     <None Remove="Assets\Images\icon-home.png" />
     <None Remove="Assets\Images\icon-library.png" />
+    <None Remove="Assets\Images\icon-listcenter.png" />
     <None Remove="Assets\Images\icon-logo.png" />
     <None Remove="Assets\Images\icon-logout.png" />
     <None Remove="Assets\Images\icon-loop.png" />
@@ -69,8 +70,10 @@
     <None Remove="Assets\Images\icon-love.png" />
     <None Remove="Assets\Images\icon-maximize.png" />
     <None Remove="Assets\Images\icon-minimize.png" />
+    <None Remove="Assets\Images\icon-minimizefullscreen.png" />
     <None Remove="Assets\Images\icon-next.png" />
     <None Remove="Assets\Images\icon-pause.png" />
+    <None Remove="Assets\Images\icon-player.png" />
     <None Remove="Assets\Images\icon-playlist.png" />
     <None Remove="Assets\Images\icon-prev.png" />
     <None Remove="Assets\Images\icon-refresh.png" />
@@ -143,6 +146,7 @@
     <Resource Include="Assets\Images\icon-fullscreen.png" />
     <Resource Include="Assets\Images\icon-home.png" />
     <Resource Include="Assets\Images\icon-library.png" />
+    <Resource Include="Assets\Images\icon-listcenter.png" />
     <Resource Include="Assets\Images\icon-logo.png" />
     <Resource Include="Assets\Images\icon-logout.png" />
     <Resource Include="Assets\Images\icon-loop.png" />
@@ -150,8 +154,10 @@
     <Resource Include="Assets\Images\icon-love.png" />
     <Resource Include="Assets\Images\icon-maximize.png" />
     <Resource Include="Assets\Images\icon-minimize.png" />
+    <Resource Include="Assets\Images\icon-minimizefullscreen.png" />
     <Resource Include="Assets\Images\icon-next.png" />
     <Resource Include="Assets\Images\icon-pause.png" />
+    <Resource Include="Assets\Images\icon-player.png" />
     <Resource Include="Assets\Images\icon-playlist.png" />
     <Resource Include="Assets\Images\icon-prev.png" />
     <Resource Include="Assets\Images\icon-refresh.png" />

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -57,13 +58,22 @@ namespace Floatly.Models.Form
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
-    public class LyricItem : INotifyPropertyChanged
+    public class LyricsResponseModel
     {
-        public string Language { get => field; set { field = value; OnPropertyChanged(); } }
-        public string Content { get => field; set {field = value; OnPropertyChanged();} }
-        public event PropertyChangedEventHandler? PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
+        public string SongId { get; set; } = string.Empty;
+        public ObservableCollection<LyricLanguageModel> Lyrics { get; set; } = new();
     }
+
+    public class LyricLanguageModel
+    {
+        public string Language { get; set; } = string.Empty; // ja, en, id, auto
+        public bool IsAuto { get; set; }
+        public string FileName { get; set; } = string.Empty;
+
+        // Full SRT content (cached client-side)
+        public string Content { get; set; } = string.Empty;
+    }
+
 
     // Just for locally storing lyric time and text
     public class LyricList : INotifyPropertyChanged

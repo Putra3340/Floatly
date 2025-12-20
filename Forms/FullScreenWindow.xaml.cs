@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -31,6 +32,7 @@ namespace Floatly.Forms
         public FullScreenWindow()
         {
             InitializeComponent();
+
             hideTimer.Tick += (_, __) =>
             {
                 ControlBar.BeginAnimation(OpacityProperty,
@@ -41,17 +43,46 @@ namespace Floatly.Forms
             slidertimer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
             slidertimer.Tick += SliderTimer_Tick;
             slidertimer.Start();
-            Cover.ImageSource = new ImageBrush(new BitmapImage(new Uri(StaticBinding.plc.Banner ?? "pack://application:,,,/Assets/Images/cover-placeholder.png"))).ImageSource;
 
+            
             LyricItems.ItemsSource = StaticBinding.LyricList;
             this.Loaded += FullScreenWindow_Loaded;
         }
 
-        private void FullScreenWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void FullScreenWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            
+            // Load By Current Song Info
+            Cover.ImageSource = new ImageBrush(new BitmapImage(new Uri(StaticBinding.plc.Banner ?? "pack://application:,,,/Assets/Images/cover-placeholder.png"))).ImageSource;
+
+
+            // Load Combobox
+            cbx_lyriclang.ItemsSource = StaticBinding.LyricLanguages;
+            cbx_lyriclang.DisplayMemberPath = "Language";
+
+        }
+        private async void cbx_lyriclang_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cbx_lyriclang.SelectedItem is not LyricLanguageModel selected)
+                return;
+
+            // You now have everything
+            var language = selected.Language;
+            var isAuto = selected.IsAuto;
+            var srtContent = selected.Content;
+
+            await MusicPlayer.HotReloadLyrics(srtContent);
+            LyricItems.UpdateLayout();
         }
 
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+        private void TogglePlayer(object sender, RoutedEventArgs e)
+        {
+            // TODO
+        }
         private void OnLyricsChanged(object? sender, LyricList e)
         {
             if (e.Text.EndsWith("\n"))
@@ -87,12 +118,10 @@ namespace Floatly.Forms
                 LyricItems.UpdateLayout();
                 if (activeskip != null)
                     LyricItems.ScrollIntoView(activeskip);
-
                 else
                     LyricItems.ScrollIntoView(active);
             });
         }
-
 
         private void Window_MouseMove(object sender, MouseEventArgs e)
         {

@@ -32,5 +32,9 @@ namespace Floatly.Models.Form
 
         // Queue
         public static ObservableCollection<Song> QueuedSong = new();
+
+        // Lyrics Combobox
+        public static ObservableCollection<LyricLanguageModel> LyricLanguages = new();
+
     }
 }

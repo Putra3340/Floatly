@@ -119,8 +119,9 @@ namespace Floatly.Utils
 
                 // Get the music binary URL
                 MusicPlayer.Play(music.Music, music.Lyrics);
+                await GetLyrics(music.Id);
 
-                if(music.ArtistId is null)
+                if (music.ArtistId is null)
                 {
                     plc.ArtistBanner = "";
                     plc.ArtistBio = "No artist information available.";
@@ -165,6 +166,17 @@ namespace Floatly.Utils
                 MainWindow.Instance.OpenArtistPage(artistnew);
             }
             return;
+        }
+
+        public static async Task GetLyrics(string id)
+        {
+            var lyric = await ApiLibrary.GetLyric(id);
+            
+            StaticBinding.LyricLanguages.Clear();
+            foreach(var lang in lyric.Lyrics)
+            {
+                StaticBinding.LyricLanguages.Add(lang);
+            }
         }
         #endregion
     }

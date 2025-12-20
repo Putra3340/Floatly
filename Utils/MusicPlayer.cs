@@ -32,6 +32,7 @@ namespace Floatly.Utils
                 }
             }
         }
+        private static LyricList emptylyric = new LyricList(); // just handle blank lyric
 
         public static event EventHandler<LyricList> CurrentLyricsChanged;
         // This event will be triggered when the lyrics change
@@ -46,7 +47,7 @@ namespace Floatly.Utils
             
             // Setup lyrics first
             timer.Stop();
-            CurrentActiveLyrics = null; // Clear current lyrics
+            CurrentActiveLyrics = emptylyric; // Clear current lyrics
             StaticBinding.LyricList.Clear();
             StaticBinding.LyricList = await SRTParser.ParseSRT(lyricspath);
             try
@@ -71,6 +72,14 @@ namespace Floatly.Utils
             {
                 CurrentActiveLyrics = entry;
             }
+        }
+        public static async Task HotReloadLyrics(string content)
+        {
+            var parsed = await SRTParser.ParseSRT(content, true);
+
+            StaticBinding.LyricList.Clear();
+            foreach (var item in parsed)
+                StaticBinding.LyricList.Add(item);
         }
         public static async void Resume() => Player.Play();
 

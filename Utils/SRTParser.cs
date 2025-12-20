@@ -14,13 +14,12 @@ namespace Floatly.Utils
     /*      
      * SRT Parser
      * Parses SRT files and returns a list of subtitles with start and end times
-     * Each subtitle is a tuple of (start time, end time, text)
      * Supports downloading SRT files from URL
      * Credits by Putra3340
      */
     public static class SRTParser
     {
-        public async static Task<ObservableCollection<LyricList>> ParseSRT(string srtpath)
+        public async static Task<ObservableCollection<LyricList>> ParseSRT(string srtpath, bool iscontent = false)
         {
             var subtitles = new ObservableCollection<LyricList>();
             string localPath = srtpath;
@@ -33,7 +32,15 @@ namespace Floatly.Utils
                 await File.WriteAllBytesAsync(localPath, data);
             }
 
-            var lines = File.ReadAllLines(localPath);
+            string[] lines;
+            if (iscontent)
+            {
+                lines = srtpath.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            }
+            else
+            {
+                lines = File.ReadAllLines(localPath);
+            }
             int lineIndex = 0;
             int lyricsindex = 1; //start from one because the first line is the index
             TimeSpan start = TimeSpan.Zero;
@@ -75,7 +82,6 @@ namespace Floatly.Utils
                     }
                 }
                 lineIndex++;
-                // BUGS last line is not added because it does not end with empty line
             }
             if (!string.IsNullOrEmpty(text)) // idk if this fixes the bug but it should
             {
