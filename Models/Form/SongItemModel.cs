@@ -22,10 +22,13 @@ namespace Floatly.Models.Form
         public string? PlayCount { get => field; set { field = value; OnPropertyChanged(); } }
         public DateTime CreatedAt { get => field; set { field = value; OnPropertyChanged(); } }
 
-        public string? ArtistName { get => field; set { field = value; OnPropertyChanged(); } }
         public string? ArtistId { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? ArtistName { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? ArtistBio { get => field; set { field = value; OnPropertyChanged(); } }
         public string? AlbumTitle { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? ArtistCover { get => field; set { field = value; OnPropertyChanged(); } }
         public int AlbumId { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? AlbumCover { get => field; set { field = value; OnPropertyChanged(); } }
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

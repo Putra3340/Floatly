@@ -8,7 +8,20 @@ namespace Floatly.Models.Form
     public static class StaticBinding
     {
         // Player Card
-        public static PlayerCard plc = new();
+        public static PlayerCard plc = new(); // Never null or even directly set
+
+        // Current Playing
+        public static Song CurrentSong { get; set
+            {
+                field = value;
+                // also update plc
+                plc.Banner = value?.Banner;
+                plc.Title = value?.Title;
+                plc.Artist = value?.ArtistName;
+                plc.ArtistBanner = value?.ArtistCover;
+                plc.ArtistBio = value?.ArtistBio;
+            }
+        } = null; // null if nothing is playing also means plc is collapsed
 
         // Page
         public static Artist ArtistPage = new();

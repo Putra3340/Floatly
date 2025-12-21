@@ -173,6 +173,7 @@ Opacity="{Binding IsActive, Converter={StaticResource ActiveOpacityConverter}}"/
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_PlayPause_Click">
                     <Button.Template>
@@ -377,6 +378,31 @@ StrokeThickness="2"/>
                     </Button.Style>
                 </Button>
                 <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="7">
+                    <Border.OpacityMask>
+                        <ImageBrush ImageSource="/Assets/Images/icon-listcenter.png"/>
+                    </Border.OpacityMask>
+                </Border>
+                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="CloseButton_Click" Grid.Column="8">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="8">
                     <Border.OpacityMask>
                         <ImageBrush ImageSource="/Assets/Images/icon-minimizefullscreen.png"/>
                     </Border.OpacityMask>

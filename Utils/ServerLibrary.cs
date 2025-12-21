@@ -112,24 +112,13 @@ namespace Floatly.Utils
         {
             if(song is Song onlinesong)
             {
-                var music = await ApiLibrary.Play(onlinesong.Id, "96k");
-                plc.Title = music.Title;
-                plc.Artist = music.ArtistName;
-                plc.Banner = music.Banner;
-
+                StaticBinding.CurrentSong = await ApiLibrary.Play(onlinesong.Id, "96k");
                 // Get the music binary URL
-                MusicPlayer.Play(music.Music, music.Lyrics);
-                await GetLyrics(music.Id);
+                MusicPlayer.Play();
 
-                if (music.ArtistId is null)
+                if(StaticBinding.CurrentSong.ArtistId != null)
                 {
-                    plc.ArtistBanner = "";
-                    plc.ArtistBio = "No artist information available.";
-                    return;
-                }
-                else
-                {
-                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(music.ArtistId));
+                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(StaticBinding.CurrentSong.ArtistId));
                     plc.ArtistBanner = artist.CoverUrl;
                     plc.ArtistBio = artist.Bio.Substring(0, 10) + "...";
                 }
@@ -150,10 +139,11 @@ namespace Floatly.Utils
             }
             else if (song is DownloadedSong offlinesong)
             {
+                // TODO
                 plc.Title = offlinesong.Title;
                 plc.Artist = offlinesong.Artist;
                 plc.Banner = offlinesong.Banner;
-                MusicPlayer.Play(offlinesong.Music, offlinesong.Lyrics);
+                //MusicPlayer.Play(offlinesong.Music, offlinesong.Lyrics);
                 plc.ArtistBanner = offlinesong.ArtistCover;
                 plc.ArtistBio = offlinesong.ArtistBio.Substring(0, 10) + "...";
             }

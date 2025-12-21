@@ -42,17 +42,17 @@ namespace Floatly.Utils
 
         public static bool isPaused = false;
 
-        public async static void Play(string songpath,string lyricspath)
+        // Play from static binding
+        public async static void Play()
         {
-            
             // Setup lyrics first
             timer.Stop();
             CurrentActiveLyrics = emptylyric; // Clear current lyrics
             StaticBinding.LyricList.Clear();
-            StaticBinding.LyricList = await SRTParser.ParseSRT(lyricspath);
+            StaticBinding.LyricList = await SRTParser.ParseSRT(StaticBinding.CurrentSong.Lyrics);
             try
             {
-                Player.Open(new Uri(songpath, UriKind.RelativeOrAbsolute));
+                Player.Open(new Uri(StaticBinding.CurrentSong.Music, UriKind.RelativeOrAbsolute));
                 Player.Play();
                 timer.Tick += LyricsTick;
                 timer.Start();
