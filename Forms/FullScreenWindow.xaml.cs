@@ -1,5 +1,7 @@
-﻿using Floatly.Models.Form;
+﻿using Floatly.Api;
+using Floatly.Models.Form;
 using Floatly.Utils;
+using StringExt;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,7 +38,7 @@ namespace Floatly.Forms
             hideTimer.Tick += (_, __) =>
             {
                 ControlBar.BeginAnimation(OpacityProperty,
-                    new DoubleAnimation(1, TimeSpan.FromMilliseconds(300)));
+                    new DoubleAnimation(0, TimeSpan.FromMilliseconds(300)));
                 hideTimer.Stop();
             };
             MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
@@ -78,6 +80,15 @@ namespace Floatly.Forms
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+        private async void PlayWithVideo_Click(object sender, RoutedEventArgs e)
+        {
+            if(StaticBinding.CurrentSong.MoviePath.IsNullOrEmpty())
+                StaticBinding.CurrentSong.MoviePath = await ApiLibrary.GetVideoStream(StaticBinding.CurrentSong.Id);
+            if(MusicPlayer.Player.Source != new Uri(StaticBinding.CurrentSong.MoviePath)) // only play when its not match
+                MusicPlayer.PlayVideo();
+            VideoRectangle.Visibility = Visibility.Visible;
+            LyricBorder.Background = new SolidColorBrush(Color.FromArgb(0xA0,0x20,0x18,0x3A));
         }
         private void TogglePlayer(object sender, RoutedEventArgs e)
         {

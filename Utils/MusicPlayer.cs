@@ -38,6 +38,7 @@ namespace Floatly.Utils
         // This event will be triggered when the lyrics change
         #endregion
         #region Player Thing
+        // Music
         public static MediaPlayer Player = new MediaPlayer();
 
         public static bool isPaused = false;
@@ -60,6 +61,18 @@ namespace Floatly.Utils
             catch (Exception ex)
             {
                 MessageBox.Show($"Error playing music: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        public async static void PlayVideo()
+        {
+            try
+            {
+                Player.Open(new Uri(StaticBinding.CurrentSong.MoviePath, UriKind.RelativeOrAbsolute));
+                Player.Play();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error playing video: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
         public static void LyricsTick(object s, EventArgs e)

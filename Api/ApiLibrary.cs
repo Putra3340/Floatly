@@ -103,5 +103,13 @@ namespace Floatly.Api
             List<Song> songs = JsonSerializer.Deserialize<List<Song>>(result, options);
             return songs;
         }
+        public static async Task<string> GetVideoStream(string yturl)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/video/" + yturl);
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string result = await response.Content.ReadAsStringAsync();
+            return result;
+        }
     }
 }

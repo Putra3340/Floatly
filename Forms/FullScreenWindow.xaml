@@ -23,15 +23,24 @@
 
     <Grid>
 
-        <!-- Video layer -->
-        <MediaElement x:Name="Player"
-                      LoadedBehavior="Manual"
-                      Stretch="UniformToFill"/>
-        <Rectangle Opacity="0.3">
+        <!-- Cover/Video layer -->
+        <Rectangle Opacity="0.3" x:Name="CoverRectangle">
             <Rectangle.Fill>
                 <ImageBrush x:Name="Cover"/>
             </Rectangle.Fill>
         </Rectangle>
+        <Rectangle x:Name="VideoRectangle" Visibility="Collapsed">
+            <Rectangle.Fill>
+                <DrawingBrush>
+                    <DrawingBrush.Drawing>
+                        <VideoDrawing
+                    Player="{x:Static local:MusicPlayer.Player}"
+                    Rect="0,0,1280,720"/>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+
 
         <!-- Lyrics overlay (book-like) -->
         <Border
@@ -42,7 +51,7 @@
     MinWidth="900"
     MaxHeight="520"
     VerticalAlignment="Center"
-    HorizontalAlignment="Center">
+    HorizontalAlignment="Center" x:Name="LyricBorder">
             <Grid RowDefinitions="Auto,*">
                 <ComboBox x:Name="cbx_lyriclang"
           Grid.Row="0"
@@ -332,7 +341,7 @@ StrokeThickness="2"/>
                            Foreground="White"
                            VerticalAlignment="Center" x:Name="Label_TotalTime"
                            FontSize="18" Margin="20,0,20,0"/>
-                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_PlayPause_Click" Grid.Column="6">
+                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="PlayWithVideo_Click" Grid.Column="6">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}" CornerRadius="8">
