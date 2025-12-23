@@ -148,6 +148,7 @@ namespace Floatly.Forms
             Label_ActiveLyrics.Text = e == null ? "" : (e.Text + (e.Text2.IsNotNullOrEmpty() ? $"\n{e.Text2}" : ""));
 
             // 20 December 2025 - WOW i can make the lyrics highlight on the center
+            // 23 December 2025 - Fixed a bug where it would not scroll properly when first 2 lyrics
             LyricList? active = null;
             LyricList? activeskip = null;
 
@@ -159,7 +160,10 @@ namespace Floatly.Forms
                 if (l.IsActive)
                 {
                     active = l;
-
+                    if (i < 2)
+                    {
+                        continue;
+                    }
                     // 2 items after active (safe check)
                     if (i + 2 < StaticBinding.LyricList.Count)
                         activeskip = StaticBinding.LyricList[i + 2];
