@@ -41,7 +41,12 @@ namespace Floatly.Utils
         // Music
         public static MediaPlayer Player = new MediaPlayer();
 
-        public static bool isPaused = false;
+        public static bool isPaused { get; set
+            {
+                field = value;
+                PauseChanged?.Invoke(null, value);
+            } } = false;
+        public static event EventHandler<bool> PauseChanged;
 
         // Play from static binding
         public async static void Play()

@@ -68,6 +68,7 @@ namespace Floatly
                 MusicPlayer.Player.MediaEnded += Player_MediaEnded;
                 Notification.NotificationRaised += ShowNotification;
                 Prefs.OnlineModeChanged += OfflineMode;
+                MusicPlayer.PauseChanged += MusicPlayer_PauseChanged;
                 slidertimer.Start();
                 lastnavbtn = NavHome; // default to home
 
@@ -404,6 +405,13 @@ namespace Floatly
                 MusicPlayer.isPaused = true;
                 ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-pause.png"));
             }
+        }
+        private void MusicPlayer_PauseChanged(object? sender, bool e)
+        {
+            if (e)
+                ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-pause.png"));
+            else
+                ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
         }
         #endregion
 

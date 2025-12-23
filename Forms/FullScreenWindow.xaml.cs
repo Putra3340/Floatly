@@ -49,6 +49,19 @@ namespace Floatly.Forms
             
             LyricItems.ItemsSource = StaticBinding.LyricList;
             this.Loaded += FullScreenWindow_Loaded;
+            MusicPlayer.PauseChanged += MusicPlayer_PauseChanged;
+            if (MusicPlayer.isPaused)
+                ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-pause.png"));
+            else
+                ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
+        }
+
+        private void MusicPlayer_PauseChanged(object? sender, bool e)
+        {
+            if (e)
+                ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-pause.png"));
+            else
+                ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
         }
 
         private async void FullScreenWindow_Loaded(object sender, RoutedEventArgs e)
@@ -85,20 +98,54 @@ namespace Floatly.Forms
         {
             if(StaticBinding.CurrentSong.MoviePath.IsNullOrEmpty())
                 StaticBinding.CurrentSong.MoviePath = await ApiLibrary.GetVideoStream(StaticBinding.CurrentSong.Id);
+            TimeSpan lasttimestamp = MusicPlayer.Player.Position;
+            MusicPlayer.Pause();
             if(MusicPlayer.Player.Source != new Uri(StaticBinding.CurrentSong.MoviePath)) // only play when its not match
+            {
                 MusicPlayer.PlayVideo();
+                MusicPlayer.Player.Position = lasttimestamp;
+                MusicPlayer.Player.Play();
+            }
             VideoRectangle.Visibility = Visibility.Visible;
-            LyricBorder.Background = new SolidColorBrush(Color.FromArgb(0xA0,0x20,0x18,0x3A));
+            LyricBorder.Background = new SolidColorBrush(Color.FromArgb(0xAF,0x20,0x18,0x3A));
         }
-        private void TogglePlayer(object sender, RoutedEventArgs e)
+        bool LyricShowed = true;
+        bool LabelLyricShowed = false;
+        private async void ToggleLyric_Click(object sender, RoutedEventArgs e)
         {
-            // TODO
+            if (LyricShowed)
+            {
+                LyricShowed = false;
+                LyricBorder.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                LyricShowed = true;
+                LyricBorder.Visibility = Visibility.Visible;
+            }
+
+        }
+        private async void ToggleLabelLyric_Click(object sender, RoutedEventArgs e)
+        {
+            if (LabelLyricShowed)
+            {
+                LabelLyricShowed = false;
+                Border_LabelActiveLyrics.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                LabelLyricShowed = true;
+                Border_LabelActiveLyrics.Visibility = Visibility.Visible;
+            }
+
         }
         private void OnLyricsChanged(object? sender, LyricList e)
         {
             if (e.Text.EndsWith("\n"))
                 e.Text = e.Text.TrimEnd('\n');
 
+            // Add To label to
+            Label_ActiveLyrics.Text = e == null ? "" : (e.Text + (e.Text2.IsNotNullOrEmpty() ? $"\n{e.Text2}" : ""));
 
             // 20 December 2025 - WOW i can make the lyrics highlight on the center
             LyricList? active = null;

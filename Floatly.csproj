@@ -69,6 +69,7 @@
     <None Remove="Assets\Images\icon-love-blank.png" />
     <None Remove="Assets\Images\icon-love.png" />
     <None Remove="Assets\Images\icon-maximize.png" />
+    <None Remove="Assets\Images\icon-middletext.png" />
     <None Remove="Assets\Images\icon-minimize.png" />
     <None Remove="Assets\Images\icon-minimizefullscreen.png" />
     <None Remove="Assets\Images\icon-next.png" />
@@ -153,6 +154,7 @@
     <Resource Include="Assets\Images\icon-love-blank.png" />
     <Resource Include="Assets\Images\icon-love.png" />
     <Resource Include="Assets\Images\icon-maximize.png" />
+    <Resource Include="Assets\Images\icon-middletext.png" />
     <Resource Include="Assets\Images\icon-minimize.png" />
     <Resource Include="Assets\Images\icon-minimizefullscreen.png" />
     <Resource Include="Assets\Images\icon-next.png" />

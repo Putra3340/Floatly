@@ -122,20 +122,8 @@ namespace Floatly.Utils
                     plc.ArtistBanner = artist.CoverUrl;
                     plc.ArtistBio = artist.Bio.Substring(0, 10) + "...";
                 }
-                await QueueManager.AddSongToQueue(new Queue
-                {
-                    Title = onlinesong.Title,
-                    Artist = onlinesong.ArtistName,
-                    Music = onlinesong.Music, 
-                    Lyrics = onlinesong.Lyrics,
-                    Cover = onlinesong.Cover,
-                    Banner = onlinesong.Banner,
-                    SongLength = onlinesong.SongLength,
-                    ArtistBio = plc.ArtistBio,
-                    ArtistCover = plc.ArtistBanner,
-                    CreatedAt = DateTime.Now,
-                    Status = (int)QueueManager.QueueStatus.Current, // set as current song because it plays immediately
-                });
+                await GetLyrics(StaticBinding.CurrentSong.Id);
+                await AddCurrentToQueue(StaticBinding.CurrentSong);
             }
             else if (song is DownloadedSong offlinesong)
             {
@@ -148,6 +136,27 @@ namespace Floatly.Utils
                 plc.ArtistBio = offlinesong.ArtistBio.Substring(0, 10) + "...";
             }
         }
+
+        public static async Task AddCurrentToQueue(Song onlinesong = null,QueueManager.QueueStatus status = QueueManager.QueueStatus.Current)
+        {
+            if (onlinesong == null)
+                return;
+            await QueueManager.AddSongToQueue(new Queue
+            {
+                Title = onlinesong.Title,
+                Artist = onlinesong.ArtistName,
+                Music = onlinesong.Music,
+                Lyrics = onlinesong.Lyrics,
+                Cover = onlinesong.Cover,
+                Banner = onlinesong.Banner,
+                SongLength = onlinesong.SongLength,
+                ArtistBio = plc.ArtistBio,
+                ArtistCover = plc.ArtistBanner,
+                CreatedAt = DateTime.Now,
+                Status = (int)status
+            });
+        }
+
         public static async Task GetArtist(object artist)
         {
             if (artist is Artist a)

@@ -160,8 +160,26 @@ Opacity="{Binding IsActive, Converter={StaticResource ActiveOpacityConverter}}"/
                 </ListBox>
             </Grid>
         </Border>
- 
 
+
+        <Border
+    x:Name="Border_LabelActiveLyrics"
+    VerticalAlignment="Bottom"
+    HorizontalAlignment="Center"
+    Margin="0,0,0,90"
+    Background="Black"
+    Padding="12,6"
+    CornerRadius="6" Visibility="Collapsed">
+
+            <TextBlock
+        x:Name="Label_ActiveLyrics"
+        Text=""
+        FontSize="28"
+        FontWeight="SemiBold"
+        Foreground="#EEFFFFFF"
+        TextWrapping="Wrap"
+        TextAlignment="Center"/>
+        </Border>
 
 
         <!-- Bottom controls (auto hide) -->
@@ -178,6 +196,7 @@ Opacity="{Binding IsActive, Converter={StaticResource ActiveOpacityConverter}}"/
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition/>
+                    <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
@@ -366,7 +385,7 @@ StrokeThickness="2"/>
                         <ImageBrush ImageSource="/Assets/Images/icon-player.png"/>
                     </Border.OpacityMask>
                 </Border>
-                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="CloseButton_Click" Grid.Column="7">
+                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="ToggleLyric_Click" Grid.Column="7">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -391,7 +410,7 @@ StrokeThickness="2"/>
                         <ImageBrush ImageSource="/Assets/Images/icon-listcenter.png"/>
                     </Border.OpacityMask>
                 </Border>
-                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="CloseButton_Click" Grid.Column="8">
+                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="ToggleLabelLyric_Click" Grid.Column="8">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -412,6 +431,31 @@ StrokeThickness="2"/>
                     </Button.Style>
                 </Button>
                 <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="8">
+                    <Border.OpacityMask>
+                        <ImageBrush ImageSource="/Assets/Images/icon-middletext.png"/>
+                    </Border.OpacityMask>
+                </Border>
+                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="CloseButton_Click" Grid.Column="9">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="9">
                     <Border.OpacityMask>
                         <ImageBrush ImageSource="/Assets/Images/icon-minimizefullscreen.png"/>
                     </Border.OpacityMask>
