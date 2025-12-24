@@ -1,13 +1,65 @@
 # Floatly
 
-Floatly is a modern, lightweight, and customizable music player application designed for seamless audio playback on Windows. The project emphasizes a floating, always-on-top user interface, allowing users to control their music without interrupting their workflow. Built with performance and usability in mind, Floatly leverages the latest .NET technologies and follows best practices in software development.
+**Floatly** is a modern, lightweight, and customizable music player application designed for seamless audio playback on Windows. Built with performance and aesthetics in mind, it features a unique floating "always-on-top" interface that allows you to control your music without interrupting your workflow.
+
+Powered by **.NET 10** and **WPF**, Floatly combines cutting-edge technology with a sleek, minimalist design.
 
 ---
 
 ## Features
-- Play your favorite local/online music files.
-- Display synchronized lyrics in a floating window.
-- Minimalistic and user-friendly interface.
+
+- **Floating Interface**: An unobtrusive mini-player that stays on top of other windows.
+- **Immersive Fullscreen**: Switch to a rich, fullscreen experience when you want to focus on the music.
+- **Lyrics Integration**: Display synchronized lyrics in a dedicated floating window.
+- **Universal Playback**: Support for both local music files and online streams.
+- **Advanced Audio Control**: Built-in 10-band equalizer for personalized sound.
+- **User System**: Secure Login and Registration integrated with Floatly Server.
+- **Library Management**: Organize your playlists and favorites efficiently.
+- **Global Shortcuts**: Control playback from anywhere using keyboard hotkeys.
+
+---
+
+## Technology Stack
+
+Floatly is built using the latest Microsoft technologies:
+
+- **Framework**: .NET 10
+- **UI Framework**: Windows Presentation Foundation (WPF)
+- **Data Access**: Entity Framework Core
+- **Database**: SQLite / SQL Server support
+- **Audio Metadata**: TagLibSharp
+- **Input Handling**: MouseKeyHook for global hotkeys
+
+---
+
+## Project Structure
+
+The project is organized into clear architectural layers:
+
+- **`Api/`**: Handles communication with the remote Floatly Server/Backend.
+- **`Forms/`**: Contains all UI windows and views (e.g., `FloatingWindow`, `FullScreenWindow`, `EqualizerWindow`).
+- **`Models/`**: Defines data structures.
+    - `Database/`: Entity Framework entities.
+    - `Form/`: View-specific models for UI binding.
+- **`Utils/`**: Helper classes and extension methods.
+
+---
+
+## Code Style
+
+To maintain codebase quality and stability, strictly adhere to the following guidelines:
+
+1.  **Encapsulation Over Direct Access**
+    - Avoid accessing `MainWindow.instance` directly.
+    - Use exposed properties or dedicated methods on `MainWindow` to interact with the core logic.
+
+2.  **Modern .NET Standards**
+    - Utilize **.NET 10** features and syntax enhancements wherever possible to ensure future-proofing and performance.
+
+3.  **Strict Model Separation**
+    - **Never** bind UI elements directly to API or Database models.
+    - **Always** separate the data layer from the presentation layer by using dedicated **Form Models**.
+    - *Reference*: See [PlayerCardModel.cs](Models/Form/PlayerCardModel.cs) and [StaticBinding.cs](Models/Form/StaticBinding.cs) for correct implementation patterns.
 
 ---
 
@@ -15,23 +67,22 @@ Floatly is a modern, lightweight, and customizable music player application desi
 
 Contributions are welcome! Please read the [contributing guidelines](CONTRIBUTING.md) before submitting a pull request.
 
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/your-feature`).
-3. Commit your changes (`git commit -am 'Add new feature'`).
-4. Push to the branch (`git push origin feature/your-feature`).
-5. Open a pull request.
+1.  Fork the repository.
+2.  Create a new branch (`git checkout -b feature/your-feature`).
+3.  Commit your changes (`git commit -am 'Add new feature'`).
+4.  Push to the branch (`git push origin feature/your-feature`).
+5.  Open a pull request.
 
 ---
 
 ## Floatly Server
-- https://floatly.putrartx.my.id
-- [Floatly Self-Host Server](https://github.com/Putra3340/Floatly-Server)
 
+Floatly connects to a centralized server for user management and synchronization:
 
-## Code Style
-- Minimize direct Mainwindow.instance use Mainwindow.variable or Mainwindow.Method() instead.
-- .NET 10 features must be used where possible.
-- Never use Api/Database Model directly to bind/set datacontext UI elements to Always use Form Model (see [PlayerCardModel.cs](Models/Form/PlayerCardModel.cs) and [StaticBindingModel.cs](Models/Form/StaticBindingModel.cs)).
+- **Official Server**: https://floatly.starhost.web.id
+- **Self-Host**: [Floatly Self-Host Server Repository](https://github.com/Putra3340/Floatly-Server)
+
+---
 
 ## License
 
