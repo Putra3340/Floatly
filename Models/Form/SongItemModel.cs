@@ -69,7 +69,8 @@ namespace Floatly.Models.Form
 
     public class LyricLanguageModel
     {
-        public string Language { get; set; } = string.Empty; // ja, en, id, auto
+        public string Language { get; set; } = string.Empty;
+        public string LanguageCode { get; set; } = string.Empty; // ja, en, id, auto
         public bool IsAuto { get; set; }
         public string FileName { get; set; } = string.Empty;
 

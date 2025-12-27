@@ -54,6 +54,8 @@
     HorizontalAlignment="Center" x:Name="LyricBorder">
             <Grid RowDefinitions="Auto,*">
                 <ComboBox x:Name="cbx_lyriclang"
+                              DisplayMemberPath="Language"
+    SelectedValuePath="Language"
           Grid.Row="0"
           Height="44"
           FontSize="16"
@@ -61,7 +63,7 @@
           Foreground="#EEFFFFFF"
           Background="#552A6FFF"
           BorderThickness="0"
-                          Text="Default"
+                          IsEditable="False"
           HorizontalContentAlignment="Center" SelectionChanged="cbx_lyriclang_SelectionChanged">
 
                     <ComboBox.ItemContainerStyle>
@@ -92,7 +94,7 @@
                         CornerRadius="18"
                         Padding="12,6">
                                         <ContentPresenter
-                            Content="{TemplateBinding SelectionBoxItem}"
+                                Content="{Binding SelectedItem.Language, RelativeSource={RelativeSource TemplatedParent}}"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"/>
                                     </Border>

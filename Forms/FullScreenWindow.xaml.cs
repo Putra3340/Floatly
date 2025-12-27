@@ -73,7 +73,7 @@ namespace Floatly.Forms
             // Load Combobox
             cbx_lyriclang.ItemsSource = StaticBinding.LyricLanguages;
             cbx_lyriclang.DisplayMemberPath = "Language";
-
+            cbx_lyriclang.SelectedValuePath = "Language";
         }
         private async void cbx_lyriclang_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -104,7 +104,6 @@ namespace Floatly.Forms
             {
                 MusicPlayer.PlayVideo();
                 MusicPlayer.Player.Position = lasttimestamp;
-                MusicPlayer.Player.Play();
             }
             VideoRectangle.Visibility = Visibility.Visible;
             LyricBorder.Background = new SolidColorBrush(Color.FromArgb(0xAF,0x20,0x18,0x3A));
