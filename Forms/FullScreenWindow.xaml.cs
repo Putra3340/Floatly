@@ -74,6 +74,8 @@ namespace Floatly.Forms
             cbx_lyriclang.ItemsSource = StaticBinding.LyricLanguages;
             cbx_lyriclang.DisplayMemberPath = "Language";
             cbx_lyriclang.SelectedValuePath = "Language";
+
+            ToggleLyricButton.Background = (Brush)FindResource("AccentPurple");
         }
         private async void cbx_lyriclang_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -96,16 +98,24 @@ namespace Floatly.Forms
         }
         private async void PlayWithVideo_Click(object sender, RoutedEventArgs e)
         {
+            var btn = sender as Button;
+            if(VideoRectangle.Visibility == Visibility.Visible)
+            {
+                btn.Background = Brushes.Transparent;
+                VideoRectangle.Visibility = Visibility.Hidden;
+                return;
+            }
             if(StaticBinding.CurrentSong.MoviePath.IsNullOrEmpty())
                 StaticBinding.CurrentSong.MoviePath = await ApiLibrary.GetVideoStream(StaticBinding.CurrentSong.Id);
             TimeSpan lasttimestamp = MusicPlayer.Player.Position;
-            MusicPlayer.Pause();
             if(MusicPlayer.Player.Source != new Uri(StaticBinding.CurrentSong.MoviePath)) // only play when its not match
             {
+                MusicPlayer.Pause();
                 MusicPlayer.SetVideo();
                 MusicPlayer.Player.Position = lasttimestamp;
+                MusicPlayer.Resume();
             }
-            MusicPlayer.Resume();
+            btn.Background = (Brush)FindResource("AccentPurple");
             VideoRectangle.Visibility = Visibility.Visible;
             LyricBorder.Background = new SolidColorBrush(Color.FromArgb(0xAF,0x20,0x18,0x3A));
         }
@@ -113,28 +123,34 @@ namespace Floatly.Forms
         bool LabelLyricShowed = false;
         private async void ToggleLyric_Click(object sender, RoutedEventArgs e)
         {
+            var btn = sender as Button;
             if (LyricShowed)
             {
                 LyricShowed = false;
+                btn.Background = Brushes.Transparent;
                 LyricBorder.Visibility = Visibility.Collapsed;
             }
             else
             {
                 LyricShowed = true;
+                btn.Background = (Brush)FindResource("AccentPurple");
                 LyricBorder.Visibility = Visibility.Visible;
             }
 
         }
         private async void ToggleLabelLyric_Click(object sender, RoutedEventArgs e)
         {
+            var btn = sender as Button;
             if (LabelLyricShowed)
             {
                 LabelLyricShowed = false;
+                btn.Background = Brushes.Transparent;
                 Border_LabelActiveLyrics.Visibility = Visibility.Collapsed;
             }
             else
             {
                 LabelLyricShowed = true;
+                btn.Background = (Brush)FindResource("AccentPurple");
                 Border_LabelActiveLyrics.Visibility = Visibility.Visible;
             }
 

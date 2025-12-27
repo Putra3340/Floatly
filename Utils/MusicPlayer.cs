@@ -60,6 +60,7 @@ namespace Floatly.Utils
             {
                 Player.Open(new Uri(StaticBinding.CurrentSong.Music, UriKind.RelativeOrAbsolute));
                 Player.Play();
+                isPaused = false;
                 timer.Tick += LyricsTick;
                 timer.Start();
             }

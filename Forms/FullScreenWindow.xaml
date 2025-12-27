@@ -391,7 +391,7 @@ StrokeThickness="2"/>
                         <ImageBrush ImageSource="/Assets/Images/icon-player.png"/>
                     </Border.OpacityMask>
                 </Border>
-                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="ToggleLyric_Click" Grid.Column="7">
+                <Button x:Name="ToggleLyricButton" Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="ToggleLyric_Click" Grid.Column="7">
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Border Background="{TemplateBinding Background}" CornerRadius="8">
