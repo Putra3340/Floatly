@@ -66,9 +66,9 @@ namespace Floatly.Forms
 
         private async void FullScreenWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            // Load By Current Song Info
-            Cover.ImageSource = new ImageBrush(new BitmapImage(new Uri(StaticBinding.plc.Banner ?? "pack://application:,,,/Assets/Images/cover-placeholder.png"))).ImageSource;
-
+            Cover.ImageSource = new BitmapImage(
+    new Uri(StaticBinding.plc.Banner, UriKind.RelativeOrAbsolute)
+);
 
             // Load Combobox
             cbx_lyriclang.ItemsSource = StaticBinding.LyricLanguages;
@@ -102,9 +102,10 @@ namespace Floatly.Forms
             MusicPlayer.Pause();
             if(MusicPlayer.Player.Source != new Uri(StaticBinding.CurrentSong.MoviePath)) // only play when its not match
             {
-                MusicPlayer.PlayVideo();
+                MusicPlayer.SetVideo();
                 MusicPlayer.Player.Position = lasttimestamp;
             }
+            MusicPlayer.Resume();
             VideoRectangle.Visibility = Visibility.Visible;
             LyricBorder.Background = new SolidColorBrush(Color.FromArgb(0xAF,0x20,0x18,0x3A));
         }

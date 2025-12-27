@@ -68,12 +68,12 @@ namespace Floatly.Utils
                 MessageBox.Show($"Error playing music: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-        public async static void PlayVideo()
+        public async static void SetVideo()
         {
             try
             {
+                // Only Set
                 Player.Open(new Uri(StaticBinding.CurrentSong.MoviePath, UriKind.RelativeOrAbsolute));
-                Player.Play();
             }
             catch (Exception ex)
             {

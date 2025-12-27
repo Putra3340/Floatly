@@ -10,6 +10,7 @@
         Width="1280" Height="720">
     <Window.Resources>
         <local:ActiveOpacityConverter x:Key="ActiveOpacityConverter"/>
+        <local:ComboBoxSelectionTextConverter x:Key="ComboTextConverter"/>
     </Window.Resources>
 
     <!-- Dark elegant background -->
@@ -94,9 +95,12 @@
                         CornerRadius="18"
                         Padding="12,6">
                                         <ContentPresenter
-                                Content="{Binding SelectedItem.Language, RelativeSource={RelativeSource TemplatedParent}}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"/>
+    Content="{Binding SelectedItem,
+                      RelativeSource={RelativeSource TemplatedParent},
+                      Converter={StaticResource ComboTextConverter}}"
+    HorizontalAlignment="Center"
+    VerticalAlignment="Center"/>
+
                                     </Border>
                                 </ToggleButton>
 
