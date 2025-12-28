@@ -33,7 +33,6 @@ namespace Floatly.Utils
         private static ListBox AlbumListSearch;
         private static ListBox DownloadedSong;
         private static ListBox QueuedSong;
-        private static PlayerCard plc;
         public static void Initialize()
         {
             songlist = MainWindow.Instance.List_Song;
@@ -44,7 +43,6 @@ namespace Floatly.Utils
             AlbumListSearch = MainWindow.Instance.List_AlbumSearch;
             DownloadedSong = MainWindow.Instance.List_DownloadedSong;
             QueuedSong = MainWindow.Instance.List_QueuedSong;
-            plc = StaticBinding.plc;
         }
 
         // This is a default value to prevent errors, and for filtering
@@ -119,8 +117,8 @@ namespace Floatly.Utils
                 if(StaticBinding.CurrentSong.ArtistId != null)
                 {
                     var artist = await Api.ApiLibrary.GetArtist(int.Parse(StaticBinding.CurrentSong.ArtistId));
-                    plc.ArtistBanner = artist.CoverUrl;
-                    plc.ArtistBio = artist.Bio.Substring(0, 10) + "...";
+                    onlinesong.ArtistCover = artist.CoverUrl;
+                    onlinesong.ArtistBio = artist.Bio.Substring(0, 10) + "...";
                 }
                 await GetLyrics(StaticBinding.CurrentSong.Id);
                 await AddCurrentToQueue(StaticBinding.CurrentSong);
@@ -128,12 +126,12 @@ namespace Floatly.Utils
             else if (song is DownloadedSong offlinesong)
             {
                 // TODO
-                plc.Title = offlinesong.Title;
-                plc.Artist = offlinesong.Artist;
-                plc.Banner = offlinesong.Banner;
+                offlinesong.Title = offlinesong.Title;
+                offlinesong.Artist = offlinesong.Artist;
+                offlinesong.Banner = offlinesong.Banner;
                 //MusicPlayer.Play(offlinesong.Music, offlinesong.Lyrics);
-                plc.ArtistBanner = offlinesong.ArtistCover;
-                plc.ArtistBio = offlinesong.ArtistBio.Substring(0, 10) + "...";
+                offlinesong.ArtistCover = offlinesong.ArtistCover;
+                offlinesong.ArtistBio = offlinesong.ArtistBio.Substring(0, 10) + "...";
             }
         }
 
@@ -150,8 +148,8 @@ namespace Floatly.Utils
                 Cover = onlinesong.Cover,
                 Banner = onlinesong.Banner,
                 SongLength = onlinesong.SongLength,
-                ArtistBio = plc.ArtistBio,
-                ArtistCover = plc.ArtistBanner,
+                ArtistBio = onlinesong.ArtistBio,
+                ArtistCover = onlinesong.ArtistCover,
                 CreatedAt = DateTime.Now,
                 Status = (int)status
             });

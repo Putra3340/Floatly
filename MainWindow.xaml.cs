@@ -82,7 +82,8 @@ namespace Floatly
                 //    plc.ArtistBanner = lastsong.ArtistCover;
                 //    plc.ArtistBio = lastsong.ArtistBio.Substring(0, 100) + "..." ?? "";
                 //}
-                PlayerCard.DataContext = StaticBinding.plc;
+                if (StaticBinding.CurrentSong == null)
+                    CollapsePlayerCard_Manual(false);
                 ListPanelGrid.Add(PanelHome);
                 ListPanelGrid.Add(PanelOnline);
                 ListPanelGrid.Add(PanelDownloaded);
@@ -419,6 +420,28 @@ namespace Floatly
         private void CollapsePlayerCard_Click(object sender, RoutedEventArgs e)
         {
             if (Grid_Main_PlayerCard.Width.Value == 0) // if collapsed
+            {
+                Grid_Main_PlayerCard.Width = new GridLength(300); // restore to 300
+                Grid_Main_PlayerCard.MinWidth = 390f;
+                Grid_Main_PlayerCard.MaxWidth = 600f; //idk
+                Grid_Main_MiddleContent.Width = new GridLength(1, GridUnitType.Star); // take all leftover space
+                ((ImageBrush)Icon_CollapsePlayerCard.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-close.png"));
+                return;
+            }
+            else
+            {
+                Grid_Main_PlayerCard.Width = new GridLength(0); // collapse
+                Grid_Main_PlayerCard.MinWidth = 0f;
+                Grid_Main_PlayerCard.MaxWidth = 600f; //idk
+                Grid_Main_MiddleContent.Width = new GridLength(1, GridUnitType.Star); // take all leftover space
+                ((ImageBrush)Icon_CollapsePlayerCard.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-arrow-left.png"));
+                return;
+            }
+
+        }
+        public void CollapsePlayerCard_Manual(bool show)
+        {
+            if (show) // if collapsed
             {
                 Grid_Main_PlayerCard.Width = new GridLength(300); // restore to 300
                 Grid_Main_PlayerCard.MinWidth = 390f;

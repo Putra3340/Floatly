@@ -67,7 +67,7 @@ namespace Floatly.Forms
         private async void FullScreenWindow_Loaded(object sender, RoutedEventArgs e)
         {
             Cover.ImageSource = new BitmapImage(
-    new Uri(StaticBinding.plc.Banner, UriKind.RelativeOrAbsolute)
+    new Uri(StaticBinding.CurrentSong.Banner, UriKind.RelativeOrAbsolute)
 );
 
             // Load Combobox

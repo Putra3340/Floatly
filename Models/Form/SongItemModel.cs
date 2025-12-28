@@ -8,6 +8,11 @@ using System.Windows.Media;
 
 namespace Floatly.Models.Form
 {
+    /*
+    This is Good for data binding in UI frameworks that support INotifyPropertyChanged.
+    Always do this! - Putra3340 6 November 2025
+    Moved from StaticBinding.cs to here for better organization.
+    */
     public class Song : INotifyPropertyChanged 
     {
         public string? Id { get => field; set { field = value; OnPropertyChanged(); } }
@@ -29,6 +34,8 @@ namespace Floatly.Models.Form
         public string? ArtistCover { get => field; set { field = value; OnPropertyChanged(); } }
         public int AlbumId { get => field; set { field = value; OnPropertyChanged(); } }
         public string? AlbumCover { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? NextQueueImage { get; set { field = value; OnPropertyChanged(); } } = "/Assets/Images/default.png";
+        public string? NextQueueTitle { get; set { field = value; OnPropertyChanged(); } } = "Next Up Title";
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

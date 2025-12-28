@@ -1907,7 +1907,7 @@ VerticalAlignment="Center"/>
         TextWrapping="Wrap"/>
                                 </Viewbox>
 
-                                <TextBlock x:Name="Label_ArtistName" Text="{Binding Artist}" Foreground="{DynamicResource PrimaryText}" FontSize="16" HorizontalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Light" Margin="0,0,0,10"/>
+                                <TextBlock x:Name="Label_ArtistName" Text="{Binding ArtistName}" Foreground="{DynamicResource PrimaryText}" FontSize="16" HorizontalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Light" Margin="0,0,0,10"/>
                                 <StackPanel Margin="0,10,0,0">
                                     <Grid HorizontalAlignment="Stretch" Height="120">
                                         <Grid.RowDefinitions>
