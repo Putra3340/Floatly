@@ -60,6 +60,7 @@
     <None Remove="Assets\Images\icon-debug.png" />
     <None Remove="Assets\Images\icon-equalizer.png" />
     <None Remove="Assets\Images\icon-fullscreen.png" />
+    <None Remove="Assets\Images\icon-hd.png" />
     <None Remove="Assets\Images\icon-home.png" />
     <None Remove="Assets\Images\icon-library.png" />
     <None Remove="Assets\Images\icon-listcenter.png" />
@@ -86,6 +87,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="LibVLCSharp" Version="3.9.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
       <PrivateAssets>all</PrivateAssets>
@@ -145,6 +147,7 @@
     <Resource Include="Assets\Images\icon-debug.png" />
     <Resource Include="Assets\Images\icon-equalizer.png" />
     <Resource Include="Assets\Images\icon-fullscreen.png" />
+    <Resource Include="Assets\Images\icon-hd.png" />
     <Resource Include="Assets\Images\icon-home.png" />
     <Resource Include="Assets\Images\icon-library.png" />
     <Resource Include="Assets\Images\icon-listcenter.png" />

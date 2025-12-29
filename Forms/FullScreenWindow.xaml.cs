@@ -54,6 +54,11 @@ namespace Floatly.Forms
                 ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-pause.png"));
             else
                 ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
+            if (Prefs.isPremium)
+            {
+                Btn_HD.Visibility = Visibility.Visible;
+                Border_Btn_HD.Visibility = Visibility.Visible;
+            }
         }
 
         private void MusicPlayer_PauseChanged(object? sender, bool e)
@@ -66,9 +71,7 @@ namespace Floatly.Forms
 
         private async void FullScreenWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            Cover.ImageSource = new BitmapImage(
-    new Uri(StaticBinding.CurrentSong.Banner, UriKind.RelativeOrAbsolute)
-);
+            Cover.ImageSource = new BitmapImage(new Uri(StaticBinding.CurrentSong.Banner, UriKind.RelativeOrAbsolute));
 
             // Load Combobox
             cbx_lyriclang.ItemsSource = StaticBinding.LyricLanguages;
@@ -92,8 +95,9 @@ namespace Floatly.Forms
         }
 
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        private async void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            await MusicPlayer.DisposeHDVideo();
             this.Close();
         }
         private async void PlayWithVideo_Click(object sender, RoutedEventArgs e)
@@ -105,7 +109,9 @@ namespace Floatly.Forms
                 VideoRectangle.Visibility = Visibility.Hidden;
                 return;
             }
-            if(StaticBinding.CurrentSong.MoviePath.IsNullOrEmpty())
+            Btn_HD.Visibility = Visibility.Collapsed;
+            Border_Btn_HD.Visibility = Visibility.Collapsed;
+            if (StaticBinding.CurrentSong.MoviePath.IsNullOrEmpty())
                 StaticBinding.CurrentSong.MoviePath = await ApiLibrary.GetVideoStream(StaticBinding.CurrentSong.Id);
             TimeSpan lasttimestamp = MusicPlayer.Player.Position;
             if(MusicPlayer.Player.Source != new Uri(StaticBinding.CurrentSong.MoviePath)) // only play when its not match
@@ -113,6 +119,33 @@ namespace Floatly.Forms
                 MusicPlayer.Pause();
                 MusicPlayer.SetVideo();
                 MusicPlayer.Player.Position = lasttimestamp;
+                MusicPlayer.Resume();
+            }
+            btn.Background = (Brush)FindResource("AccentPurple");
+            VideoRectangle.Visibility = Visibility.Visible;
+            LyricBorder.Background = new SolidColorBrush(Color.FromArgb(0xAF,0x20,0x18,0x3A));
+        }
+        private async void PlayHD_Click(object sender, RoutedEventArgs e)
+        {
+            var btn = sender as Button;
+            if(VideoRectangle.Visibility == Visibility.Visible)
+            {
+                btn.Background = Brushes.Transparent;
+                VideoRectangle.Visibility = Visibility.Hidden;
+                return;
+            }
+            // just to be safe user not to break it
+            Btn_Video.Visibility = Visibility.Collapsed;
+            Border_Btn_Video.Visibility = Visibility.Collapsed;
+            if (StaticBinding.CurrentSong.HDMoviePath.IsNullOrEmpty())
+                StaticBinding.CurrentSong.HDMoviePath = await ApiLibrary.GetHDVideoStream(StaticBinding.CurrentSong.Id);
+            TimeSpan lasttimestamp = MusicPlayer.Player.Position;
+            if(MusicPlayer.Player.Source != new Uri(StaticBinding.CurrentSong.HDMoviePath)) // only play when its not match
+            {
+                MusicPlayer.Pause();
+                MusicPlayer.SetHDVideo();
+                MusicPlayer.Player.Position = lasttimestamp;
+                MusicPlayer.SecondPlayer.Position = lasttimestamp;
                 MusicPlayer.Resume();
             }
             btn.Background = (Brush)FindResource("AccentPurple");
@@ -213,13 +246,13 @@ namespace Floatly.Forms
         {
             if (MusicPlayer.isPaused)
             {
-                MusicPlayer.Player.Play();
+                MusicPlayer.Resume();
                 MusicPlayer.isPaused = false;
                 ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
             }
             else
             {
-                MusicPlayer.Player.Pause();
+                MusicPlayer.Pause();
                 MusicPlayer.isPaused = true;
                 ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-pause.png"));
             }
@@ -243,6 +276,7 @@ namespace Floatly.Forms
         {
             isDragging = false;
             MusicPlayer.Player.Position = TimeSpan.FromSeconds(Slider_Progress.Value);
+            MusicPlayer.SecondPlayer?.Position = TimeSpan.FromSeconds(Slider_Progress.Value);
         }
         private void Slider_Progress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -258,7 +292,10 @@ namespace Floatly.Forms
             var lyric = border.DataContext as LyricList;
 
             if (lyric != null)
+            {
                 MusicPlayer.Player.Position = lyric.Start;
+                MusicPlayer.SecondPlayer?.Position = lyric.Start;
+            }
         }
     }
 }

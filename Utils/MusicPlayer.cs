@@ -40,6 +40,7 @@ namespace Floatly.Utils
         #region Player Thing
         // Music
         public static MediaPlayer Player = new MediaPlayer();
+        public static MediaPlayer SecondPlayer = null;
 
         public static bool isPaused { get; set
             {
@@ -81,6 +82,37 @@ namespace Floatly.Utils
                 MessageBox.Show($"Error playing video: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+        public async static void SetHDVideo()
+        {
+            try
+            {
+                // Only Set also init the second player
+                Player.Open(new Uri(StaticBinding.CurrentSong.HDMoviePath, UriKind.RelativeOrAbsolute));
+                if(SecondPlayer == null)
+                    SecondPlayer = new MediaPlayer();
+                SecondPlayer.Open(new Uri(StaticBinding.CurrentSong.Music, UriKind.RelativeOrAbsolute));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error playing video: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+        public async static Task DisposeHDVideo()
+        {
+            try
+            {
+                TimeSpan temp = Player.Position;
+                Player.Close();
+                SecondPlayer?.Close();
+                Player.Open(new Uri(StaticBinding.CurrentSong.Music, UriKind.RelativeOrAbsolute));
+                Player.Position = temp;
+                Player.Play();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error playing video: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
         public static void LyricsTick(object s, EventArgs e)
         {
             // support when player position changed
@@ -100,9 +132,19 @@ namespace Floatly.Utils
             foreach (var item in parsed)
                 StaticBinding.LyricList.Add(item);
         }
-        public static async void Resume() => Player.Play();
+        public static async void Resume()
+        {
+            Player.Play();
+            SecondPlayer?.Play();
+            isPaused = false;
+        }
 
-        public static void Pause() => Player.Pause();
+        public static void Pause()
+        {
+            Player.Pause();
+            SecondPlayer?.Pause();
+            isPaused = true;
+        }
 
         public static void Stop() => Player.Stop();
 

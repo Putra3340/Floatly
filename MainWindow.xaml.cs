@@ -345,6 +345,7 @@ namespace Floatly
         {
             isDragging = false;
             MusicPlayer.Player.Position = TimeSpan.FromSeconds(Slider_Progress.Value);
+            MusicPlayer.SecondPlayer.Position = TimeSpan.FromSeconds(Slider_Progress.Value);
         }
         private void Slider_Progress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -396,13 +397,13 @@ namespace Floatly
         {
             if (MusicPlayer.isPaused)
             {
-                MusicPlayer.Player.Play();
+                MusicPlayer.Resume();
                 MusicPlayer.isPaused = false;
                 ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
             }
             else
             {
-                MusicPlayer.Player.Pause();
+                MusicPlayer.Pause();
                 MusicPlayer.isPaused = true;
                 ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-pause.png"));
             }

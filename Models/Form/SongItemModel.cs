@@ -22,6 +22,7 @@ namespace Floatly.Models.Form
         public string? Cover { get => field; set { field = value; OnPropertyChanged(); } }
         public string? Banner { get => field; set { field = value; OnPropertyChanged(); } }
         public string? MoviePath { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? HDMoviePath { get => field; set { field = value; OnPropertyChanged(); } }
         public string? UploadedBy { get => field; set { field = value; OnPropertyChanged(); } }
         public string? SongLength { get => field; set { field = value; OnPropertyChanged(); } }
         public string? PlayCount { get => field; set { field = value; OnPropertyChanged(); } }

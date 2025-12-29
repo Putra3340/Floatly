@@ -17,6 +17,7 @@ namespace Floatly
         public static string LoginToken = "";
         public static string LoginUsername = "";
         public static bool isRegister { get; set; } = false; // is user logged in
+        public static bool isPremium { get; set; } = true; // is user premium
         public static event EventHandler OnlineModeChanged;
         public static bool OnlineMode
         {

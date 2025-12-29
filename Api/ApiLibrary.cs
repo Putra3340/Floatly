@@ -111,5 +111,13 @@ namespace Floatly.Api
             string result = await response.Content.ReadAsStringAsync();
             return result;
         }
+        public static async Task<string> GetHDVideoStream(string yturl)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/hdvideo/" + yturl);
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string result = await response.Content.ReadAsStringAsync();
+            return result;
+        }
     }
 }
