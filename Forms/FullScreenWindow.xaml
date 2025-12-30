@@ -34,6 +34,8 @@
             </Rectangle.Fill>
         </Rectangle>
         <Grid x:Name="VideoRectangleHost" Visibility="Hidden"/>
+        
+
 
 
         <!-- Lyrics overlay (book-like) -->
@@ -159,7 +161,21 @@ Opacity="{Binding IsActive, Converter={StaticResource ActiveOpacityConverter}}"/
                 </ListBox>
             </Grid>
         </Border>
+        <Border x:Name="LoadingOverlay"
+Background="Black"
+Visibility="Collapsed">
 
+            <Grid>
+                <TextBlock x:Name="LoadingText"
+           Text="Loading"
+                           FontWeight="Bold"
+           FontSize="50"
+           Foreground="White"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"/>
+            </Grid>
+
+        </Border>
 
         <Border
     x:Name="Border_LabelActiveLyrics"

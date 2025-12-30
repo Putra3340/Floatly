@@ -31,6 +31,8 @@ namespace Floatly.Forms
             Interval = TimeSpan.FromSeconds(1)
         };
         DispatcherTimer slidertimer = new DispatcherTimer(); // for slider
+        private DispatcherTimer _loadingTimer;
+        private int _dotCount = 0;
         public FullScreenWindow()
         {
             InitializeComponent();
@@ -60,7 +62,32 @@ namespace Floatly.Forms
                 Border_Btn_HD.Visibility = Visibility.Visible;
             }
         }
+        public void StartLoading()
+        {
+            _dotCount = 0;
+            LoadingOverlay.Visibility = Visibility.Visible; // start
 
+            _loadingTimer ??= new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(400)
+            };
+
+            _loadingTimer.Tick -= LoadingTick;
+            _loadingTimer.Tick += LoadingTick;
+            this.IsEnabled = false;
+            _loadingTimer.Start();
+        }
+        private void LoadingTick(object? sender, EventArgs e)
+        {
+            _dotCount = (_dotCount + 1) % 4; // 0..3 dots
+            LoadingText.Text = "Loading" + new string('.', _dotCount);
+        }
+        public void StopLoading()
+        {
+            _loadingTimer?.Stop();
+            LoadingOverlay.Visibility = Visibility.Collapsed; // stop
+            this.IsEnabled = true;
+        }
         private void MusicPlayer_PauseChanged(object? sender, bool e)
         {
             if (e)
@@ -126,6 +153,7 @@ namespace Floatly.Forms
             }
             Btn_HD.Visibility = Visibility.Collapsed;
             Border_Btn_HD.Visibility = Visibility.Collapsed;
+            StartLoading();
             if (StaticBinding.CurrentSong.MoviePath.IsNullOrEmpty())
                 StaticBinding.CurrentSong.MoviePath = await ApiLibrary.GetVideoStream(StaticBinding.CurrentSong.Id);
             TimeSpan lasttimestamp = MusicPlayer.Player.Position;
@@ -134,9 +162,11 @@ namespace Floatly.Forms
                 MusicPlayer.Pause();
                 MusicPlayer.SetVideo();
                 await Task.Delay(20);
-                MusicPlayer.Player.Position = lasttimestamp;
                 MusicPlayer.Resume();
+                await Task.Delay(20);
+                MusicPlayer.Player.Position = lasttimestamp;
             }
+            StopLoading();
             btn.Background = (Brush)FindResource("AccentPurple");
             VideoRectangleHost.Visibility = Visibility.Visible;
             LyricBorder.Background = new SolidColorBrush(Color.FromArgb(0xAF,0x20,0x18,0x3A));
@@ -153,6 +183,7 @@ namespace Floatly.Forms
             // just to be safe user not to break it
             Btn_Video.Visibility = Visibility.Collapsed;
             Border_Btn_Video.Visibility = Visibility.Collapsed;
+            StartLoading();
             if (StaticBinding.CurrentSong.HDMoviePath.IsNullOrEmpty())
                 StaticBinding.CurrentSong.HDMoviePath = await ApiLibrary.GetHDVideoStream(StaticBinding.CurrentSong.Id);
             TimeSpan lasttimestamp = MusicPlayer.Player.Position;
@@ -161,9 +192,11 @@ namespace Floatly.Forms
                 MusicPlayer.Pause();
                 MusicPlayer.SetHDVideo();
                 await Task.Delay(20);
-                MusicPlayer.Player.Position = lasttimestamp;
                 MusicPlayer.Resume();
+                await Task.Delay(20);
+                MusicPlayer.Player.Position = lasttimestamp;
             }
+            StopLoading();
             btn.Background = (Brush)FindResource("AccentPurple");
             VideoRectangleHost.Visibility = Visibility.Visible;
             LyricBorder.Background = new SolidColorBrush(Color.FromArgb(0xAF,0x20,0x18,0x3A));

@@ -82,7 +82,7 @@
             <MediaElement x:Name="SharedPlayer"
                   LoadedBehavior="Manual"
                   UnloadedBehavior="Stop"
-                  Visibility="Hidden"/>
+                  Visibility="Visible"/>
         </Grid>
         <Grid Visibility="Visible" Opacity="1">
             <Grid.RowDefinitions>
@@ -2276,10 +2276,10 @@ VerticalAlignment="Center"/>
                                             <BlurEffect/>
                                         </Rectangle.Effect>
                                         <Rectangle.Fill>
-                                            <ImageBrush ImageSource="{Binding ArtistBanner}" Opacity="0.3" Stretch="UniformToFill"/>
+                                            <ImageBrush ImageSource="{Binding ArtistCover}" Opacity="0.3" Stretch="UniformToFill"/>
                                         </Rectangle.Fill>
                                     </Rectangle>
-                                    <TextBlock Text="{Binding Artist}" Foreground="{DynamicResource PrimaryText}" FontSize="28" Grid.Row="1" Margin="0,50,0,0" FontWeight="Bold" Padding="10">
+                                    <TextBlock Text="{Binding ArtistName}" Foreground="{DynamicResource PrimaryText}" FontSize="28" Grid.Row="1" Margin="0,50,0,0" FontWeight="Bold" Padding="10">
                                         <TextBlock.Effect>
                                             <DropShadowEffect Color="Black"
 BlurRadius="0"

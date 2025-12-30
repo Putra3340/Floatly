@@ -41,8 +41,8 @@ namespace Floatly
         // online mode (use online songs)
 
 #if DEBUG
-        public static string ServerUrl { get; set; } = "https://floatly.starhost.web.id"; // production server
-        //public static string ServerUrl { get; set; } = "https://localhost:7156"; // debug server
+        //public static string ServerUrl { get; set; } = "https://floatly.starhost.web.id"; // production server
+        public static string ServerUrl { get; set; } = "https://localhost:7156"; // debug server
 #elif PRODUCTION
         public static string ServerUrl { get; set; } = "https://floatly.starhost.web.id"; // production server
 #else

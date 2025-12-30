@@ -113,13 +113,6 @@ namespace Floatly.Utils
                 StaticBinding.CurrentSong = await ApiLibrary.Play(onlinesong.Id, "96k");
                 // Get the music binary URL
                 MusicPlayer.Play();
-
-                if(StaticBinding.CurrentSong.ArtistId != null)
-                {
-                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(StaticBinding.CurrentSong.ArtistId));
-                    onlinesong.ArtistCover = artist.CoverUrl;
-                    onlinesong.ArtistBio = artist.Bio.Substring(0, 10) + "...";
-                }
                 await GetLyrics(StaticBinding.CurrentSong.Id);
                 await AddCurrentToQueue(StaticBinding.CurrentSong);
             }
