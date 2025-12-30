@@ -78,7 +78,12 @@
         </ContextMenu>
     </Window.Resources>
     <Grid>
-        <Image Name="VideoDisplay" Stretch="Uniform" /> <!-- TODO = You know -->
+        <Grid x:Name="PlayerHost" Visibility="Hidden">
+            <MediaElement x:Name="SharedPlayer"
+                  LoadedBehavior="Manual"
+                  UnloadedBehavior="Stop"
+                  Visibility="Hidden"/>
+        </Grid>
         <Grid Visibility="Visible" Opacity="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="40"/>

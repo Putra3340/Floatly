@@ -73,6 +73,16 @@ namespace Floatly.Forms
         {
             Cover.ImageSource = new BitmapImage(new Uri(StaticBinding.CurrentSong.Banner, UriKind.RelativeOrAbsolute));
 
+            var pos = MusicPlayer.Player.Position;
+            MusicPlayer.Player.Pause();
+
+            MusicPlayer.MoveTo(VideoRectangleHost);
+
+            await Task.Delay(20);
+            MusicPlayer.Player.Position = pos;
+            MusicPlayer.Player.Play();
+
+
             // Load Combobox
             cbx_lyriclang.ItemsSource = StaticBinding.LyricLanguages;
             cbx_lyriclang.DisplayMemberPath = "Language";
@@ -97,16 +107,21 @@ namespace Floatly.Forms
 
         private async void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            await MusicPlayer.DisposeHDVideo();
+            var pos = MusicPlayer.Player.Position;
+            MusicPlayer.Player.Pause();
+            MusicPlayer.MoveTo(MusicPlayer.Host);
+            await Task.Delay(20);
+            MusicPlayer.Player.Position = pos;
+            MusicPlayer.Player.Play();
             this.Close();
         }
         private async void PlayWithVideo_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
-            if(VideoRectangle.Visibility == Visibility.Visible)
+            if(VideoRectangleHost.Visibility == Visibility.Visible)
             {
                 btn.Background = Brushes.Transparent;
-                VideoRectangle.Visibility = Visibility.Hidden;
+                VideoRectangleHost.Visibility = Visibility.Hidden;
                 return;
             }
             Btn_HD.Visibility = Visibility.Collapsed;
@@ -118,20 +133,21 @@ namespace Floatly.Forms
             {
                 MusicPlayer.Pause();
                 MusicPlayer.SetVideo();
+                await Task.Delay(20);
                 MusicPlayer.Player.Position = lasttimestamp;
                 MusicPlayer.Resume();
             }
             btn.Background = (Brush)FindResource("AccentPurple");
-            VideoRectangle.Visibility = Visibility.Visible;
+            VideoRectangleHost.Visibility = Visibility.Visible;
             LyricBorder.Background = new SolidColorBrush(Color.FromArgb(0xAF,0x20,0x18,0x3A));
         }
         private async void PlayHD_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
-            if(VideoRectangle.Visibility == Visibility.Visible)
+            if(VideoRectangleHost.Visibility == Visibility.Visible)
             {
                 btn.Background = Brushes.Transparent;
-                VideoRectangle.Visibility = Visibility.Hidden;
+                VideoRectangleHost.Visibility = Visibility.Hidden;
                 return;
             }
             // just to be safe user not to break it
@@ -144,12 +160,12 @@ namespace Floatly.Forms
             {
                 MusicPlayer.Pause();
                 MusicPlayer.SetHDVideo();
+                await Task.Delay(20);
                 MusicPlayer.Player.Position = lasttimestamp;
-                MusicPlayer.SecondPlayer.Position = lasttimestamp;
                 MusicPlayer.Resume();
             }
             btn.Background = (Brush)FindResource("AccentPurple");
-            VideoRectangle.Visibility = Visibility.Visible;
+            VideoRectangleHost.Visibility = Visibility.Visible;
             LyricBorder.Background = new SolidColorBrush(Color.FromArgb(0xAF,0x20,0x18,0x3A));
         }
         bool LyricShowed = true;
@@ -276,7 +292,6 @@ namespace Floatly.Forms
         {
             isDragging = false;
             MusicPlayer.Player.Position = TimeSpan.FromSeconds(Slider_Progress.Value);
-            MusicPlayer.SecondPlayer?.Position = TimeSpan.FromSeconds(Slider_Progress.Value);
         }
         private void Slider_Progress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -294,7 +309,6 @@ namespace Floatly.Forms
             if (lyric != null)
             {
                 MusicPlayer.Player.Position = lyric.Start;
-                MusicPlayer.SecondPlayer?.Position = lyric.Start;
             }
         }
     }

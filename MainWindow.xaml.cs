@@ -64,6 +64,9 @@ namespace Floatly
                 slidertimer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
                 slidertimer.Tick += SliderTimer_Tick;
 
+                MusicPlayer.Player = SharedPlayer;
+                MusicPlayer.Host = PlayerHost;
+
                 MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
                 MusicPlayer.Player.MediaEnded += Player_MediaEnded;
                 Notification.NotificationRaised += ShowNotification;
@@ -345,7 +348,6 @@ namespace Floatly
         {
             isDragging = false;
             MusicPlayer.Player.Position = TimeSpan.FromSeconds(Slider_Progress.Value);
-            MusicPlayer.SecondPlayer.Position = TimeSpan.FromSeconds(Slider_Progress.Value);
         }
         private void Slider_Progress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {

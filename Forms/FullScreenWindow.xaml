@@ -25,22 +25,15 @@
     <Grid>
 
         <!-- Cover/Video layer -->
-        <Rectangle Opacity="0.3" x:Name="CoverRectangle">
+        <Rectangle x:Name="CoverRectangle"
+               Opacity="0.3"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch">
             <Rectangle.Fill>
-                <ImageBrush x:Name="Cover"/>
+                <ImageBrush x:Name="Cover" Stretch="UniformToFill"/>
             </Rectangle.Fill>
         </Rectangle>
-        <Rectangle x:Name="VideoRectangle" Visibility="Collapsed">
-            <Rectangle.Fill>
-                <DrawingBrush>
-                    <DrawingBrush.Drawing>
-                        <VideoDrawing
-                    Player="{x:Static local:MusicPlayer.Player}"
-                    Rect="0,0,1280,720"/>
-                    </DrawingBrush.Drawing>
-                </DrawingBrush>
-            </Rectangle.Fill>
-        </Rectangle>
+        <Grid x:Name="VideoRectangleHost" Visibility="Hidden"/>
 
 
         <!-- Lyrics overlay (book-like) -->

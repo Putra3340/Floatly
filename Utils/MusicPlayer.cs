@@ -1,11 +1,13 @@
 ﻿using Floatly.Api;
 using Floatly.Models.Form;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 
 namespace Floatly.Utils
@@ -39,19 +41,31 @@ namespace Floatly.Utils
         #endregion
         #region Player Thing
         // Music
-        public static MediaPlayer Player = new MediaPlayer();
-        public static MediaPlayer SecondPlayer = null;
-
+        public static MediaElement? Player;
+        public static Panel? Host;
         public static bool isPaused { get; set
             {
                 field = value;
                 PauseChanged?.Invoke(null, value);
             } } = false;
         public static event EventHandler<bool> PauseChanged;
+        public static void MoveTo(Panel newHost)
+        {
+            if (Player == null) return;
+
+            // remove from old parent
+            if (Player.Parent is Panel oldHost)
+                oldHost.Children.Remove(Player);
+
+            // attach to new parent
+            newHost.Children.Add(Player);
+        }
 
         // Play from static binding
         public async static void Play()
         {
+            if (Player == null)
+                return; // dialog not opened yet
             // Setup lyrics first
             timer.Stop();
             CurrentActiveLyrics = emptylyric; // Clear current lyrics
@@ -59,8 +73,8 @@ namespace Floatly.Utils
             StaticBinding.LyricList = await SRTParser.ParseSRT(StaticBinding.CurrentSong.Lyrics);
             try
             {
-                Player.Open(new Uri(StaticBinding.CurrentSong.Music, UriKind.RelativeOrAbsolute));
-                Player.Play();
+                Player.Source = new Uri(StaticBinding.CurrentSong.Music, UriKind.RelativeOrAbsolute);
+                Resume();
                 isPaused = false;
                 timer.Tick += LyricsTick;
                 timer.Start();
@@ -75,7 +89,7 @@ namespace Floatly.Utils
             try
             {
                 // Only Set
-                Player.Open(new Uri(StaticBinding.CurrentSong.MoviePath, UriKind.RelativeOrAbsolute));
+                Player?.Source = new Uri(StaticBinding.CurrentSong.MoviePath, UriKind.RelativeOrAbsolute);
             }
             catch (Exception ex)
             {
@@ -86,27 +100,8 @@ namespace Floatly.Utils
         {
             try
             {
-                // Only Set also init the second player
-                Player.Open(new Uri(StaticBinding.CurrentSong.HDMoviePath, UriKind.RelativeOrAbsolute));
-                if(SecondPlayer == null)
-                    SecondPlayer = new MediaPlayer();
-                SecondPlayer.Open(new Uri(StaticBinding.CurrentSong.Music, UriKind.RelativeOrAbsolute));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error playing video: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
-        }
-        public async static Task DisposeHDVideo()
-        {
-            try
-            {
-                TimeSpan temp = Player.Position;
-                Player.Close();
-                SecondPlayer?.Close();
-                Player.Open(new Uri(StaticBinding.CurrentSong.Music, UriKind.RelativeOrAbsolute));
-                Player.Position = temp;
-                Player.Play();
+                Player?.Source = new Uri(StaticBinding.CurrentSong.HDMoviePath, UriKind.RelativeOrAbsolute);
+                Debug.WriteLine(StaticBinding.CurrentSong.HDMoviePath);
             }
             catch (Exception ex)
             {
@@ -134,15 +129,13 @@ namespace Floatly.Utils
         }
         public static async void Resume()
         {
-            Player.Play();
-            SecondPlayer?.Play();
+            Player?.Play();
             isPaused = false;
         }
 
         public static void Pause()
         {
-            Player.Pause();
-            SecondPlayer?.Pause();
+            Player?.Pause();
             isPaused = true;
         }
 
