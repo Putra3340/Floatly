@@ -134,7 +134,7 @@ namespace Floatly
             // i think its the best we update scrollviewer when maximize/restore
             if (WindowState == WindowState.Maximized)
             {
-                Grid_Item_Home_SongArtist.Height = GridLength.Auto;
+                Grid_Item_Home_SongArtist.Height = new GridLength(this.Height - 400);
                 PlayerCard_GridSplitter.Visibility = Visibility.Visible;
             }
             else
@@ -148,11 +148,11 @@ namespace Floatly
                 }
             }
             List_Song.UpdateLayout();
-            List_Artist.UpdateLayout();
-            List_Album.UpdateLayout();
+            //List_Artist.UpdateLayout();
+            //List_Album.UpdateLayout();
             List_SongSearch.UpdateLayout();
-            List_ArtistSearch.UpdateLayout();
-            List_AlbumSearch.UpdateLayout();
+            //List_ArtistSearch.UpdateLayout();
+            //List_AlbumSearch.UpdateLayout();
         }
         private void Close_Click(object sender, RoutedEventArgs e)
         {
@@ -804,6 +804,29 @@ namespace Floatly
                 Label_Greeting.Text = "Good Morning!";
             }
         }
+        private ScrollViewer GetScrollViewer(DependencyObject d)
+        {
+            if (d is ScrollViewer) return (ScrollViewer)d;
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(d); i++)
+            {
+                var result = GetScrollViewer(VisualTreeHelper.GetChild(d, i));
+                if (result != null) return result;
+            }
+            return null;
+        }
+
+        private void ScrollLeft_Click(object sender, RoutedEventArgs e)
+        {
+            var sv = GetScrollViewer(List_Exclusive);
+            sv?.ScrollToHorizontalOffset(sv.HorizontalOffset - 250);
+        }
+
+        private void ScrollRight_Click(object sender, RoutedEventArgs e)
+        {
+            var sv = GetScrollViewer(List_Exclusive);
+            sv?.ScrollToHorizontalOffset(sv.HorizontalOffset + 250);
+        }
+
         #endregion
 
         #region Panel Search

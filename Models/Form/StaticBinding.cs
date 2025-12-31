@@ -22,13 +22,18 @@ namespace Floatly.Models.Form
 
         // Library Home
         public static ObservableCollection<Song> HomeSong = new();
-        public static ObservableCollection<Artist> HomeArtist = new();
-        public static ObservableCollection<Album> HomeAlbum = new();
+        public static ObservableCollection<Song> HomeSongEx = new();
+
+        // Cut Content
+        //public static ObservableCollection<Artist> HomeArtist = null;
+        //public static ObservableCollection<Album> HomeAlbum = null;
 
         // Search
         public static ObservableCollection<Song> SearchSong = new();
-        public static ObservableCollection<Artist> SearchArtist = new();
-        public static ObservableCollection<Album> SearchAlbum = new();
+
+        // Cut Content
+        //public static ObservableCollection<Artist> SearchArtist = new();
+        //public static ObservableCollection<Album> SearchAlbum = new();
 
         // Lyrics
         public static ObservableCollection<LyricList> LyricList = new();

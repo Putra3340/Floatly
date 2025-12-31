@@ -26,21 +26,23 @@ namespace Floatly.Utils
     {
         private static FloatlyClientContext db = new();
         private static ItemsControl songlist;
-        private static ItemsControl artistlist;
-        private static ItemsControl albumlist;
+        private static ListBox songlistex;
+        //private static ItemsControl artistlist;
+        //private static ItemsControl albumlist;
         private static ListBox SongListSearch;
-        private static ListBox ArtistListSearch;
-        private static ListBox AlbumListSearch;
+        //private static ListBox ArtistListSearch;
+        //private static ListBox AlbumListSearch;
         private static ListBox DownloadedSong;
         private static ListBox QueuedSong;
         public static void Initialize()
         {
             songlist = MainWindow.Instance.List_Song;
-            artistlist = MainWindow.Instance.List_Artist;
-            albumlist = MainWindow.Instance.List_Album;
+            songlistex = MainWindow.Instance.List_Exclusive;
+            //artistlist = MainWindow.Instance.List_Artist;
+            //albumlist = MainWindow.Instance.List_Album;
             SongListSearch = MainWindow.Instance.List_SongSearch;
-            ArtistListSearch = MainWindow.Instance.List_ArtistSearch;
-            AlbumListSearch = MainWindow.Instance.List_AlbumSearch;
+            //ArtistListSearch = MainWindow.Instance.List_ArtistSearch;
+            //AlbumListSearch = MainWindow.Instance.List_AlbumSearch;
             DownloadedSong = MainWindow.Instance.List_DownloadedSong;
             QueuedSong = MainWindow.Instance.List_QueuedSong;
         }
@@ -58,16 +60,22 @@ namespace Floatly.Utils
             var lib = await ApiLibrary.GetHomeLibrary();
             StaticBinding.HomeSong.Clear();
             foreach (var song in lib.Songs)
+            {
                 StaticBinding.HomeSong.Add(song);
-            StaticBinding.HomeAlbum.Clear();
-            foreach(var album in lib.Albums)
-                StaticBinding.HomeAlbum.Add(album);
-            StaticBinding.HomeArtist.Clear();
-            foreach (var artist in lib.Artists)
-                StaticBinding.HomeArtist.Add(artist);
+                StaticBinding.HomeSongEx.Add(song);
+            }
             songlist.ItemsSource = StaticBinding.HomeSong;
-            artistlist.ItemsSource = StaticBinding.HomeArtist;
-            albumlist.ItemsSource = StaticBinding.HomeAlbum;
+            songlistex.ItemsSource = StaticBinding.HomeSongEx;
+
+            // Cutted Content
+            //StaticBinding.HomeAlbum.Clear();
+            //foreach(var album in lib.Albums)
+            //    StaticBinding.HomeAlbum.Add(album);
+            //StaticBinding.HomeArtist.Clear();
+            //foreach (var artist in lib.Artists)
+            //    StaticBinding.HomeArtist.Add(artist);
+            //artistlist.ItemsSource = StaticBinding.HomeArtist;
+            //albumlist.ItemsSource = StaticBinding.HomeAlbum;
         }
         public static async Task SearchAsync(string query)
         {
@@ -75,15 +83,16 @@ namespace Floatly.Utils
             StaticBinding.SearchSong.Clear();
             foreach (var song in lib.Songs)
                 StaticBinding.SearchSong.Add(song);
-            StaticBinding.SearchAlbum.Clear();
-            foreach (var album in lib.Albums)
-                StaticBinding.SearchAlbum.Add(album);
-            StaticBinding.SearchArtist.Clear();
-            foreach (var artist in lib.Artists)
-                StaticBinding.SearchArtist.Add(artist);
             SongListSearch.ItemsSource = StaticBinding.SearchSong;
-            ArtistListSearch.ItemsSource = StaticBinding.SearchArtist;
-            AlbumListSearch.ItemsSource = StaticBinding.SearchAlbum;
+
+            //ArtistListSearch.ItemsSource = StaticBinding.SearchArtist;
+            //AlbumListSearch.ItemsSource = StaticBinding.SearchAlbum;
+            //StaticBinding.SearchAlbum.Clear();
+            //foreach (var album in lib.Albums)
+            //    StaticBinding.SearchAlbum.Add(album);
+            //StaticBinding.SearchArtist.Clear();
+            //foreach (var artist in lib.Artists)
+            //    StaticBinding.SearchArtist.Add(artist);
         }
 
         public static async Task GetDownloadedSongs()
