@@ -69,8 +69,14 @@ namespace Floatly.Utils
             // Setup lyrics first
             timer.Stop();
             CurrentActiveLyrics = emptylyric; // Clear current lyrics
-            StaticBinding.LyricList.Clear();
-            StaticBinding.LyricList = await SRTParser.ParseSRT(StaticBinding.CurrentSong.Lyrics);
+            var parsed = await SRTParser.ParseSRT(StaticBinding.CurrentSong.Lyrics);
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                StaticBinding.LyricList.Clear();
+                foreach (var line in parsed)
+                    StaticBinding.LyricList.Add(line);
+            });
             try
             {
                 Player.Source = new Uri(StaticBinding.CurrentSong.Music, UriKind.RelativeOrAbsolute);
@@ -123,9 +129,12 @@ namespace Floatly.Utils
         {
             var parsed = await SRTParser.ParseSRT(content, true);
 
-            StaticBinding.LyricList.Clear();
-            foreach (var item in parsed)
-                StaticBinding.LyricList.Add(item);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                StaticBinding.LyricList.Clear();
+                foreach (var line in parsed)
+                    StaticBinding.LyricList.Add(line);
+            });
         }
         public static async void Resume()
         {

@@ -100,9 +100,16 @@ namespace Floatly
             }
         }
 
-        private void Player_MediaEnded(object? sender, EventArgs e)
+        private async void Player_MediaEnded(object? sender, EventArgs e)
         {
-            NotImplemented_Click(sender, null);
+            // Random Id
+            if (StaticBinding.HomeSong.Count > 0)
+                await ServerLibrary.Play(StaticBinding.HomeSong[new Random().Next(0, StaticBinding.HomeSong.Count)]);
+            //if(StaticBinding.HomeSongEx.Count > 0)
+            //    await ServerLibrary.Play(StaticBinding.HomeSongEx[new Random().Next(0, StaticBinding.HomeSongEx.Count)]);
+            //if(StaticBinding.SearchSong.Count > 0)
+            //    await ServerLibrary.Play(StaticBinding.SearchSong[new Random().Next(0, StaticBinding.SearchSong.Count)]);
+
         }
 
         private void NotImplemented_Click(object sender, RoutedEventArgs e)

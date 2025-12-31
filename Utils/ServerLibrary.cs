@@ -1,4 +1,5 @@
 ﻿using Floatly.Api;
+using Floatly.Forms;
 using Floatly.Models.Database;
 using Floatly.Models.Form;
 using Floatly.Utils;
@@ -58,14 +59,21 @@ namespace Floatly.Utils
         {
             // It's better to avoid forcing GC.Collect() for production code unless absolutely necessary.
             var lib = await ApiLibrary.GetHomeLibrary();
-            StaticBinding.HomeSong.Clear();
-            foreach (var song in lib.Songs)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                StaticBinding.HomeSong.Add(song);
-                StaticBinding.HomeSongEx.Add(song);
-            }
-            songlist.ItemsSource = StaticBinding.HomeSong;
-            songlistex.ItemsSource = StaticBinding.HomeSongEx;
+                StaticBinding.HomeSong.Clear();
+                StaticBinding.HomeSongEx.Clear();
+                foreach (var song in lib.Songs)
+                {
+                    StaticBinding.HomeSong.Add(song);
+                }
+                foreach (var song in lib.SongsEx)
+                {
+                    StaticBinding.HomeSongEx.Add(song);
+                }
+                songlist.ItemsSource = StaticBinding.HomeSong;
+                songlistex.ItemsSource = StaticBinding.HomeSongEx;
+            });
 
             // Cutted Content
             //StaticBinding.HomeAlbum.Clear();
@@ -80,10 +88,13 @@ namespace Floatly.Utils
         public static async Task SearchAsync(string query)
         {
             var lib = await ApiLibrary.Search(query);
-            StaticBinding.SearchSong.Clear();
-            foreach (var song in lib.Songs)
-                StaticBinding.SearchSong.Add(song);
-            SongListSearch.ItemsSource = StaticBinding.SearchSong;
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                StaticBinding.SearchSong.Clear();
+                foreach (var song in lib.Songs)
+                    StaticBinding.SearchSong.Add(song);
+                SongListSearch.ItemsSource = StaticBinding.SearchSong;
+            });
 
             //ArtistListSearch.ItemsSource = StaticBinding.SearchArtist;
             //AlbumListSearch.ItemsSource = StaticBinding.SearchAlbum;
@@ -119,11 +130,13 @@ namespace Floatly.Utils
         {
             if(song is Song onlinesong)
             {
+                StaticBinding.LyricList.Clear();
+                StaticBinding.LyricLanguages.Clear();
                 StaticBinding.CurrentSong = await ApiLibrary.Play(onlinesong.Id);
                 // Get the music binary URL
                 MusicPlayer.Play();
-                await GetLyrics(StaticBinding.CurrentSong.Id);
                 await AddCurrentToQueue(StaticBinding.CurrentSong);
+
             }
             else if (song is DownloadedSong offlinesong)
             {
@@ -217,12 +230,14 @@ namespace Floatly.Utils
         public static async Task GetLyrics(string id)
         {
             var lyric = await ApiLibrary.GetLyric(id);
-            
-            StaticBinding.LyricLanguages.Clear();
-            foreach(var lang in lyric.Lyrics)
+            Application.Current.Dispatcher.Invoke(() =>
             {
-                StaticBinding.LyricLanguages.Add(lang);
-            }
+                StaticBinding.LyricLanguages.Clear();
+                foreach (var lang in lyric.Lyrics)
+                {
+                    StaticBinding.LyricLanguages.Add(lang);
+                }
+            });
         }
         #endregion
     }

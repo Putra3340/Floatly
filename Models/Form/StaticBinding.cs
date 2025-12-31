@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Floatly.Forms;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
@@ -12,6 +13,7 @@ namespace Floatly.Models.Form
             {
                 field = value;
                 MainWindow.Instance.PlayerCard.DataContext = value;
+                FullScreenWindow.Instance?.ReloadWindow();
                 MainWindow.Instance.CollapsePlayerCard_Manual(true); // show
             }
         } = null; // null if nothing is playing also means plc is collapsed

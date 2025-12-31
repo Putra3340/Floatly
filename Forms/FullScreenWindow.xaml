@@ -60,7 +60,7 @@
           Background="#552A6FFF"
           BorderThickness="0"
                           IsEditable="False"
-          HorizontalContentAlignment="Center" SelectionChanged="cbx_lyriclang_SelectionChanged">
+          HorizontalContentAlignment="Center" SelectionChanged="cbx_lyriclang_SelectionChanged" DropDownOpened="cbx_lyriclang_DropDownOpened">
 
                     <ComboBox.ItemContainerStyle>
                         <Style TargetType="ComboBoxItem">

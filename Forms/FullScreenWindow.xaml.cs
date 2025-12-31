@@ -5,6 +5,7 @@ using StringExt;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +27,7 @@ namespace Floatly.Forms
     /// </summary>
     public partial class FullScreenWindow : Window
     {
+        public static FullScreenWindow Instance { get; set; }
         DispatcherTimer hideTimer = new DispatcherTimer
         {
             Interval = TimeSpan.FromSeconds(1)
@@ -36,7 +38,7 @@ namespace Floatly.Forms
         public FullScreenWindow()
         {
             InitializeComponent();
-
+            Instance = this;
             hideTimer.Tick += (_, __) =>
             {
                 ControlBar.BeginAnimation(OpacityProperty,
@@ -117,6 +119,19 @@ namespace Floatly.Forms
 
             ToggleLyricButton.Background = (Brush)FindResource("AccentPurple");
         }
+        public async void ReloadWindow()
+        {
+            Cover.ImageSource = new BitmapImage(new Uri(StaticBinding.CurrentSong.Banner, UriKind.RelativeOrAbsolute));
+            cbx_lyriclang.ItemsSource = StaticBinding.LyricLanguages;
+            // reset
+            Btn_HD.Visibility = Visibility.Visible;
+            Btn_HD.Background = Brushes.Transparent;
+            Border_Btn_HD.Visibility = Visibility.Visible;
+
+            Btn_Video.Visibility = Visibility.Visible;
+            Btn_Video.Background = Brushes.Transparent;
+            Border_Btn_Video.Visibility = Visibility.Visible;
+        }
         private async void cbx_lyriclang_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cbx_lyriclang.SelectedItem is not LyricLanguageModel selected)
@@ -140,6 +155,7 @@ namespace Floatly.Forms
             await Task.Delay(20);
             MusicPlayer.Player.Position = pos;
             MusicPlayer.Player.Play();
+            Instance = null;
             this.Close();
         }
         private async void PlayWithVideo_Click(object sender, RoutedEventArgs e)
@@ -343,6 +359,11 @@ namespace Floatly.Forms
             {
                 MusicPlayer.Player.Position = lyric.Start;
             }
+        }
+
+        private async void cbx_lyriclang_DropDownOpened(object sender, EventArgs e)
+        {
+            await ServerLibrary.GetLyrics(StaticBinding.CurrentSong.Id);
         }
     }
 }
