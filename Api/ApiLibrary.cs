@@ -13,11 +13,10 @@ namespace Floatly.Api
 {
     public static class ApiLibrary
     {
-        private static readonly string _serverurl = Prefs.ServerUrl;
         public static HttpClient client = new HttpClient();
         public static async Task<Library> GetHomeLibrary()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -28,7 +27,6 @@ namespace Floatly.Api
             try
             {
                 return JsonSerializer.Deserialize<Library>(result, options);
-
             }
             catch (JsonException ex)
             {
@@ -36,26 +34,10 @@ namespace Floatly.Api
 
             }
             return JsonSerializer.Deserialize<Library>(result, options);
-            return null;
-
         }
-        public static async Task<Artist> GetArtist(int artistid)
-        {
-            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v2/artist/" + artistid);
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            string result = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            return JsonSerializer.Deserialize<Artist>(result, options);
-        }
-
-        // TODO BITRATE
         public async static Task<Song> Play(string songid)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/play/" + songid);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/play/{songid}?token={Prefs.LoginToken}");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -67,7 +49,7 @@ namespace Floatly.Api
         }
         public async static Task<LyricsResponseModel> GetLyric(string songid)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/lyrics/" + songid);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/api/library/v3/lyrics/{songid}?token={Prefs.LoginToken}");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -79,7 +61,7 @@ namespace Floatly.Api
         }
         public static async Task<Library> Search(string searchbytext)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/search?anycontent=" + searchbytext);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/search?anycontent={searchbytext}&token={Prefs.LoginToken}");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -105,7 +87,7 @@ namespace Floatly.Api
         }
         public static async Task<string> GetVideoStream(string yturl)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/video/" + yturl);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/video/{yturl}?token={Prefs.LoginToken}");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -113,11 +95,26 @@ namespace Floatly.Api
         }
         public static async Task<string> GetHDVideoStream(string yturl)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/hdvideo/" + yturl);
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/hdvideo/{yturl}?token={Prefs.LoginToken}");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
             return result;
         }
+
+        //public static async Task<Artist> GetArtist(int artistid)
+        //{
+        //    var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v2/artist/" + artistid);
+        //    var response = await client.SendAsync(request);
+        //    response.EnsureSuccessStatusCode();
+        //    string result = await response.Content.ReadAsStringAsync();
+        //    var options = new JsonSerializerOptions
+        //    {
+        //        PropertyNameCaseInsensitive = true
+        //    };
+        //    return JsonSerializer.Deserialize<Artist>(result, options);
+        //}
+
+        // TODO BITRATE
     }
 }

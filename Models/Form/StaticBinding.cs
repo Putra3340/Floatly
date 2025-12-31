@@ -19,8 +19,9 @@ namespace Floatly.Models.Form
         } = null; // null if nothing is playing also means plc is collapsed
 
         // Page
-        public static Artist ArtistPage = new();
-        public static Album AlbumPage = new();
+        public static ObservableCollection<PlaylistModel> Playlists = new();
+        //public static Artist ArtistPage = new();
+        //public static Album AlbumPage = new();
 
         // Library Home
         public static ObservableCollection<Song> HomeSong = new();
@@ -32,6 +33,7 @@ namespace Floatly.Models.Form
 
         // Search
         public static ObservableCollection<Song> SearchSong = new();
+        public static ObservableCollection<Song> PlaylistSong = new();
 
         // Cut Content
         //public static ObservableCollection<Artist> SearchArtist = new();

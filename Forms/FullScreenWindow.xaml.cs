@@ -354,7 +354,6 @@ namespace Floatly.Forms
         {
             var border = (Border)sender;
             var lyric = border.DataContext as LyricList;
-
             if (lyric != null)
             {
                 MusicPlayer.Player.Position = lyric.Start;

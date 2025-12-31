@@ -34,7 +34,8 @@ namespace Floatly.Utils
         //private static ListBox ArtistListSearch;
         //private static ListBox AlbumListSearch;
         private static ListBox DownloadedSong;
-        private static ListBox QueuedSong;
+        private static ListBox PlaylistList;
+        private static ListBox PlaylistSong;
         public static void Initialize()
         {
             songlist = MainWindow.Instance.List_Song;
@@ -45,7 +46,8 @@ namespace Floatly.Utils
             //ArtistListSearch = MainWindow.Instance.List_ArtistSearch;
             //AlbumListSearch = MainWindow.Instance.List_AlbumSearch;
             DownloadedSong = MainWindow.Instance.List_DownloadedSong;
-            QueuedSong = MainWindow.Instance.List_QueuedSong;
+            PlaylistSong = MainWindow.Instance.List_PlaylistSongs;
+            PlaylistList = MainWindow.Instance.List_PlaylistList;
         }
 
         // This is a default value to prevent errors, and for filtering
@@ -217,16 +219,6 @@ namespace Floatly.Utils
             });
         }
 
-        public static async Task GetArtist(object artist)
-        {
-            if (artist is Artist a)
-            {
-                var artistnew = await ApiLibrary.GetArtist(a.Id ?? 0);
-                MainWindow.Instance.OpenArtistPage(artistnew);
-            }
-            return;
-        }
-
         public static async Task GetLyrics(string id)
         {
             var lyric = await ApiLibrary.GetLyric(id);
@@ -239,6 +231,42 @@ namespace Floatly.Utils
                 }
             });
         }
+
+        public static async Task GetPlaylist(){
+            
+            var playlists = await ApiPlaylist.GetPlaylist();
+            Application.Current.Dispatcher.Invoke(() => {
+                StaticBinding.Playlists.Clear();
+                foreach (var playlist in playlists)
+                {
+                    StaticBinding.Playlists.Add(playlist);
+                }
+                PlaylistList.ItemsSource = StaticBinding.Playlists;
+            });
+        }
+        public static async Task GetPlaylistSongs(object playlist)
+        {
+            if (playlist is not PlaylistModel pl)
+                return;
+            var playlists = await ApiPlaylist.GetPlaylistSongs(pl.Id);
+            Application.Current.Dispatcher.Invoke(() => {
+                StaticBinding.PlaylistSong.Clear();
+                foreach (var playlist in playlists.Songs)
+                {
+                    StaticBinding.PlaylistSong.Add(playlist);
+                }
+                PlaylistSong.ItemsSource = StaticBinding.PlaylistSong;
+            });
+        }
         #endregion
+        //public static async Task GetArtist(object artist)
+        //{
+        //    if (artist is Artist a)
+        //    {
+        //        var artistnew = await ApiLibrary.GetArtist(a.Id ?? 0);
+        //        MainWindow.Instance.OpenArtistPage(artistnew);
+        //    }
+        //    return;
+        //}
     }
 }

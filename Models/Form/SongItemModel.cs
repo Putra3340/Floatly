@@ -109,7 +109,16 @@ namespace Floatly.Models.Form
         void OnPropertyChanged([CallerMemberName] string n = "")
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
     }
-
+    public class PlaylistModel : INotifyPropertyChanged
+    {
+        public int Id { get; set{ field = value; OnPropertyChanged(); } }
+        public string? Name { get; set{field = value; OnPropertyChanged(); } }
+        public string? TotalSongs { get; set{field = value; OnPropertyChanged(); } }
+        public DateTime CreatedAt { get; set{field = value; OnPropertyChanged(); } }
+        public event PropertyChangedEventHandler PropertyChanged;
+        void OnPropertyChanged([CallerMemberName] string n = "")
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(n));
+    }
     // For only fetching, not for binding
     public class Library
     {

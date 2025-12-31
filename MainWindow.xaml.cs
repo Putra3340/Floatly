@@ -92,6 +92,7 @@ namespace Floatly
                 ListPanelGrid.Add(PanelDownloaded);
                 ListPanelGrid.Add(PanelQueue);
                 ListPanelGrid.Add(PanelArtist);
+                ListPanelGrid.Add(PanelPlaylist);
             }
             catch (Exception ex)
             {
@@ -227,11 +228,17 @@ namespace Floatly
                 CollapseGridExcept(PanelQueue);
                 lastnavbtn = btn; // set last button to this button
                 // Load queue panel
-                await ServerLibrary.GetQueueSong();
+                //await ServerLibrary.GetQueueSong();
             }
             else if (btn.Name == "NavPlaylist")
             {
+                Style_ChangeButtonBackground(btn, "AccentIndigo"); // highlight this button
+                Style_ChangeButtonBackground(lastnavbtn); // clear previous button
+                CollapseGridExcept(PanelPlaylist);
+                lastnavbtn = btn; // set last button to this button
 
+                // Load playlist panel
+                await ServerLibrary.GetPlaylist();
             }
             else if (btn.Name == "NavSettings")
             {
@@ -638,8 +645,42 @@ namespace Floatly
                         await ServerLibrary.Play(btnonline.DataContext);
                         ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
                     }
-                    else if (btnonline.DataContext is Artist)
-                        await ServerLibrary.GetArtist(btnonline.DataContext);
+                    return;
+                }
+            }
+
+        }
+        private async void PlaylistButton_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Right)
+            {
+                // TODO
+                if (sender is Button btn && btn.DataContext is Song song)
+                {
+                    ContextMenu cm = this.FindResource("SongContextMenu") as ContextMenu;
+                    cm.DataContext = song; // set the context menu data context to the song
+                    cm.PlacementTarget = btn; // set the placement target to the button
+                    cm.IsOpen = true;
+                }
+                else if (sender is Button btnn && btnn.DataContext is DownloadedSong offlinesong)
+                {
+                    ContextMenu cm = this.FindResource("SongOfflineContextMenu") as ContextMenu;
+                    cm.DataContext = offlinesong;
+                    cm.PlacementTarget = btnn;
+                    cm.IsOpen = true;
+                }
+                return;
+            }
+            else if (e.ChangedButton == MouseButton.Left)
+            {
+                if (sender is Button btnonline)
+                {
+                    if (btnonline.DataContext is PlaylistModel)
+                    {
+                        SubPanel_PlaylistSongs.Visibility = Visibility.Visible;
+                        SubPanel_PlaylistList.Visibility = Visibility.Collapsed;
+                        await ServerLibrary.GetPlaylistSongs(btnonline.DataContext);
+                    }
                     return;
                 }
             }
@@ -652,54 +693,54 @@ namespace Floatly
                 if (mi.Header.ToString() == "Add to Queue")
                 {
                     // TODO
-                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(song.ArtistId));
-                    var queue = new Queue
-                    {
-                        Title = song.Title,
-                        Artist = song.ArtistName,
-                        Music = song.Music,
-                        Lyrics = song.Lyrics,
-                        Cover = song.Cover,
-                        Banner = song.Banner,
-                        SongLength = song.SongLength,
-                        ArtistBio = artist.Bio,
-                        ArtistCover = artist.CoverUrl,
-                        CreatedAt = DateTime.Now,
-                        Status = (int)QueueManager.QueueStatus.Next,
-                    };
-                    await db.Queue.AddAsync(queue);
-                    await db.SaveChangesAsync();
+                    //var artist = await Api.ApiLibrary.GetArtist(int.Parse(song.ArtistId));
+                    //var queue = new Queue
+                    //{
+                    //    Title = song.Title,
+                    //    Artist = song.ArtistName,
+                    //    Music = song.Music,
+                    //    Lyrics = song.Lyrics,
+                    //    Cover = song.Cover,
+                    //    Banner = song.Banner,
+                    //    SongLength = song.SongLength,
+                    //    ArtistBio = artist.Bio,
+                    //    ArtistCover = artist.CoverUrl,
+                    //    CreatedAt = DateTime.Now,
+                    //    Status = (int)QueueManager.QueueStatus.Next,
+                    //};
+                    //await db.Queue.AddAsync(queue);
+                    //await db.SaveChangesAsync();
                     Notification.ShowNotification($"{song.Title} is added to queue");
                 }
                 else if (mi.Header.ToString() == "Play Next")
                 {
                     // TODO
-                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(song.ArtistId));
-                    var queue = new Queue
-                    {
-                        Title = song.Title,
-                        Artist = song.ArtistName,
-                        Music = song.Music,
-                        Lyrics = song.Lyrics,
-                        Cover = song.Cover,
-                        Banner = song.Banner,
-                        SongLength = song.SongLength,
-                        ArtistBio = artist.Bio,
-                        ArtistCover = artist.CoverUrl,
-                        CreatedAt = DateTime.Now,
-                    };
-                    await db.Queue.AddAsync(queue);
-                    await db.SaveChangesAsync();
-                    // move to first position
-                    var allQueue = db.Queue.OrderBy(q => q.Id).ToList();
-                    if (allQueue.Count > 1)
-                    {
-                        db.Queue.Remove(queue);
-                        await db.SaveChangesAsync();
-                        db.Queue.Add(queue); // add again to make it last
-                        await db.SaveChangesAsync();
-                    }
-                    Notification.ShowNotification($"{song.Title} will be played next");
+                    //var artist = await Api.ApiLibrary.GetArtist(int.Parse(song.ArtistId));
+                    //var queue = new Queue
+                    //{
+                    //    Title = song.Title,
+                    //    Artist = song.ArtistName,
+                    //    Music = song.Music,
+                    //    Lyrics = song.Lyrics,
+                    //    Cover = song.Cover,
+                    //    Banner = song.Banner,
+                    //    SongLength = song.SongLength,
+                    //    ArtistBio = artist.Bio,
+                    //    ArtistCover = artist.CoverUrl,
+                    //    CreatedAt = DateTime.Now,
+                    //};
+                    //await db.Queue.AddAsync(queue);
+                    //await db.SaveChangesAsync();
+                    //// move to first position
+                    //var allQueue = db.Queue.OrderBy(q => q.Id).ToList();
+                    //if (allQueue.Count > 1)
+                    //{
+                    //    db.Queue.Remove(queue);
+                    //    await db.SaveChangesAsync();
+                    //    db.Queue.Add(queue); // add again to make it last
+                    //    await db.SaveChangesAsync();
+                    //}
+                    //Notification.ShowNotification($"{song.Title} will be played next");
                 }
                 else if (mi.Header.ToString() == "Download Song")
                 {
