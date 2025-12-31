@@ -644,6 +644,7 @@ namespace Floatly
             {
                 if (mi.Header.ToString() == "Add to Queue")
                 {
+                    // TODO
                     var artist = await Api.ApiLibrary.GetArtist(int.Parse(song.ArtistId));
                     var queue = new Queue
                     {
@@ -665,6 +666,7 @@ namespace Floatly
                 }
                 else if (mi.Header.ToString() == "Play Next")
                 {
+                    // TODO
                     var artist = await Api.ApiLibrary.GetArtist(int.Parse(song.ArtistId));
                     var queue = new Queue
                     {
@@ -694,50 +696,7 @@ namespace Floatly
                 }
                 else if (mi.Header.ToString() == "Download Song")
                 {
-                    var downloadFolder = Prefs.DownloadDirectory;
-                    if (!Directory.Exists(downloadFolder))
-                    {
-                        Directory.CreateDirectory(downloadFolder);
-                    }
-                    var httpClient = new HttpClient();
-                    var musicData = await httpClient.GetByteArrayAsync(song.Music);
-                    var filePath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(musicData)}.mp3");
-                    await File.WriteAllBytesAsync(filePath, musicData);
-
-                    var lyricdata = await httpClient.GetByteArrayAsync(song.Lyrics);
-                    var lyricPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(lyricdata)}.srt");
-                    await File.WriteAllBytesAsync(lyricPath, lyricdata);
-
-                    var coverData = await httpClient.GetByteArrayAsync(song.Cover);
-                    var coverPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(coverData)}.png");
-                    await File.WriteAllBytesAsync(coverPath, coverData);
-
-                    var bannerData = await httpClient.GetByteArrayAsync(song.Banner);
-                    var bannerPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(bannerData)}_banner.png");
-                    await File.WriteAllBytesAsync(bannerPath, bannerData);
-
-                    var artist = await Api.ApiLibrary.GetArtist(int.Parse(song.ArtistId));
-                    var artistCoverData = await httpClient.GetByteArrayAsync(artist.CoverUrl);
-                    var artistCoverPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(artistCoverData)}_artistcover.png");
-                    await File.WriteAllBytesAsync(artistCoverPath, artistCoverData);
-
-                    var Downloaded = new DownloadedSong
-                    {
-                        Artist = song.ArtistName,
-                        ArtistId = int.Parse(song.ArtistId),
-                        ArtistBio = artist.Bio,
-                        ArtistCover = artistCoverPath,
-                        Title = song.Title,
-                        Music = filePath,
-                        Lyrics = lyricPath,
-                        Cover = coverPath,
-                        Banner = bannerPath,
-                        CreatedAt = DateTime.Now,
-                    };
-
-                    await db.DownloadedSong.AddAsync(Downloaded);
-                    await db.SaveChangesAsync();
-
+                    await ServerLibrary.DownloadSong(song.Id);
                     Notification.ShowNotification($"Downloaded {song.ArtistName}-{song.Title}");
                 }
 
@@ -749,6 +708,10 @@ namespace Floatly
                     var downloaded = db.DownloadedSong.Find(offlinesong.Id);
                     if (downloaded != null)
                     {
+                        StaticBinding.DownloadSong.Clear(); // clear static binding first
+                        List_DownloadedSong.ItemsSource = null;
+                        List_DownloadedSong.UpdateLayout();
+                        await Task.Delay(1000);
                         db.DownloadedSong.Remove(downloaded);
                         await db.SaveChangesAsync();
                         // also delete the files
@@ -778,6 +741,7 @@ namespace Floatly
                         List_DownloadedSong.ItemsSource = list;
                         Notification.ShowNotification($"Deleted {offlinesong.Title} from downloaded songs");
                     }
+                    await ServerLibrary.GetDownloadedSongs();
                 }
             }
         }

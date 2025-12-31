@@ -53,7 +53,7 @@ namespace Floatly.Api
         }
 
         // TODO BITRATE
-        public async static Task<Song> Play(string songid, string bitrate)
+        public async static Task<Song> Play(string songid)
         {
             var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v3/play/" + songid);
             var response = await client.SendAsync(request);

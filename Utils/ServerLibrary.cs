@@ -119,7 +119,7 @@ namespace Floatly.Utils
         {
             if(song is Song onlinesong)
             {
-                StaticBinding.CurrentSong = await ApiLibrary.Play(onlinesong.Id, "96k");
+                StaticBinding.CurrentSong = await ApiLibrary.Play(onlinesong.Id);
                 // Get the music binary URL
                 MusicPlayer.Play();
                 await GetLyrics(StaticBinding.CurrentSong.Id);
@@ -127,14 +127,61 @@ namespace Floatly.Utils
             }
             else if (song is DownloadedSong offlinesong)
             {
-                // TODO
-                offlinesong.Title = offlinesong.Title;
-                offlinesong.Artist = offlinesong.Artist;
-                offlinesong.Banner = offlinesong.Banner;
-                //MusicPlayer.Play(offlinesong.Music, offlinesong.Lyrics);
-                offlinesong.ArtistCover = offlinesong.ArtistCover;
-                offlinesong.ArtistBio = offlinesong.ArtistBio.Substring(0, 10) + "...";
+                StaticBinding.CurrentSong = new Song
+                {
+                    Cover = offlinesong.Cover,
+                    Banner = offlinesong.Banner,
+                    Music = offlinesong.Music,
+                    Title = offlinesong.Title,
+                    ArtistName = offlinesong.Artist,
+                    Lyrics = offlinesong.Lyrics
+                };
+                MusicPlayer.Play();
+                await AddCurrentToQueue(StaticBinding.CurrentSong);
+
             }
+        }
+        public static async Task DownloadSong(string id)
+        {
+            var song = await Api.ApiLibrary.Play(id);
+            if (song == null)
+                return;
+            var downloadFolder = Prefs.DownloadDirectory;
+            if (!Directory.Exists(downloadFolder))
+            {
+                Directory.CreateDirectory(downloadFolder);
+            }
+            var httpClient = new HttpClient();
+            var musicData = await httpClient.GetByteArrayAsync(song.Music);
+            var filePath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(musicData)}.mp3");
+            await File.WriteAllBytesAsync(filePath, musicData);
+
+            var lyricdata = await httpClient.GetByteArrayAsync(song.Lyrics);
+            var lyricPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(lyricdata)}.srt");
+            await File.WriteAllBytesAsync(lyricPath, lyricdata);
+
+            var coverData = await httpClient.GetByteArrayAsync(song.Cover);
+            var coverPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(coverData)}.png");
+            await File.WriteAllBytesAsync(coverPath, coverData);
+
+            var bannerData = await httpClient.GetByteArrayAsync(song.Banner);
+            var bannerPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(bannerData)}_banner.png");
+            await File.WriteAllBytesAsync(bannerPath, bannerData);
+
+
+            var Downloaded = new DownloadedSong
+            {
+                Artist = song.ArtistName,
+                Title = song.Title,
+                Music = filePath,
+                Lyrics = lyricPath,
+                Cover = coverPath,
+                Banner = bannerPath,
+                CreatedAt = DateTime.Now,
+            };
+
+            await db.DownloadedSong.AddAsync(Downloaded);
+            await db.SaveChangesAsync();
         }
 
         public static async Task AddCurrentToQueue(Song onlinesong = null,QueueManager.QueueStatus status = QueueManager.QueueStatus.Current)

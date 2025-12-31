@@ -26,20 +26,18 @@ namespace Floatly.Models.Form
         public string? UploadedBy { get => field; set { field = value; OnPropertyChanged(); } }
         public string? SongLength { get => field; set { field = value; OnPropertyChanged(); } }
         public string? PlayCount { get => field; set { field = value; OnPropertyChanged(); } }
-        public DateTime CreatedAt { get => field; set { field = value; OnPropertyChanged(); } }
 
         public string? ArtistId { get => field; set { field = value; OnPropertyChanged(); } }
         public string? ArtistName { get => field; set { field = value; OnPropertyChanged(); } }
         public string? ArtistBio { get => field; set { field = value; OnPropertyChanged(); } }
-        public string? AlbumTitle { get => field; set { field = value; OnPropertyChanged(); } }
         public string? ArtistCover { get => field; set { field = value; OnPropertyChanged(); } }
-        public int AlbumId { get => field; set { field = value; OnPropertyChanged(); } }
-        public string? AlbumCover { get => field; set { field = value; OnPropertyChanged(); } }
+        public DateTime CreatedAt { get => field; set { field = value; OnPropertyChanged(); } }
         public string? NextQueueImage { get; set { field = value; OnPropertyChanged(); } } = "/Assets/Images/default.png";
         public string? NextQueueTitle { get; set { field = value; OnPropertyChanged(); } } = "Next Up Title";
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
+    // 31 DECEMBER 2025 - CANCELL THIS FEATURE LEAVE IT HERE, WE DIDNT HAVE TIME, DUE IS 5 JAN 2026
     public partial class Album : INotifyPropertyChanged
     {
         public int Id { get => field; set { field = value; OnPropertyChanged(); } }

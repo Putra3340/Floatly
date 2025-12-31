@@ -86,11 +86,11 @@
         </Grid>
         <Grid Visibility="Visible" Opacity="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="40"/>
+                <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <!-- TITLE BAR -->
-            <Border Background="{DynamicResource SidebarBg}" Height="40" MouseDown="TitleBar_MouseDown"
+            <Border Background="{DynamicResource SidebarBg}" Height="40" MouseDown="TitleBar_MouseDown" VerticalAlignment="Bottom"
         Grid.Row="0" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,0,0,1">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -537,7 +537,7 @@
                                     <ListBox x:Name="List_Song"
          VirtualizingStackPanel.IsVirtualizing="True"
          VirtualizingStackPanel.VirtualizationMode="Recycling"
-         ScrollViewer.VerticalScrollBarVisibility="Disabled"
+         ScrollViewer.VerticalScrollBarVisibility="Auto"
                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent" Grid.Row="1" BorderThickness="0" IsHitTestVisible="True" ItemContainerStyle="{DynamicResource CustomListBoxItemStyle}" >
                                         <ListBox.Resources>
                                             <Style TargetType="ScrollBar" BasedOn="{StaticResource CustomScrollBarStyle}" />
@@ -1264,7 +1264,7 @@ VerticalAlignment="Center"/>
                     <Grid Grid.Row="2">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="Auto" MinWidth="100"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <Border Background="{DynamicResource Tranparent}" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
                             <Grid>
@@ -1360,7 +1360,7 @@ VerticalAlignment="Center"/>
                                 </ListBox>
                             </Grid>
                         </Border>
-                        <Grid Grid.Column="1">
+                        <Grid Grid.Column="1" Visibility="Collapsed">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
