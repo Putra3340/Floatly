@@ -1878,8 +1878,59 @@ VerticalAlignment="Center"/>
                         <RowDefinition Height="*"/>
                         <!-- Scrollable content -->
                     </Grid.RowDefinitions>
-                    <TextBlock Text="Playlists" Margin="20,10,0,0" Foreground="{DynamicResource PrimaryText}" FontSize="36" VerticalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Bold"/>
-                    <Grid Grid.Row="1" x:Name="SubPanel_PlaylistSongs" Visibility="Collapsed">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="Btn_BackPlaylist" Content="" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Btn_PlaylistBack_Click" Margin="10,30,10,30" Visibility="Collapsed">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border CornerRadius="10" Background="{TemplateBinding Background}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="{DynamicResource AccentIndigo}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center"  x:Name="SP_BackPlaylist" Visibility="Collapsed">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Background="{DynamicResource PrimaryText}" Width="18" Height="18" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                                <Border.OpacityMask>
+                                    <ImageBrush ImageSource="/Assets/Images/icon-arrow-left.png"/>
+                                </Border.OpacityMask>
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                    <TextBlock Text="Playlists" Margin="20,10,0,0" Foreground="{DynamicResource PrimaryText}" FontSize="36" VerticalAlignment="Center" FontFamily="/Assets/Fonts/Geist/#Geist" FontWeight="Bold" Grid.Column="1"/>
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="1" Width="20" Height="20" Background="{DynamicResource SecondaryText}" Margin="3" PreviewMouseDown="RefreshPlaylist_PreviewMouseDown" VerticalAlignment="Bottom">
+                            <Border.OpacityMask>
+                                <ImageBrush ImageSource="/Assets/Images/icon-refresh.png" Stretch="UniformToFill"/>
+                            </Border.OpacityMask>
+                        </Border>
+                        <TextBlock Text="Refresh " Foreground="{DynamicResource SecondaryText}" Grid.Column="2" Margin="0,0,10,0" FontSize="20" PreviewMouseDown="RefreshPlaylist_PreviewMouseDown" VerticalAlignment="Bottom"/>
+                    </Grid>
+                    <Grid Grid.Row="1" x:Name="SubPanel_PlaylistSongs" Visibility="Collapsed" Grid.ColumnSpan="3">
                         <Border Background="{DynamicResource Tranparent}" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -1975,7 +2026,7 @@ VerticalAlignment="Center"/>
                             </Grid>
                         </Border>
                     </Grid>
-                    <Grid Grid.Row="1" x:Name="SubPanel_PlaylistList" Visibility="Visible">
+                    <Grid Grid.Row="1" x:Name="SubPanel_PlaylistList" Visibility="Visible" Grid.ColumnSpan="3">
                         <Border Background="{DynamicResource Tranparent}" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,1,0,0">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -2009,7 +2060,7 @@ VerticalAlignment="Center"/>
     FontWeight="SemiBold"
     FontSize="18"
     Foreground="{DynamicResource PrimaryText}"/>
-                                                        <TextBlock Text="{Binding CreatedAt}" 
+                                                        <TextBlock Text="{Binding TotalSongs}" 
     FontSize="14"
     Foreground="{DynamicResource SecondaryText}"/>
                                                     </StackPanel>
@@ -2021,7 +2072,7 @@ VerticalAlignment="Center"/>
                                                         </Grid.ColumnDefinitions>
 
                                                         <Label Grid.Column="0"
-Content="{Binding PlayCount}"
+Content="{Binding CreatedAt}"
                                                 FontSize="14"
 Foreground="{DynamicResource SecondaryText}"
 VerticalAlignment="Center"
@@ -2175,7 +2226,7 @@ Margin="0,0,10,0"/>
                                                     <ColumnDefinition Width="*"></ColumnDefinition>
                                                 </Grid.ColumnDefinitions>
                                                 <!-- Add to playlist-->
-                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="0">
+                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_AddToPlaylist_Click" Grid.Column="0">
                                                     <Button.Template>
                                                         <ControlTemplate TargetType="Button">
                                                             <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -2302,7 +2353,7 @@ Margin="0,0,10,0"/>
                                                         <ImageBrush ImageSource="/Assets/Images/icon-next.png"/>
                                                     </Border.OpacityMask>
                                                 </Border>
-                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="5">
+                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Grid.Column="5">
                                                     <Button.Template>
                                                         <ControlTemplate TargetType="Button">
                                                             <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -2327,7 +2378,7 @@ Margin="0,0,10,0"/>
                                                         <ImageBrush ImageSource="/Assets/Images/icon-loop.png"/>
                                                     </Border.OpacityMask>
                                                 </Border>
-                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="6">
+                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand"  Click="Button_AddLikeToPlaylist_Click" Grid.Column="6">
                                                     <Button.Template>
                                                         <ControlTemplate TargetType="Button">
                                                             <Border Background="{TemplateBinding Background}" CornerRadius="8">

@@ -49,7 +49,7 @@ namespace Floatly.Api
         }
         public async static Task<LyricsResponseModel> GetLyric(string songid)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/api/library/v3/lyrics/{songid}?token={Prefs.LoginToken}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/lyrics/{songid}?token={Prefs.LoginToken}");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();

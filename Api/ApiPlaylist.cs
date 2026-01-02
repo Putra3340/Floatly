@@ -1,4 +1,5 @@
 ﻿using Floatly.Models.Form;
+using Floatly.Utils;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -52,6 +53,49 @@ namespace Floatly.Api
 
             }
             return JsonSerializer.Deserialize<Library>(result, options);
+        }
+        public async static Task AddPlaylistSongs(int plId, string songId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{Prefs.ServerUrl}/api/playlist/addsong");
+            var collection = new List<KeyValuePair<string, string>>();
+            collection.Add(new("token", Prefs.LoginToken));
+            collection.Add(new("playlistId", plId.ToString()));
+            collection.Add(new("songId", songId));
+            var content = new FormUrlEncodedContent(collection);
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new Exception(await response.Content.ReadAsStringAsync());
+            }
+        }
+        public async static Task AddLikePlaylistSongs(string songId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{Prefs.ServerUrl}/api/playlist/addlikesong");
+            var collection = new List<KeyValuePair<string, string>>();
+            collection.Add(new("token", Prefs.LoginToken));
+            collection.Add(new("songId", songId));
+            var content = new FormUrlEncodedContent(collection);
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new Exception(await response.Content.ReadAsStringAsync());
+            }
+        }
+        public async static Task RemoveLikePlaylistSongs(string songId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{Prefs.ServerUrl}/api/playlist/removelikesong");
+            var collection = new List<KeyValuePair<string, string>>();
+            collection.Add(new("token", Prefs.LoginToken));
+            collection.Add(new("songId", songId));
+            var content = new FormUrlEncodedContent(collection);
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new Exception(await response.Content.ReadAsStringAsync());
+            }
         }
     }
 }

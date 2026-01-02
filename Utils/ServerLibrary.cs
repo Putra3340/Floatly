@@ -244,6 +244,7 @@ namespace Floatly.Utils
                 PlaylistList.ItemsSource = StaticBinding.Playlists;
             });
         }
+        public static int CurrentPlaylistId = -1;
         public static async Task GetPlaylistSongs(object playlist)
         {
             if (playlist is not PlaylistModel pl)
@@ -251,6 +252,7 @@ namespace Floatly.Utils
             var playlists = await ApiPlaylist.GetPlaylistSongs(pl.Id);
             Application.Current.Dispatcher.Invoke(() => {
                 StaticBinding.PlaylistSong.Clear();
+                CurrentPlaylistId = pl.Id;
                 foreach (var playlist in playlists.Songs)
                 {
                     StaticBinding.PlaylistSong.Add(playlist);

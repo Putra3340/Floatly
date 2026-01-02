@@ -5,12 +5,363 @@
         AllowsTransparency="True"
         Background="Transparent"
         Topmost="True"
-        ResizeMode="NoResize"
+        MouseMove="Window_MouseMove"
         ShowInTaskbar="False"
-        Width="641" Height="146">
-    <Grid Background="#01000000" IsHitTestVisible="True">
-        <TextBlock x:Name="lbl_displayedlyrics" Text="Starting Music" FontSize="32" Foreground="White"
-               HorizontalAlignment="Center" VerticalAlignment="Top"
-               IsHitTestVisible="False" Margin="0,26,0,0" TextAlignment="Center" TextWrapping="Wrap"/>
+        Width="640" Height="460">
+    <Grid RowDefinitions="360,100">
+        <Grid>
+
+            <!-- Cover/Video layer -->
+            <Rectangle x:Name="CoverRectangle"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch">
+                <Rectangle.Fill>
+                    <ImageBrush x:Name="Cover" Stretch="UniformToFill"/>
+                </Rectangle.Fill>
+            </Rectangle>
+            <Grid x:Name="VideoRectangleHost" Visibility="Hidden"/>
+
+            <Border x:Name="LoadingOverlay"
+Background="Black"
+Visibility="Collapsed">
+
+                <Grid>
+                    <TextBlock x:Name="LoadingText"
+           Text="Loading"
+                           FontWeight="Bold"
+           FontSize="50"
+           Foreground="White"
+           HorizontalAlignment="Center"
+           VerticalAlignment="Center"/>
+                </Grid>
+
+            </Border>
+
+
+            <!-- Bottom controls (auto hide) -->
+            <Border x:Name="ControlBar"
+                Height="90"
+                VerticalAlignment="Bottom"
+                Background="#66000000"
+                Opacity="1"
+                Padding="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_PlayPause_Click">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-prev.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                    <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_PlayPause_Click" Grid.Column="1">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Border x:Name="Icon_PlayPause" Background="White" Width="20" Height="20" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-pause.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                    <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_PlayPause_Click" Grid.Column="2">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="2">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-next.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                    <TextBlock Grid.Column="3" Text="03:21"
+           Foreground="White"
+           VerticalAlignment="Center" x:Name="Label_CurrentTime"
+                           FontSize="18" Margin="20,0,20,0"/>
+                    <Slider Grid.Column="4" VerticalAlignment="Center" Name="Slider_Progress" ValueChanged="Slider_Progress_ValueChanged"
+PreviewMouseDown="Slider_Progress_PreviewMouseDown"
+PreviewMouseUp="Slider_Progress_PreviewMouseUp">
+                        <Slider.Resources>
+                            <!-- Thumb: circular -->
+                            <Style TargetType="Thumb">
+                                <Setter Property="Width" Value="14"/>
+                                <Setter Property="Height" Value="14"/>
+                                <Setter Property="Margin" Value="0,-8,0,0"/>
+                                <!-- move up a bit more -->
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Thumb">
+                                            <Ellipse Fill="Black"
+Stroke="#6366F1"
+StrokeThickness="2"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+
+
+                            <!-- Slider: flat track -->
+                            <Style TargetType="Slider">
+                                <Setter Property="Foreground" Value="#6366F1"/>
+                                <!-- progress bar color -->
+                                <Setter Property="Background" Value="#1F2238"/>
+
+                                <!-- background bar color -->
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Slider">
+                                            <Grid>
+                                                <Track x:Name="PART_Track"
+          Height="8"
+          VerticalAlignment="Center">
+                                                    <!-- progress (left) -->
+                                                    <Track.DecreaseRepeatButton>
+                                                        <RepeatButton Background="{TemplateBinding Foreground}"
+                         BorderThickness="0">
+                                                            <RepeatButton.Template>
+                                                                <ControlTemplate TargetType="RepeatButton">
+                                                                    <Border Background="{TemplateBinding Background}"
+                               Height="6"
+                               VerticalAlignment="Center"/>
+                                                                </ControlTemplate>
+                                                            </RepeatButton.Template>
+                                                        </RepeatButton>
+                                                    </Track.DecreaseRepeatButton>
+                                                    <!-- background (right) -->
+                                                    <Track.IncreaseRepeatButton>
+                                                        <RepeatButton Background="{TemplateBinding Background}"
+                         BorderThickness="0">
+                                                            <RepeatButton.Template>
+                                                                <ControlTemplate TargetType="RepeatButton">
+                                                                    <Border Background="{TemplateBinding Background}"
+                               Height="6"
+                               VerticalAlignment="Center"/>
+                                                                </ControlTemplate>
+                                                            </RepeatButton.Template>
+                                                        </RepeatButton>
+                                                    </Track.IncreaseRepeatButton>
+                                                    <!-- thumb -->
+                                                    <Track.Thumb>
+                                                        <Thumb/>
+                                                    </Track.Thumb>
+                                                </Track>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Slider.Resources>
+                    </Slider>
+                    <TextBlock Grid.Column="5" Text="03:21"
+                           Foreground="White"
+                           VerticalAlignment="Center" x:Name="Label_TotalTime"
+                           FontSize="18" Margin="20,0,20,0"/>
+                    <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="PlayHD_Click" Grid.Column="6" Visibility="Collapsed" x:Name="Btn_HD">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="6" Visibility="Collapsed" x:Name="Border_Btn_HD">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-hd.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                    <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="PlayWithVideo_Click" Grid.Column="7" x:Name="Btn_Video">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="7" x:Name="Border_Btn_Video">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-player.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                    <Button x:Name="ToggleLyricButton" Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="ToggleLyric_Click" Grid.Column="8">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="8">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-listcenter.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                    <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="ToggleLabelLyric_Click" Grid.Column="9">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="9">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-middletext.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                    <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="CloseButton_Click" Grid.Column="10">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="10">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-minimizefullscreen.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                </Grid>
+            </Border>
+
+        </Grid>
+        <Border
+    x:Name="Border_LabelActiveLyrics"
+    VerticalAlignment="Center"
+    HorizontalAlignment="Center"
+    Background="Black"
+    Padding="12,6"
+    CornerRadius="6" Visibility="Visible" Grid.Row="1">
+
+            <TextBlock
+        x:Name="Label_ActiveLyrics"
+        Text=""
+        FontSize="28"
+        FontWeight="SemiBold"
+        Foreground="#EEFFFFFF"
+        TextWrapping="Wrap"
+        TextAlignment="Center"/>
+        </Border>
     </Grid>
 </Window>

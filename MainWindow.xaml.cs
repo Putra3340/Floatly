@@ -239,6 +239,16 @@ namespace Floatly
 
                 // Load playlist panel
                 await ServerLibrary.GetPlaylist();
+                if(SubPanel_PlaylistSongs.Visibility == Visibility.Collapsed)
+                {
+                    Btn_BackPlaylist.Visibility = Visibility.Collapsed;
+                    SP_BackPlaylist.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    Btn_BackPlaylist.Visibility = Visibility.Visible;
+                    SP_BackPlaylist.Visibility = Visibility.Visible;
+                }
             }
             else if (btn.Name == "NavSettings")
             {
@@ -430,6 +440,22 @@ namespace Floatly
                 ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-pause.png"));
             else
                 ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
+        }
+        private async void Button_AddToPlaylist_Click(object sender, RoutedEventArgs e)
+        {
+            var crs = StaticBinding.CurrentSong;
+            if(crs == null)
+                return;
+            await ApiPlaylist.AddPlaylistSongs(1, crs.Id); // TODO make playlist selection
+            Notification.ShowNotification($"Added {crs.Title} to playlist");
+        }
+        private async void Button_AddLikeToPlaylist_Click(object sender, RoutedEventArgs e)
+        {
+            var crs = StaticBinding.CurrentSong;
+            if(crs == null)
+                return;
+            await ApiPlaylist.AddLikePlaylistSongs(crs.Id); // TODO make playlist selection
+            Notification.ShowNotification($"Added {crs.Title} to playlist");
         }
         #endregion
 
@@ -677,6 +703,8 @@ namespace Floatly
                 {
                     if (btnonline.DataContext is PlaylistModel)
                     {
+                        SP_BackPlaylist.Visibility = Visibility.Visible;
+                        Btn_BackPlaylist.Visibility = Visibility.Visible;
                         SubPanel_PlaylistSongs.Visibility = Visibility.Visible;
                         SubPanel_PlaylistList.Visibility = Visibility.Collapsed;
                         await ServerLibrary.GetPlaylistSongs(btnonline.DataContext);
@@ -853,6 +881,22 @@ namespace Floatly
         {
             Notification.ShowNotification("Reloading Offline Library");
             ServerLibrary.GetDownloadedSongs();
+        }
+        #endregion
+
+        #region Panel Playlist
+        private async void Btn_PlaylistBack_Click(object sender, RoutedEventArgs e)
+        {
+            await ServerLibrary.GetPlaylist();
+            SubPanel_PlaylistList.Visibility = Visibility.Visible;
+            Btn_BackPlaylist.Visibility = Visibility.Collapsed;
+            SP_BackPlaylist.Visibility = Visibility.Collapsed;
+            SubPanel_PlaylistSongs.Visibility = Visibility.Collapsed;
+        }
+        private async void RefreshPlaylist_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Notification.ShowNotification("Refershing Playlist..");
+            await ServerLibrary.GetPlaylistSongs(ServerLibrary.CurrentPlaylistId);
         }
         #endregion
     }

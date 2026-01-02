@@ -150,11 +150,11 @@ namespace Floatly.Forms
         private async void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             var pos = MusicPlayer.Player.Position;
-            MusicPlayer.Player.Pause();
+            MusicPlayer.Pause();
             MusicPlayer.MoveTo(MusicPlayer.Host);
             await Task.Delay(20);
             MusicPlayer.Player.Position = pos;
-            MusicPlayer.Player.Play();
+            MusicPlayer.Resume();
             Instance = null;
             this.Close();
         }
