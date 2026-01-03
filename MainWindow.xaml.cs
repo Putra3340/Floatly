@@ -37,6 +37,7 @@ namespace Floatly
         EqualizerWindow ew = null; // just one instance of EqualizerWindow
         FullScreenWindow fsw = null; // just one instance of FullScreenWindow
         FloatlyClientContext db = new(); // database context
+        private static readonly Random _rng = new();
 
         DispatcherTimer slidertimer = new DispatcherTimer(); // for slider
         bool isDragging = false; // dragging slider
@@ -101,16 +102,34 @@ namespace Floatly
             }
         }
 
-        private async void Player_MediaEnded(object? sender, EventArgs e)
+        private static async void Player_MediaEnded(object? sender, EventArgs e)
         {
             // Random Id
-            if (StaticBinding.HomeSong.Count > 0)
-                await ServerLibrary.Play(StaticBinding.HomeSong[new Random().Next(0, StaticBinding.HomeSong.Count)]);
-            //if(StaticBinding.HomeSongEx.Count > 0)
-            //    await ServerLibrary.Play(StaticBinding.HomeSongEx[new Random().Next(0, StaticBinding.HomeSongEx.Count)]);
-            //if(StaticBinding.SearchSong.Count > 0)
-            //    await ServerLibrary.Play(StaticBinding.SearchSong[new Random().Next(0, StaticBinding.SearchSong.Count)]);
+            var sections = new List<Func<Task>>();
 
+            if (StaticBinding.HomeSong?.Count > 0)
+                sections.Add(() => ServerLibrary.Play(
+                    StaticBinding.HomeSong[_rng.Next(StaticBinding.HomeSong.Count)]
+                ));
+            if (StaticBinding.HomeSongEx?.Count > 0)
+                sections.Add(() => ServerLibrary.Play(
+                    StaticBinding.HomeSongEx[_rng.Next(StaticBinding.HomeSongEx.Count)]
+                ));
+            if (StaticBinding.SearchSong?.Count > 0)
+                sections.Add(() => ServerLibrary.Play(
+                    StaticBinding.SearchSong[_rng.Next(StaticBinding.SearchSong.Count)]
+                ));
+            if (StaticBinding.PlaylistSong?.Count > 0)
+                sections.Add(() => ServerLibrary.Play(
+                    StaticBinding.PlaylistSong[_rng.Next(StaticBinding.PlaylistSong.Count)]
+                ));
+
+            if (sections.Count == 0)
+                return; // nothing to play, silence is graceful too 
+
+            // roll the dice
+            var choice = sections[_rng.Next(sections.Count)];
+            await choice();
         }
 
         private void NotImplemented_Click(object sender, RoutedEventArgs e)
@@ -455,8 +474,12 @@ namespace Floatly
             var crs = StaticBinding.CurrentSong;
             if(crs == null)
                 return;
-            await ApiPlaylist.AddLikePlaylistSongs(crs.Id); // TODO make playlist selection
+            await ApiPlaylist.AddLikePlaylistSongs(crs.Id);
             Notification.ShowNotification($"Added {crs.Title} to playlist");
+        }
+        private async void Button_Next_Click(object sender, RoutedEventArgs e)
+        {
+            Player_MediaEnded(null,null);
         }
         #endregion
 

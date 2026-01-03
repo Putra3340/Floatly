@@ -2328,7 +2328,7 @@ Margin="0,0,10,0"/>
                                                         <ImageBrush ImageSource="/Assets/Images/icon-pause.png"/>
                                                     </Border.OpacityMask>
                                                 </Border>
-                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Player_MediaEnded" Grid.Column="4">
+                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_Next_Click" Grid.Column="4">
                                                     <Button.Template>
                                                         <ControlTemplate TargetType="Button">
                                                             <Border Background="{TemplateBinding Background}" CornerRadius="8">

@@ -130,7 +130,10 @@ namespace Floatly.Utils
         // Play song from either online or offline Directly
         public static async Task Play(object song)
         {
-            if(song is Song onlinesong)
+            FullScreenWindow.Instance?.StartLoading();
+            FloatingWindow.Instance?.StartLoading();
+            
+            if (song is Song onlinesong)
             {
                 StaticBinding.LyricList.Clear();
                 StaticBinding.LyricLanguages.Clear();
@@ -155,6 +158,8 @@ namespace Floatly.Utils
                 await AddCurrentToQueue(StaticBinding.CurrentSong);
 
             }
+            FullScreenWindow.Instance?.StopLoading();
+            FloatingWindow.Instance?.StopLoading();
         }
         public static async Task DownloadSong(string id)
         {

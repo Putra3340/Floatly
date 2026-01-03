@@ -305,7 +305,7 @@ StrokeThickness="2"/>
                         </Button.Template>
                         <Button.Style>
                             <Style TargetType="Button">
-                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Background" Value="{DynamicResource AccentPurple}"/>
                                 <Setter Property="Foreground" Value="White"/>
                                 <Style.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
