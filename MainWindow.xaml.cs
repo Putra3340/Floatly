@@ -345,6 +345,7 @@ namespace Floatly
             if (!fw.IsVisible)
             {
                 fw.Show();
+                fw.FullScreenWindow_Loaded(null,null);
             }
             else
             {

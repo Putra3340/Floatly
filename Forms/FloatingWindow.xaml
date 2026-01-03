@@ -1,11 +1,13 @@
 ﻿<Window x:Class="Floatly.FloatingWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Floatly.Forms.LoadingAnimation"
         WindowStyle="None"
         AllowsTransparency="True"
         Background="Transparent"
         Topmost="True"
         MouseMove="Window_MouseMove"
+        ResizeMode="NoResize"
         ShowInTaskbar="False"
         Width="640" Height="460">
     <Grid RowDefinitions="360,100">
@@ -26,13 +28,14 @@ Background="Black"
 Visibility="Collapsed">
 
                 <Grid>
-                    <TextBlock x:Name="LoadingText"
-           Text="Loading"
-                           FontWeight="Bold"
-           FontSize="50"
-           Foreground="White"
-           HorizontalAlignment="Center"
-           VerticalAlignment="Center"/>
+                    <local:DonutSpinner  Height="60" Width="60" Margin="10, 0" Duration="0:0:0.5" SpinnerColor="{DynamicResource AccentIndigo}"/>
+                    <TextBlock x:Name="LoadingText" Margin="0,100,0,0"
+Text="Loading"
+                FontWeight="Bold"
+FontSize="36"
+Foreground="White"
+HorizontalAlignment="Center"
+VerticalAlignment="Center"/>
                 </Grid>
 
             </Border>

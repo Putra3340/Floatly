@@ -79,7 +79,7 @@ namespace Floatly.Utils
             });
             try
             {
-                Player.Source = new Uri(StaticBinding.CurrentSong.Music, UriKind.RelativeOrAbsolute);
+                Player.Source = new Uri(StaticBinding.CurrentSong.MoviePath ?? StaticBinding.CurrentSong.Music, UriKind.RelativeOrAbsolute);
                 Resume();
                 isPaused = false;
                 timer.Tick += LyricsTick;

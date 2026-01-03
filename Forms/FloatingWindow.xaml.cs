@@ -139,6 +139,14 @@ namespace Floatly
                 SetWindowLong(hwnd, GWL_EXSTYLE, baseStyle | WS_EX_TOOLWINDOW);
                 UpdateOpacity(1.0);
             }
+            if (e.KeyCode == System.Windows.Forms.Keys.F12)
+            {
+                StartLoading();
+            }
+            if (e.KeyCode == System.Windows.Forms.Keys.F11)
+            {
+                StopLoading();
+            }
         }
 
         // central logic
@@ -181,8 +189,9 @@ namespace Floatly
                 ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
         }
 
-        private async void FullScreenWindow_Loaded(object sender, RoutedEventArgs e)
+        public async void FullScreenWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            StartLoading();
             Cover.ImageSource = new BitmapImage(new Uri(StaticBinding.CurrentSong.Banner, UriKind.RelativeOrAbsolute));
 
             var pos = MusicPlayer.Player.Position;
@@ -191,22 +200,27 @@ namespace Floatly
             MusicPlayer.MoveTo(VideoRectangleHost);
 
             await Task.Delay(20);
-            MusicPlayer.Player.Position = pos;
             MusicPlayer.Player.Play();
+            await Task.Delay(20);
+            MusicPlayer.Player.Position = pos;
 
             ToggleLyricButton.Background = (Brush)FindResource("AccentPurple");
+            StopLoading();
         }
         public async void ReloadWindow()
         {
+            StartLoading();
             Cover.ImageSource = new BitmapImage(new Uri(StaticBinding.CurrentSong.Banner, UriKind.RelativeOrAbsolute));
             // reset
-            Btn_HD.Visibility = Visibility.Visible;
-            Btn_HD.Background = Brushes.Transparent;
-            Border_Btn_HD.Visibility = Visibility.Visible;
+            Btn_HD.Visibility = Visibility.Collapsed;
+            Border_Btn_HD.Visibility = Visibility.Collapsed;
 
-            Btn_Video.Visibility = Visibility.Visible;
-            Btn_Video.Background = Brushes.Transparent;
-            Border_Btn_Video.Visibility = Visibility.Visible;
+            if (IsVideoDisplayed)
+            {
+                PlayWithVideo_Click(Btn_Video, null); // 2 times to reset
+                PlayWithVideo_Click(Btn_Video, null);
+            }
+            StopLoading();
         }
 
         private async void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -217,9 +231,9 @@ namespace Floatly
             await Task.Delay(20);
             MusicPlayer.Player.Position = pos;
             MusicPlayer.Resume();
-            Instance = null;
-            this.Close();
+            this.Hide();
         }
+        bool IsVideoDisplayed = false;
         private async void PlayWithVideo_Click(object sender, RoutedEventArgs e)
         {
             var btn = sender as Button;
@@ -227,6 +241,7 @@ namespace Floatly
             {
                 btn.Background = Brushes.Transparent;
                 VideoRectangleHost.Visibility = Visibility.Hidden;
+                IsVideoDisplayed = false;
                 return;
             }
             Btn_HD.Visibility = Visibility.Collapsed;
@@ -245,6 +260,7 @@ namespace Floatly
                 MusicPlayer.Player.Position = lasttimestamp;
             }
             StopLoading();
+            IsVideoDisplayed = true;
             btn.Background = (Brush)FindResource("AccentPurple");
             VideoRectangleHost.Visibility = Visibility.Visible;
         }
