@@ -4,6 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Floatly"
+        xmlns:local2="clr-namespace:Floatly.Forms.LoadingAnimation"
+        
         mc:Ignorable="d"
         Title="Floatly" Height="720" Width="1280" Closed="Window_Closed"
         Icon="/Assets/Images/icon-logo.png"
@@ -64,13 +66,6 @@
 
         <ContextMenu x:Key="SongContextMenu" Style="{DynamicResource DarkContextMenu}">
             <MenuItem Header="Play" Click="MenuItem_Click"/>
-            <MenuItem Header="Add to Playlist" Click="MenuItem_Click">
-                <MenuItem Header="Favorites" Style="{DynamicResource DarkMenuItem}"/>
-                <MenuItem Header="Chill Vibes" Style="{DynamicResource DarkMenuItem}"/>
-                <MenuItem Header="Workout Mix" Style="{DynamicResource DarkMenuItem}"/>
-                <Separator/>
-                <MenuItem Header="Create New Playlist..." Style="{DynamicResource DarkMenuItem}"/>
-            </MenuItem>
             <MenuItem Header="Download Song" Click="MenuItem_Click"/>
         </ContextMenu>
         <ContextMenu x:Key="SongOfflineContextMenu" Style="{DynamicResource DarkContextMenu}">
@@ -1358,6 +1353,22 @@ VerticalAlignment="Center"/>
                                         </DataTemplate>
                                     </ListBox.ItemTemplate>
                                 </ListBox>
+                                <Border x:Name="LoadingOverlay_Search"
+Background="#A0000000"
+Visibility="Collapsed">
+
+                                    <Grid>
+                                        <local2:DonutSpinner  Height="60" Width="60" Margin="10, 0" Duration="0:0:0.5" SpinnerColor="{DynamicResource AccentIndigo}"/>
+                                        <TextBlock x:Name="LoadingText_Search" Margin="0,100,0,0"
+Text="Loading"
+                FontWeight="Bold"
+FontSize="36"
+Foreground="White"
+HorizontalAlignment="Center"
+VerticalAlignment="Center"/>
+                                    </Grid>
+
+                                </Border>
                             </Grid>
                         </Border>
                         <Grid Grid.Column="1" Visibility="Collapsed">
@@ -2124,12 +2135,14 @@ Margin="0,0,10,0"/>
                         <Border Grid.Row="0" BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="0,0,0,1">
                             <TextBlock Text="Now Playing.." Foreground="{DynamicResource PrimaryText}" FontSize="24" VerticalAlignment="Center" Margin="20" Grid.Column="0"/>
                         </Border>
+                        
                         <!-- Now Playing -->
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                             <ScrollViewer.Resources>
                                 <Style TargetType="ScrollBar" BasedOn="{StaticResource CustomScrollBarStyle}" />
                             </ScrollViewer.Resources>
                             <StackPanel Margin="25">
+                                
                                 <Rectangle Height="223" RadiusX="16" RadiusY="16" Margin="0,0,0,15" HorizontalAlignment="Stretch" x:Name="PlayerCard_PlayerPanel">
 
                                     <!-- or desired width -->
@@ -2163,7 +2176,7 @@ Margin="0,0,10,0"/>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Equalizer_Click" Grid.Column="0">
+                                            <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Floating_Click" Grid.Column="0">
                                                 <Button.Template>
                                                     <ControlTemplate TargetType="Button">
                                                         <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -2185,7 +2198,7 @@ Margin="0,0,10,0"/>
                                             </Button>
                                             <Border Background="White" Width="20" Height="20" Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
                                                 <Border.OpacityMask>
-                                                    <ImageBrush ImageSource="/Assets/Images/icon-equalizer.png"/>
+                                                    <ImageBrush ImageSource="/Assets/Images/icon-pip.png"/>
                                                 </Border.OpacityMask>
                                             </Border>
                                             <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="FullScreen_Click" Grid.Column="2">
@@ -2252,7 +2265,7 @@ Margin="0,0,10,0"/>
                                                     </Border.OpacityMask>
                                                 </Border>
                                                 <!-- Shuffle button -->
-                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="1">
+                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Equalizer_Click" Grid.Column="1">
                                                     <Button.Template>
                                                         <ControlTemplate TargetType="Button">
                                                             <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -2274,11 +2287,11 @@ Margin="0,0,10,0"/>
                                                 </Button>
                                                 <Border Background="White" Width="20" Height="20" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
                                                     <Border.OpacityMask>
-                                                        <ImageBrush ImageSource="/Assets/Images/icon-shuffle.png"/>
+                                                        <ImageBrush ImageSource="/Assets/Images/icon-equalizer.png"/>
                                                     </Border.OpacityMask>
                                                 </Border>
                                                 <!-- Previous Button -->
-                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="NotImplemented_Click" Grid.Column="2">
+                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_Prev_Click" Grid.Column="2">
                                                     <Button.Template>
                                                         <ControlTemplate TargetType="Button">
                                                             <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -2353,7 +2366,7 @@ Margin="0,0,10,0"/>
                                                         <ImageBrush ImageSource="/Assets/Images/icon-next.png"/>
                                                     </Border.OpacityMask>
                                                 </Border>
-                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Grid.Column="5">
+                                                <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Grid.Column="5" Click="Looping_Click">
                                                     <Button.Template>
                                                         <ControlTemplate TargetType="Button">
                                                             <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -2497,7 +2510,7 @@ Margin="0,0,10,0"/>
                                     </Slider>
                                 </StackPanel>
                                 <Border BorderBrush="{DynamicResource BackgroundMuted}" BorderThickness="3" CornerRadius="10" Height="125">
-                                    <TextBlock x:Name="Label_ActiveLyrics" Text="Lyrics heree..." Foreground="{DynamicResource PrimaryText}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center" MouseLeftButtonDown="Label_ActiveLyrics_MouseLeftButtonDown"/>
+                                    <TextBlock x:Name="Label_ActiveLyrics" Text="Lyrics heree..." Foreground="{DynamicResource PrimaryText}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" TextAlignment="Center"/>
                                 </Border>
                                 <!-- Additional Artist Card -->
                                 <Grid>
@@ -2543,8 +2556,24 @@ RenderingBias="Quality" />
                                 </Grid>
                             </StackPanel>
                         </ScrollViewer>
-                    </Grid>
+                        <Border x:Name="LoadingOverlay_Player"
+Background="#A0000000"
+Visibility="Collapsed" Grid.Row="1">
 
+                            <Grid>
+                                <local2:DonutSpinner  Height="60" Width="60" Margin="10, 0" Duration="0:0:0.5" SpinnerColor="{DynamicResource AccentIndigo}"/>
+                                <TextBlock x:Name="LoadingText_Player" Margin="0,100,0,0"
+Text="Loading"
+                FontWeight="Bold"
+FontSize="36"
+Foreground="White"
+HorizontalAlignment="Center"
+VerticalAlignment="Center"/>
+                            </Grid>
+
+                        </Border>
+                    </Grid>
+                    
                 </Border>
             </Grid>
             <!-- This Used For Top Overlay thing -->

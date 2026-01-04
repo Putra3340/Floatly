@@ -75,6 +75,7 @@
     <None Remove="Assets\Images\icon-minimizefullscreen.png" />
     <None Remove="Assets\Images\icon-next.png" />
     <None Remove="Assets\Images\icon-pause.png" />
+    <None Remove="Assets\Images\icon-pip.png" />
     <None Remove="Assets\Images\icon-player.png" />
     <None Remove="Assets\Images\icon-playlist.png" />
     <None Remove="Assets\Images\icon-prev.png" />
@@ -162,6 +163,7 @@
     <Resource Include="Assets\Images\icon-minimizefullscreen.png" />
     <Resource Include="Assets\Images\icon-next.png" />
     <Resource Include="Assets\Images\icon-pause.png" />
+    <Resource Include="Assets\Images\icon-pip.png" />
     <Resource Include="Assets\Images\icon-player.png" />
     <Resource Include="Assets\Images\icon-playlist.png" />
     <Resource Include="Assets\Images\icon-prev.png" />

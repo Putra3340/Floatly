@@ -89,6 +89,7 @@ namespace Floatly.Utils
         }
         public static async Task SearchAsync(string query)
         {
+            MainWindow.Instance?.StartSongLoading();
             var lib = await ApiLibrary.Search(query);
             Application.Current.Dispatcher.Invoke(() =>
             {
@@ -97,6 +98,7 @@ namespace Floatly.Utils
                     StaticBinding.SearchSong.Add(song);
                 SongListSearch.ItemsSource = StaticBinding.SearchSong;
             });
+            MainWindow.Instance?.StopSongLoading();
 
             //ArtistListSearch.ItemsSource = StaticBinding.SearchArtist;
             //AlbumListSearch.ItemsSource = StaticBinding.SearchAlbum;
@@ -132,7 +134,8 @@ namespace Floatly.Utils
         {
             FullScreenWindow.Instance?.StartLoading();
             FloatingWindow.Instance?.StartLoading();
-            
+            MainWindow.Instance?.StartLoading();
+
             if (song is Song onlinesong)
             {
                 StaticBinding.LyricList.Clear();
@@ -160,6 +163,8 @@ namespace Floatly.Utils
             }
             FullScreenWindow.Instance?.StopLoading();
             FloatingWindow.Instance?.StopLoading();
+            MainWindow.Instance?.StopLoading();
+
         }
         public static async Task DownloadSong(string id)
         {

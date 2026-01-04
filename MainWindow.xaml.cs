@@ -45,6 +45,9 @@ namespace Floatly
         public static MainWindow Instance { get; private set; } // singleton pattern
         public List<Grid> ListPanelGrid = new();
         public static bool SetBlur { get => field; set { field = value; Instance?.Blur(value); } } = true; // default true
+        private DispatcherTimer _loadingTimer;
+        private int _dotCount = 0;
+        bool isLooping = false;
         public MainWindow()
         {
             try
@@ -104,34 +107,46 @@ namespace Floatly
 
         private static async void Player_MediaEnded(object? sender, EventArgs e)
         {
+            if(Instance == null) // aint no way
+                return;
+            if (Instance.isLooping)
+            {
+                MusicPlayer.Player.Position = TimeSpan.Zero;
+                return;
+            }
             // Random Id
-            var sections = new List<Func<Task>>();
+            var songlist = new List<Song>();
 
             if (StaticBinding.HomeSong?.Count > 0)
-                sections.Add(() => ServerLibrary.Play(
-                    StaticBinding.HomeSong[_rng.Next(StaticBinding.HomeSong.Count)]
-                ));
+                songlist.AddRange(StaticBinding.HomeSong);
             if (StaticBinding.HomeSongEx?.Count > 0)
-                sections.Add(() => ServerLibrary.Play(
-                    StaticBinding.HomeSongEx[_rng.Next(StaticBinding.HomeSongEx.Count)]
-                ));
+                songlist.AddRange(StaticBinding.HomeSongEx);
             if (StaticBinding.SearchSong?.Count > 0)
-                sections.Add(() => ServerLibrary.Play(
-                    StaticBinding.SearchSong[_rng.Next(StaticBinding.SearchSong.Count)]
-                ));
+                songlist.AddRange(StaticBinding.SearchSong);
             if (StaticBinding.PlaylistSong?.Count > 0)
-                sections.Add(() => ServerLibrary.Play(
-                    StaticBinding.PlaylistSong[_rng.Next(StaticBinding.PlaylistSong.Count)]
-                ));
+                songlist.AddRange(StaticBinding.PlaylistSong);
 
-            if (sections.Count == 0)
+            if (songlist.Count == 0)
                 return; // nothing to play, silence is graceful too 
 
             // roll the dice
-            var choice = sections[_rng.Next(sections.Count)];
-            await choice();
+            var choice = songlist[_rng.Next(songlist.Count)];
+            await ServerLibrary.Play(choice);
         }
 
+        private void Looping_Click(object sender, RoutedEventArgs e)
+        {
+            isLooping = !isLooping;
+            var btn = sender as Button;
+            if (isLooping)
+            {
+                btn.Background = (Brush)FindResource("AccentIndigo");
+            }
+            else
+            {
+                btn.Background = Brushes.Transparent;
+            }
+        }
         private void NotImplemented_Click(object sender, RoutedEventArgs e)
         {
             MessageBox.Show("Opps this feature is in todo!");
@@ -359,7 +374,7 @@ namespace Floatly
         {
             Dispatcher.Invoke(() => Label_ActiveLyrics.Text = lyric == null ? "" : (lyric.Text + (lyric.Text2.IsNotNullOrEmpty() ? $"\n{lyric.Text2}" : "")));
         }
-        private void Label_ActiveLyrics_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void Floating_Click(object sender, RoutedEventArgs e)
         {
             if (!fw.IsVisible)
             {
@@ -480,6 +495,10 @@ namespace Floatly
         private async void Button_Next_Click(object sender, RoutedEventArgs e)
         {
             Player_MediaEnded(null,null);
+        }
+        private async void Button_Prev_Click(object sender, RoutedEventArgs e)
+        {
+            MusicPlayer.Player.Position = TimeSpan.Zero;
         }
         #endregion
 
@@ -692,8 +711,12 @@ namespace Floatly
                 {
                     if (btnonline.DataContext is Song || btnonline.DataContext is DownloadedSong)
                     {
+                        List_Song.IsHitTestVisible = false;
+                        List_SongSearch.IsHitTestVisible = false;
                         await ServerLibrary.Play(btnonline.DataContext);
                         ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
+                        List_Song.IsHitTestVisible = true;
+                        List_SongSearch.IsHitTestVisible = true;
                     }
                     return;
                 }
@@ -921,6 +944,58 @@ namespace Floatly
         {
             Notification.ShowNotification("Refreshing Playlist..");
             await ServerLibrary.GetPlaylistSongs(ServerLibrary.CurrentPlaylistId);
+        }
+        #endregion
+
+        #region Loading Thing
+        // Player Loading Overlay
+        public void StartLoading()
+        {
+            _dotCount = 0;
+            LoadingOverlay_Player.Visibility = Visibility.Visible; // start
+
+            _loadingTimer ??= new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(400)
+            };
+
+            _loadingTimer.Tick -= LoadingTick;
+            _loadingTimer.Tick += LoadingTick;
+            _loadingTimer.Start();
+        }
+        private void LoadingTick(object? sender, EventArgs e)
+        {
+            _dotCount = (_dotCount + 1) % 4; // 0..3 dots
+            LoadingText_Player.Text = "Loading" + new string('.', _dotCount);
+        }
+        public void StopLoading()
+        {
+            _loadingTimer?.Stop();
+            LoadingOverlay_Player.Visibility = Visibility.Collapsed; // stop
+        }
+        public void StartSongLoading()
+        {
+            _dotCount = 0;
+            LoadingOverlay_Search.Visibility = Visibility.Visible; // start
+
+            _loadingTimer ??= new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(400)
+            };
+
+            _loadingTimer.Tick -= LoadingSongTick;
+            _loadingTimer.Tick += LoadingSongTick;
+            _loadingTimer.Start();
+        }
+        private void LoadingSongTick(object? sender, EventArgs e)
+        {
+            _dotCount = (_dotCount + 1) % 4; // 0..3 dots
+            LoadingText_Search.Text = "Loading" + new string('.', _dotCount);
+        }
+        public void StopSongLoading()
+        {
+            _loadingTimer?.Stop();
+            LoadingOverlay_Search.Visibility = Visibility.Collapsed; // stop
         }
         #endregion
     }
