@@ -159,12 +159,12 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Border Grid.Column="0" HorizontalAlignment="Left">
-                    <TextBlock Text="Back to login" Foreground="{StaticResource AccentPurple}" Cursor="Hand" MouseDown="RegisterAccount_MouseDown"/>
+                    <TextBlock Text="Back to login" Foreground="{StaticResource AccentPurple}" Cursor="Hand" MouseDown="BackToLogin_MouseDown"/>
                 </Border>
                 <Border Grid.Column="2" HorizontalAlignment="Right">
                     <TextBlock Text="Forgot password?" Foreground="{StaticResource AccentPurple}" Cursor="Hand" MouseDown="ForgotPassword_MouseDown"/>
                 </Border>
-                <Border Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" Margin="0,20,0,0">
+                <Border Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" Margin="0,20,0,0" Visibility="Collapsed">
                     <TextBlock Text="Stay logged out" Foreground="Gray" Cursor="Hand" MouseDown="AnonymousLogin_MouseDown"/>
                 </Border>
             </Grid>

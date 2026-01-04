@@ -8,6 +8,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Floatly.Api
 {
@@ -66,7 +67,10 @@ namespace Floatly.Api
             var response = await client.SendAsync(request);
             if(response.StatusCode != HttpStatusCode.OK)
                 return false;
+            using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            string username = doc.RootElement.GetProperty("username").GetString();
             Prefs.LoginToken = token;
+            Prefs.LoginUsername = username;
             return true;
         }
         public async static Task VerifyEmail(string email) // Maybe Done?

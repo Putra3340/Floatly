@@ -15,7 +15,7 @@
             <Label Content="X" FontWeight="Bold" FontSize="20" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryText}" Margin="0,0,0,10" MouseDown="CloseLogin_MouseDown">
                 
             </Label>
-            <TextBlock Text="Welcome Back! Please login first!" 
+            <TextBlock Text="Welcome! Please login first!" 
                        FontSize="20" 
                        FontWeight="Bold" 
                        HorizontalAlignment="Center"
@@ -109,7 +109,7 @@
                 <Border Grid.Column="2" HorizontalAlignment="Right">
                     <TextBlock Text="Forgot password?" Foreground="{StaticResource AccentPurple}" Cursor="Hand" MouseDown="ForgotPassword_MouseDown"/>
                 </Border>
-                <Border Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" Margin="0,20,0,0">
+                <Border Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" Margin="0,20,0,0" Visibility="Collapsed">
                     <TextBlock Text="Stay logged out" Foreground="Gray" Cursor="Hand" MouseDown="AnonymousLogin_MouseDown"/>
                 </Border>
             </Grid>

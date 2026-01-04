@@ -62,12 +62,14 @@ namespace Floatly
             catch (Exception ex)
             {
                 MessageBox.Show($"Registration failed: {ex.Message}");
+                return;
             }
             finally
             {
                 btn.Content = temp;
                 btn.IsEnabled = true; // re-enable no matter what
-                this.Close();
+                if(Prefs.LoginToken.IsNotNullOrEmpty())
+                    this.Close();
             }
         }
         private void ForgotPassword_MouseDown(object sender, RoutedEventArgs e)
@@ -83,7 +85,10 @@ namespace Floatly
         {
             Application.Current.Shutdown();
         }
-
+        private void BackToLogin_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            this.Close();
+        }
         private async void Verify_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrWhiteSpace(EmailBox.Text))

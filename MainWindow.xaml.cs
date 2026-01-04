@@ -919,7 +919,7 @@ namespace Floatly
         }
         private async void RefreshPlaylist_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            Notification.ShowNotification("Refershing Playlist..");
+            Notification.ShowNotification("Refreshing Playlist..");
             await ServerLibrary.GetPlaylistSongs(ServerLibrary.CurrentPlaylistId);
         }
         #endregion
