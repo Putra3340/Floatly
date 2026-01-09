@@ -504,11 +504,11 @@ namespace Floatly
             await ApiPlaylist.AddLikePlaylistSongs(crs.Id);
             Notification.ShowNotification($"Added {crs.Title} to playlist");
         }
-        private async void Button_Next_Click(object sender, RoutedEventArgs e)
+        public async void Button_Next_Click(object sender, RoutedEventArgs e)
         {
             Player_MediaEnded(null, null);
         }
-        private async void Button_Prev_Click(object sender, RoutedEventArgs e)
+        public async void Button_Prev_Click(object sender, RoutedEventArgs e)
         {
             MusicPlayer.Player.Position = TimeSpan.Zero;
         }

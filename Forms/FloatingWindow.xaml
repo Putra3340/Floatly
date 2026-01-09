@@ -63,7 +63,7 @@ VerticalAlignment="Center"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_PlayPause_Click">
+                    <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_Prev_Click">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -113,7 +113,7 @@ VerticalAlignment="Center"/>
                             <ImageBrush ImageSource="/Assets/Images/icon-pause.png"/>
                         </Border.OpacityMask>
                     </Border>
-                    <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_PlayPause_Click" Grid.Column="2">
+                    <Button Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Button_Next_Click" Grid.Column="2">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border Background="{TemplateBinding Background}" CornerRadius="8">

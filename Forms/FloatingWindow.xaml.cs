@@ -125,7 +125,11 @@ namespace Floatly
                 UpdateOpacity(0.5);
             }
         }
-
+        public enum WindowLocation
+        {
+            TopLeft,TopRight,BottomLeft,BottomRight
+        }
+        public WindowLocation Location = WindowLocation.TopLeft;
         private void GlobalHook_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
             if (e.KeyCode == System.Windows.Forms.Keys.LControlKey)
@@ -146,6 +150,68 @@ namespace Floatly
             if (e.KeyCode == System.Windows.Forms.Keys.F11)
             {
                 StopLoading();
+            }
+            if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.A)
+            {
+                if(Location == WindowLocation.BottomRight)
+                    MoveWindow(WindowLocation.BottomLeft);
+                if(Location == WindowLocation.TopRight)
+                    MoveWindow(WindowLocation.TopLeft);
+            }
+            if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.D)
+            {
+                if(Location == WindowLocation.TopLeft)
+                    MoveWindow(WindowLocation.TopRight);
+                if(Location == WindowLocation.BottomLeft)
+                    MoveWindow(WindowLocation.BottomRight);
+            }
+            
+            if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.S)
+            {
+                if(Location == WindowLocation.TopLeft)
+                    MoveWindow(WindowLocation.BottomLeft);
+                if(Location == WindowLocation.TopRight)
+                    MoveWindow(WindowLocation.BottomRight);
+            }
+            if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.W)
+            {
+                if(Location == WindowLocation.BottomLeft)
+                    MoveWindow(WindowLocation.TopLeft);
+                if(Location == WindowLocation.BottomRight)
+                    MoveWindow(WindowLocation.TopRight);
+            }
+            
+        }
+        private void MoveWindow(WindowLocation location)
+        {
+            if(location == WindowLocation.TopLeft)
+            {
+                var width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
+                var height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+                this.Left = 20;
+                this.Top = 20;
+                this.Location = WindowLocation.TopLeft;
+            }else if(location == WindowLocation.TopRight)
+            {
+                var width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
+                var height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+                this.Left = width - this.Width - 20;
+                this.Top = 20;
+                this.Location = WindowLocation.TopRight;
+            }else if(location == WindowLocation.BottomRight)
+            {
+                var width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
+                var height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+                this.Left = width - this.Width - 20;
+                this.Top = height - this.Height - 20;
+                this.Location = WindowLocation.BottomRight;
+            }else if(location == WindowLocation.BottomLeft)
+            {
+                var width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
+                var height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+                this.Left = 20;
+                this.Top = height - this.Height - 20;
+                this.Location = WindowLocation.BottomLeft;
             }
         }
 
@@ -427,6 +493,14 @@ namespace Floatly
         private async void cbx_lyriclang_DropDownOpened(object sender, EventArgs e)
         {
             await ServerLibrary.GetLyrics(StaticBinding.CurrentSong.Id);
+        }
+        private async void Button_Next_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Instance.Button_Next_Click(null, null);
+        }
+        private async void Button_Prev_Click(object sender, RoutedEventArgs e)
+        {
+            MusicPlayer.Player.Position = TimeSpan.Zero;
         }
     }
 }

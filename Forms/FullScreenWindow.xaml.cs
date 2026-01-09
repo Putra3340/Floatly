@@ -364,5 +364,13 @@ namespace Floatly.Forms
         {
             await ServerLibrary.GetLyrics(StaticBinding.CurrentSong.Id);
         }
+        private async void Button_Next_Click(object sender, RoutedEventArgs e)
+        {
+            MainWindow.Instance.Button_Next_Click(null, null);
+        }
+        private async void Button_Prev_Click(object sender, RoutedEventArgs e)
+        {
+            MusicPlayer.Player.Position = TimeSpan.Zero;
+        }
     }
 }
