@@ -105,33 +105,45 @@ namespace Floatly
             }
         }
 
+        private static int VERYSECRETHIGHSECURITYINTERGERTHATYOUDIDNTWANTTOKNOWORIWILLSUEYOUFUCKINGREVERSEENGINEERSTUPIDFUCKINGNERDCOUNTER = 0;
         private static async void Player_MediaEnded(object? sender, EventArgs e)
         {
-            if(Instance == null) // aint no way
+            if (Instance == null) // aint no way
                 return;
             if (Instance.isLooping)
             {
                 MusicPlayer.Player.Position = TimeSpan.Zero;
                 return;
             }
-            // Random Id
+
             var songlist = new List<Song>();
+            if (VERYSECRETHIGHSECURITYINTERGERTHATYOUDIDNTWANTTOKNOWORIWILLSUEYOUFUCKINGREVERSEENGINEERSTUPIDFUCKINGNERDCOUNTER >= 4)
+            {
+                VERYSECRETHIGHSECURITYINTERGERTHATYOUDIDNTWANTTOKNOWORIWILLSUEYOUFUCKINGREVERSEENGINEERSTUPIDFUCKINGNERDCOUNTER = 0;
+                var adssong = await ApiLibrary.GetAdsStream();
+                songlist.Add(adssong);
+            }
+            else
+            {
+                // Random Id
+                if (StaticBinding.HomeSong?.Count > 0)
+                    songlist.AddRange(StaticBinding.HomeSong);
+                if (StaticBinding.HomeSongEx?.Count > 0)
+                    songlist.AddRange(StaticBinding.HomeSongEx);
+                if (StaticBinding.SearchSong?.Count > 0)
+                    songlist.AddRange(StaticBinding.SearchSong);
+                if (StaticBinding.PlaylistSong?.Count > 0)
+                    songlist.AddRange(StaticBinding.PlaylistSong);
 
-            if (StaticBinding.HomeSong?.Count > 0)
-                songlist.AddRange(StaticBinding.HomeSong);
-            if (StaticBinding.HomeSongEx?.Count > 0)
-                songlist.AddRange(StaticBinding.HomeSongEx);
-            if (StaticBinding.SearchSong?.Count > 0)
-                songlist.AddRange(StaticBinding.SearchSong);
-            if (StaticBinding.PlaylistSong?.Count > 0)
-                songlist.AddRange(StaticBinding.PlaylistSong);
+                if (songlist.Count == 0)
+                    return; // nothing to play, silence is graceful too 
+            }
 
-            if (songlist.Count == 0)
-                return; // nothing to play, silence is graceful too 
 
             // roll the dice
             var choice = songlist[_rng.Next(songlist.Count)];
             await ServerLibrary.Play(choice);
+            VERYSECRETHIGHSECURITYINTERGERTHATYOUDIDNTWANTTOKNOWORIWILLSUEYOUFUCKINGREVERSEENGINEERSTUPIDFUCKINGNERDCOUNTER++;
         }
 
         private void Looping_Click(object sender, RoutedEventArgs e)
@@ -273,7 +285,7 @@ namespace Floatly
 
                 // Load playlist panel
                 await ServerLibrary.GetPlaylist();
-                if(SubPanel_PlaylistSongs.Visibility == Visibility.Collapsed)
+                if (SubPanel_PlaylistSongs.Visibility == Visibility.Collapsed)
                 {
                     Btn_BackPlaylist.Visibility = Visibility.Collapsed;
                     SP_BackPlaylist.Visibility = Visibility.Collapsed;
@@ -294,7 +306,7 @@ namespace Floatly
             }
             else if (btn.Name == "NavExit")
             {
-                Close_Click(null,null);
+                Close_Click(null, null);
             }
 
         }
@@ -360,7 +372,7 @@ namespace Floatly
                 if (grid != except)
                     grid.Visibility = Visibility.Collapsed;
                 else
-                    grid.Visibility = Visibility.Visible; 
+                    grid.Visibility = Visibility.Visible;
             }
         }
         public void OpenArtistPage(Artist artist)
@@ -379,7 +391,7 @@ namespace Floatly
             if (!fw.IsVisible)
             {
                 fw.Show();
-                fw.FullScreenWindow_Loaded(null,null);
+                fw.FullScreenWindow_Loaded(null, null);
             }
             else
             {
@@ -420,7 +432,7 @@ namespace Floatly
         #region Player Controls
         private void FullScreen_Click(object sender, RoutedEventArgs e)
         {
-            if(fsw == null)
+            if (fsw == null)
             {
                 fsw = new FullScreenWindow
                 {
@@ -437,7 +449,7 @@ namespace Floatly
         }
         private void Equalizer_Click(object sender, RoutedEventArgs e)
         {
-            if(ew == null)
+            if (ew == null)
             {
                 ew = new EqualizerWindow
                 {
@@ -479,7 +491,7 @@ namespace Floatly
         private async void Button_AddToPlaylist_Click(object sender, RoutedEventArgs e)
         {
             var crs = StaticBinding.CurrentSong;
-            if(crs == null)
+            if (crs == null)
                 return;
             await ApiPlaylist.AddPlaylistSongs(1, crs.Id); // TODO make playlist selection
             Notification.ShowNotification($"Added {crs.Title} to playlist");
@@ -487,14 +499,14 @@ namespace Floatly
         private async void Button_AddLikeToPlaylist_Click(object sender, RoutedEventArgs e)
         {
             var crs = StaticBinding.CurrentSong;
-            if(crs == null)
+            if (crs == null)
                 return;
             await ApiPlaylist.AddLikePlaylistSongs(crs.Id);
             Notification.ShowNotification($"Added {crs.Title} to playlist");
         }
         private async void Button_Next_Click(object sender, RoutedEventArgs e)
         {
-            Player_MediaEnded(null,null);
+            Player_MediaEnded(null, null);
         }
         private async void Button_Prev_Click(object sender, RoutedEventArgs e)
         {

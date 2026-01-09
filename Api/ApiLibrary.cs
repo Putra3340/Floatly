@@ -101,7 +101,14 @@ namespace Floatly.Api
             string result = await response.Content.ReadAsStringAsync();
             return result;
         }
-
+        public static async Task<Song> GetAdsStream()
+        {
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/ads");
+            var response = await client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            string result = await response.Content.ReadAsStringAsync();
+            return new Song { Id = result};
+        }
         //public static async Task<Artist> GetArtist(int artistid)
         //{
         //    var request = new HttpRequestMessage(HttpMethod.Get, _serverurl + "/api/library/v2/artist/" + artistid);

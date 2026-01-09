@@ -32,8 +32,10 @@ namespace Floatly.Api
             }
             using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             string token = doc.RootElement.GetProperty("token").GetString();
+            bool premium = doc.RootElement.GetProperty("premium").GetBoolean();
             Prefs.LoginToken = token;
             Prefs.LoginUsername = email;
+            Prefs.isPremium = premium;
             MessageBox.Show("Login successful");
             UserData.SaveLoginData(await response.Content.ReadAsStringAsync());
         }
@@ -55,6 +57,7 @@ namespace Floatly.Api
             string token = doc.RootElement.GetProperty("token").GetString();
             Prefs.LoginToken = token;
             Prefs.LoginUsername = username;
+            Prefs.isPremium = false;
             MessageBox.Show("Registration successful");
         }
         public async static Task<bool> AutoLogin(string token)
@@ -69,8 +72,10 @@ namespace Floatly.Api
                 return false;
             using var doc = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
             string username = doc.RootElement.GetProperty("username").GetString();
+            bool premium = doc.RootElement.GetProperty("role").GetBoolean();
             Prefs.LoginToken = token;
             Prefs.LoginUsername = username;
+            Prefs.isPremium = premium;
             return true;
         }
         public async static Task VerifyEmail(string email) // Maybe Done?
