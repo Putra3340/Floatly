@@ -184,35 +184,46 @@ namespace Floatly
         }
         private void MoveWindow(WindowLocation location)
         {
-            if(location == WindowLocation.TopLeft)
+            var width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
+            var height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
+
+            if (location == WindowLocation.TopLeft)
             {
-                var width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-                var height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-                this.Left = 20;
-                this.Top = 20;
+                Animate(20, 20);
                 this.Location = WindowLocation.TopLeft;
-            }else if(location == WindowLocation.TopRight)
+            }
+            else if (location == WindowLocation.TopRight)
             {
-                var width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-                var height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-                this.Left = width - this.Width - 20;
-                this.Top = 20;
+                Animate(width - this.Width - 20, 20);
                 this.Location = WindowLocation.TopRight;
-            }else if(location == WindowLocation.BottomRight)
+            }
+            else if (location == WindowLocation.BottomRight)
             {
-                var width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-                var height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-                this.Left = width - this.Width - 20;
-                this.Top = height - this.Height - 20;
+                Animate(width - this.Width - 20, height - this.Height - 20);
                 this.Location = WindowLocation.BottomRight;
-            }else if(location == WindowLocation.BottomLeft)
+            }
+            else if (location == WindowLocation.BottomLeft)
             {
-                var width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-                var height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-                this.Left = 20;
-                this.Top = height - this.Height - 20;
+                Animate(20, height - this.Height - 20);
                 this.Location = WindowLocation.BottomLeft;
             }
+
+        }
+        void Animate(double toLeft, double toTop)
+        {
+            var duration = TimeSpan.FromMilliseconds(300);
+
+            BeginAnimation(Window.LeftProperty,
+                new DoubleAnimation(toLeft, duration)
+                {
+                    EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+                });
+
+            BeginAnimation(Window.TopProperty,
+                new DoubleAnimation(toTop, duration)
+                {
+                    EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+                });
         }
 
         // central logic
