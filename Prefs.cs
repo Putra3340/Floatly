@@ -17,9 +17,15 @@ namespace Floatly
         public static string LoginToken { get; set { 
                 if (field == value) return;
                 field = value;
+                Notification.ShowNotification("Login Sucess!");
                 LoginCompleted.TrySetResult(true);
             } } = "";
-        public static string LoginUsername = "";
+        public static string LoginUsername { get; set
+            {
+                if (field == value) return;
+                field = value;
+                MainWindow.Instance.Lbl_Username.Content = value;
+            } } = "";
         public static TaskCompletionSource<bool> LoginCompleted { get; } = new();
         public static bool isPremium { get; set; } = true; // is user premium
         public static event EventHandler OnlineModeChanged;

@@ -42,6 +42,8 @@ namespace Floatly
         DispatcherTimer slidertimer = new DispatcherTimer(); // for slider
         private DispatcherTimer _loadingTimer;
         private int _dotCount = 0;
+        public static int width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
+        public static int height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
         public FloatingWindow()
         {
             InitializeComponent();
@@ -155,38 +157,42 @@ namespace Floatly
             {
                 if(Location == WindowLocation.BottomRight)
                     MoveWindow(WindowLocation.BottomLeft);
-                if(Location == WindowLocation.TopRight)
+                else if(Location == WindowLocation.TopRight)
+                    MoveWindow(WindowLocation.TopLeft);
+                else
                     MoveWindow(WindowLocation.TopLeft);
             }
             if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.D)
             {
                 if(Location == WindowLocation.TopLeft)
                     MoveWindow(WindowLocation.TopRight);
-                if(Location == WindowLocation.BottomLeft)
+                else if(Location == WindowLocation.BottomLeft)
                     MoveWindow(WindowLocation.BottomRight);
+                else
+                    MoveWindow(WindowLocation.TopRight);
             }
             
             if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.S)
             {
                 if(Location == WindowLocation.TopLeft)
                     MoveWindow(WindowLocation.BottomLeft);
-                if(Location == WindowLocation.TopRight)
+                else if(Location == WindowLocation.TopRight)
+                    MoveWindow(WindowLocation.BottomRight);
+                else
                     MoveWindow(WindowLocation.BottomRight);
             }
             if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.W)
             {
                 if(Location == WindowLocation.BottomLeft)
                     MoveWindow(WindowLocation.TopLeft);
-                if(Location == WindowLocation.BottomRight)
+                else if(Location == WindowLocation.BottomRight)
                     MoveWindow(WindowLocation.TopRight);
+                else
+                    MoveWindow(WindowLocation.TopLeft);
             }
-            
         }
         private void MoveWindow(WindowLocation location)
         {
-            var width = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Width;
-            var height = System.Windows.Forms.Screen.PrimaryScreen.Bounds.Height;
-
             if (location == WindowLocation.TopLeft)
             {
                 Animate(20, 20);

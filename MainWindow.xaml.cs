@@ -59,6 +59,7 @@ namespace Floatly
                 {
                     try
                     {
+                        
                         Window_Login = new LoginWindow
                         {
                             Owner = this,
@@ -72,6 +73,14 @@ namespace Floatly
 
                         if (List_Song.ItemsSource == null)
                             await ServerLibrary.LoadHome();
+
+                        if (await UserData.LoadLoginData())
+                        {
+                            this.IsHitTestVisible = true;
+                            SetBlur = false;
+                            return;
+                        }
+                            
 
                         Window_Login.ShowDialog();
                         await Prefs.LoginCompleted.Task;
