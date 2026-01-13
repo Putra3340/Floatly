@@ -68,8 +68,11 @@ namespace Floatly
             {
                 btn.Content = temp;
                 btn.IsEnabled = true; // re-enable no matter what
-                if(Prefs.LoginToken.IsNotNullOrEmpty())
+                if (Prefs.LoginToken.IsNotNullOrEmpty())
+                {
+                    MainWindow.Window_Login.Close();
                     this.Close();
+                }
             }
         }
         private void ForgotPassword_MouseDown(object sender, RoutedEventArgs e)

@@ -48,6 +48,7 @@ namespace Floatly
         private DispatcherTimer _loadingTimer;
         private int _dotCount = 0;
         bool isLooping = false;
+        public static LoginWindow Window_Login = null;
         public MainWindow()
         {
             try
@@ -56,13 +57,33 @@ namespace Floatly
                 Instance = this; // set singleton instance
                 this.Loaded += async (s, e) =>
                 {
-                    await Prefs.Initialize(); // initialize prefs
-                    await Prefs.isOnline(); // check online status on load
-                    if (List_Song.ItemsSource == null)
+                    try
                     {
-                        await ServerLibrary.LoadHome();
+                        Window_Login = new LoginWindow
+                        {
+                            Owner = this,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        };
+                        this.IsHitTestVisible = false;
+                        SetBlur = true;
+
+                        await Prefs.Initialize();
+                        await Prefs.isOnline();
+
+                        if (List_Song.ItemsSource == null)
+                            await ServerLibrary.LoadHome();
+
+                        Window_Login.ShowDialog();
+                        await Prefs.LoginCompleted.Task;
+
+                        this.IsHitTestVisible = true;
+                        SetBlur = false;
                     }
-                    await Prefs.ShowLogin(); // show login if needed
+                    catch (Exception ex)
+                    {
+                        SetBlur = false;
+                        // log or show error
+                    }
                 };
                 UpdateGreeting();
                 slidertimer.Interval = TimeSpan.FromMilliseconds(100); // set it to very low if building a music player with lyrics support
@@ -628,7 +649,7 @@ namespace Floatly
             }
         }
 
-        private async void UserAction_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private async void UserAction_PreviewMouseDown(object sender, MouseButtonEventArgs e) // TODO
         {
             if (Prefs.OnlineMode)
             {
@@ -636,7 +657,6 @@ namespace Floatly
             auth:
                 Prefs.LoginToken = ""; // clear token first
                 Prefs.LoginUsername = "";
-                Prefs.isRegister = false; // reset
                 LoginWindow login = new LoginWindow
                 {
                     Owner = this, // important!
@@ -652,10 +672,6 @@ namespace Floatly
                     Radius = 20
                 };
                 login.ShowDialog();
-                if (Prefs.isRegister)
-                {
-                    register.ShowDialog();
-                }
                 if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
                 {
                     goto auth; // re-authenticate

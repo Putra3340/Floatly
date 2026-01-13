@@ -27,7 +27,7 @@ namespace Floatly
             this.Closing += (s, e) =>
             {
                 // Prevent Alt+F4 or clicking X
-                if (!Prefs.isRegister && Prefs.LoginToken.IsNullOrEmpty()) { 
+                if (Prefs.LoginToken.IsNullOrEmpty()) { 
                     e.Cancel = true;
                 }
             };
@@ -87,7 +87,12 @@ namespace Floatly
 
         private void RegisterAccount_MouseDown(object sender, RoutedEventArgs e)
         {
-            Prefs.isRegister = true; this.Close();
+            RegisterWindow registerWindow = new RegisterWindow
+            {
+                Owner = this,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            registerWindow.ShowDialog();
         }
         private void ForgotPassword_MouseDown(object sender, RoutedEventArgs e)
         {
