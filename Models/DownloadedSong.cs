@@ -1,21 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Floatly.Models.Database;
+namespace Floatly.Models;
 
 public partial class DownloadedSong
 {
     public int Id { get; set; }
 
     public string? Title { get; set; }
-
-    public string? Artist { get; set; }
-
-    public int? ArtistId { get; set; }
-
-    public string? ArtistBio { get; set; }
-
-    public string? ArtistCover { get; set; }
 
     public string? Music { get; set; }
 
@@ -25,7 +17,23 @@ public partial class DownloadedSong
 
     public string? Banner { get; set; }
 
+    public string? MoviePath { get; set; }
+
+    public string? HdmoviePath { get; set; }
+
+    public string? UploadedBy { get; set; }
+
     public string? SongLength { get; set; }
+
+    public string? PlayCount { get; set; }
+
+    public string? ArtistId { get; set; }
+
+    public string? ArtistName { get; set; }
+
+    public string? ArtistBio { get; set; }
+
+    public string? ArtistCover { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 }

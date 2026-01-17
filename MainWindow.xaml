@@ -66,6 +66,7 @@
 
         <ContextMenu x:Key="SongContextMenu" Style="{DynamicResource DarkContextMenu}">
             <MenuItem Header="Play" Click="MenuItem_Click"/>
+            <MenuItem Header="Add to Queue" Click="MenuItem_Click"/>
             <MenuItem Header="Download Song" Click="MenuItem_Click"/>
         </ContextMenu>
         <ContextMenu x:Key="SongOfflineContextMenu" Style="{DynamicResource DarkContextMenu}">
@@ -2552,7 +2553,7 @@ RenderingBias="Quality" />
                                             <ImageBrush Stretch="UniformToFill" ImageSource="{Binding NextQueueImage}"/>
                                         </Rectangle.Fill>
                                     </Rectangle>
-                                    <TextBlock Text="{Binding NextQueueTitle}" Height="80" Width="Auto" Grid.Row="4" FontSize="24" Foreground="{DynamicResource PrimaryText}" Margin="45,40,0,0"/>
+                                    <TextBlock Text="{Binding NextQueueTitle}" Height="80" Grid.Row="4" FontSize="24" Foreground="{DynamicResource PrimaryText}" TextAlignment="Center" TextWrapping="Wrap" FontWeight="Bold"/>
                                 </Grid>
                             </StackPanel>
                         </ScrollViewer>

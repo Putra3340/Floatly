@@ -16,6 +16,7 @@ namespace Floatly.Models.Form
                 FullScreenWindow.Instance?.ReloadWindow();
                 FloatingWindow.Instance?.ReloadWindow();
                 MainWindow.Instance.CollapsePlayerCard_Manual(true); // show
+                QueueManager.WriteHistory(value);
             }
         } = null; // null if nothing is playing also means plc is collapsed
 

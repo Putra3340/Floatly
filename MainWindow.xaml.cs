@@ -1,6 +1,6 @@
 ﻿using Floatly.Api;
 using Floatly.Forms;
-using Floatly.Models.Database;
+using Floatly.Models;
 using Floatly.Models.Form;
 using Floatly.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -152,6 +152,10 @@ namespace Floatly
                 VERYSECRETHIGHSECURITYINTERGERTHATYOUDIDNTWANTTOKNOWORIWILLSUEYOUFUCKINGREVERSEENGINEERSTUPIDFUCKINGNERDCOUNTER = 0;
                 var adssong = await ApiLibrary.GetAdsStream();
                 songlist.Add(adssong);
+            }else if (await QueueManager.IsThereNextSong())
+            {
+                var song = await QueueManager.GetNextSong();
+                songlist.Add(song);
             }
             else
             {
@@ -798,30 +802,25 @@ namespace Floatly
             }
 
         }
+        private async Task UpdateQueue()
+        {
+            if (await QueueManager.IsThereNextSong())
+            {
+                var nextqueueexisting = await QueueManager.PeekNextSong();
+                StaticBinding.CurrentSong.NextQueueTitle = nextqueueexisting?.Title;
+                StaticBinding.CurrentSong.NextQueueImage = nextqueueexisting?.Cover;
+            }
+        }
+
         private async void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (sender is MenuItem mi && mi.DataContext is Song song)
             {
                 if (mi.Header.ToString() == "Add to Queue")
                 {
-                    // TODO
-                    //var artist = await Api.ApiLibrary.GetArtist(int.Parse(song.ArtistId));
-                    //var queue = new Queue
-                    //{
-                    //    Title = song.Title,
-                    //    Artist = song.ArtistName,
-                    //    Music = song.Music,
-                    //    Lyrics = song.Lyrics,
-                    //    Cover = song.Cover,
-                    //    Banner = song.Banner,
-                    //    SongLength = song.SongLength,
-                    //    ArtistBio = artist.Bio,
-                    //    ArtistCover = artist.CoverUrl,
-                    //    CreatedAt = DateTime.Now,
-                    //    Status = (int)QueueManager.QueueStatus.Next,
-                    //};
-                    //await db.Queue.AddAsync(queue);
-                    //await db.SaveChangesAsync();
+                    QueueManager.AddToQueue(song);
+                    await Task.Delay(1000);
+                    await UpdateQueue();
                     Notification.ShowNotification($"{song.Title} is added to queue");
                 }
                 else if (mi.Header.ToString() == "Play Next")

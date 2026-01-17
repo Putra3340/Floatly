@@ -1,4 +1,4 @@
-﻿using Floatly.Models.Database;
+﻿using Floatly.Models;
 using Floatly.Utils;
 using Microsoft.EntityFrameworkCore;
 using StringExt;
@@ -72,7 +72,7 @@ namespace Floatly
 
             // Server library initialization
             ServerLibrary.Initialize();
-
+            QueueManager.ClearNext();
             // start notification worker
             _ = Notification.BackgroundNotificationWorker(); 
         }

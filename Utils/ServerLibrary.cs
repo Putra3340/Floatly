@@ -1,6 +1,6 @@
 ﻿using Floatly.Api;
 using Floatly.Forms;
-using Floatly.Models.Database;
+using Floatly.Models;
 using Floatly.Models.Form;
 using Floatly.Utils;
 using Microsoft.EntityFrameworkCore;
@@ -18,7 +18,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using Queue = Floatly.Models.Database.Queue;
 
 namespace Floatly.Utils
 {
@@ -141,10 +140,15 @@ namespace Floatly.Utils
                 StaticBinding.LyricList.Clear();
                 StaticBinding.LyricLanguages.Clear();
                 StaticBinding.CurrentSong = await ApiLibrary.Play(onlinesong.Id);
+
+                if(await QueueManager.IsThereNextSong())
+                {
+                    var nextqueueexisting = await QueueManager.PeekNextSong();
+                    StaticBinding.CurrentSong.NextQueueTitle = nextqueueexisting?.Title;
+                    StaticBinding.CurrentSong.NextQueueImage = nextqueueexisting?.Cover;
+                }
                 // Get the music binary URL
                 MusicPlayer.Play();
-                await AddCurrentToQueue(StaticBinding.CurrentSong);
-
             }
             else if (song is DownloadedSong offlinesong)
             {
@@ -154,12 +158,9 @@ namespace Floatly.Utils
                     Banner = offlinesong.Banner,
                     Music = offlinesong.Music,
                     Title = offlinesong.Title,
-                    ArtistName = offlinesong.Artist,
                     Lyrics = offlinesong.Lyrics
                 };
                 MusicPlayer.Play();
-                await AddCurrentToQueue(StaticBinding.CurrentSong);
-
             }
             FullScreenWindow.Instance?.StopLoading();
             FloatingWindow.Instance?.StopLoading();
@@ -194,40 +195,30 @@ namespace Floatly.Utils
             await File.WriteAllBytesAsync(bannerPath, bannerData);
 
 
-            var Downloaded = new DownloadedSong
-            {
-                Artist = song.ArtistName,
-                Title = song.Title,
-                Music = filePath,
-                Lyrics = lyricPath,
-                Cover = coverPath,
-                Banner = bannerPath,
-                CreatedAt = DateTime.Now,
-            };
-
-            await db.DownloadedSong.AddAsync(Downloaded);
+            //await db.DownloadedSong.AddAsync(Downloaded);
             await db.SaveChangesAsync();
         }
 
-        public static async Task AddCurrentToQueue(Song onlinesong = null,QueueManager.QueueStatus status = QueueManager.QueueStatus.Current)
-        {
-            if (onlinesong == null)
-                return;
-            await QueueManager.AddSongToQueue(new Queue
-            {
-                Title = onlinesong.Title,
-                Artist = onlinesong.ArtistName,
-                Music = onlinesong.Music,
-                Lyrics = onlinesong.Lyrics,
-                Cover = onlinesong.Cover,
-                Banner = onlinesong.Banner,
-                SongLength = onlinesong.SongLength,
-                ArtistBio = onlinesong.ArtistBio,
-                ArtistCover = onlinesong.ArtistCover,
-                CreatedAt = DateTime.Now,
-                Status = (int)status
-            });
-        }
+        //public static async Task AddCurrentToQueue(Song onlinesong = null,QueueManager.QueueStatus status = QueueManager.QueueStatus.Current)
+        //{
+        //    if (onlinesong == null)
+        //        return;
+            //    return;
+            //await QueueManager.AddSongToQueue(new Queue
+            //{
+            //    Title = onlinesong.Title,
+            //    Artist = onlinesong.ArtistName,
+            //    Music = onlinesong.Music,
+            //    Lyrics = onlinesong.Lyrics,
+            //    Cover = onlinesong.Cover,
+            //    Banner = onlinesong.Banner,
+            //    SongLength = onlinesong.SongLength,
+            //    ArtistBio = onlinesong.ArtistBio,
+            //    ArtistCover = onlinesong.ArtistCover,
+            //    CreatedAt = DateTime.Now,
+            //    Status = (int)status
+            //});
+        //}
 
         public static async Task GetLyrics(string id)
         {
