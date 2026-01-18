@@ -654,7 +654,6 @@ namespace Floatly
 
             lastnavbtn = NavOffline; // set last button to this button
             Lbl_Username.Content = "Offline";
-            Lbl_LogoutOnline.Content = "Go Online";
             // Load downloaded panel
             if (List_DownloadedSong.ItemsSource == null)
             {
@@ -662,66 +661,6 @@ namespace Floatly
             }
         }
 
-        private async void UserAction_PreviewMouseDown(object sender, MouseButtonEventArgs e) // TODO
-        {
-            if (Prefs.OnlineMode)
-            {
-            // Re Auth
-            auth:
-                Prefs.LoginToken = ""; // clear token first
-                Prefs.LoginUsername = "";
-                LoginWindow login = new LoginWindow
-                {
-                    Owner = this, // important!
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                RegisterWindow register = new RegisterWindow
-                {
-                    Owner = this, // important!
-                    WindowStartupLocation = WindowStartupLocation.CenterOwner
-                };
-                this.Effect = new System.Windows.Media.Effects.BlurEffect()
-                {
-                    Radius = 20
-                };
-                login.ShowDialog();
-                if (Prefs.LoginToken.IsNullOrEmpty()) // if user not authenticated
-                {
-                    goto auth; // re-authenticate
-                }
-                Lbl_Username.Content = Prefs.LoginUsername == "" ? "Anonymous" : Prefs.LoginUsername;
-                this.Effect = null;
-                if (Prefs.LoginToken != "")
-                {
-                    Notification.ShowNotification("Login successful");
-                }
-            }
-            else
-            {
-                if (!await Prefs.isOnline())
-                {
-                    Notification.ShowNotification("Still offline, check your connection");
-                    return;
-                }
-                Prefs.OnlineMode = true;
-                // goto online mode
-                Style_ChangeButtonBackground(NavHome, "AccentIndigo"); // highlight this button
-                Style_ChangeButtonBackground(lastnavbtn); // clear previous button
-
-                PanelHome.Visibility = Visibility.Visible;
-                PanelOnline.Visibility = Visibility.Collapsed;
-                PanelDownloaded.Visibility = Visibility.Collapsed;
-
-                lastnavbtn = NavHome; // set last button to this button
-                Lbl_Username.Content = "Anonymous";
-                Lbl_LogoutOnline.Content = "Logout";
-                // Load downloaded panel
-                if (List_Song.ItemsSource == null)
-                {
-                    await ServerLibrary.LoadHome();
-                }
-            }
-        }
         #endregion
 
         #region Global Content Click Events
@@ -956,6 +895,14 @@ namespace Floatly
         private async void Btn_Search_Click(object sender, RoutedEventArgs e)
         {
             await ServerLibrary.SearchAsync(Tbx_Search.Text);
+        }
+
+        private async void Tbx_Search_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                await ServerLibrary.SearchAsync(Tbx_Search.Text);
+            }
         }
         #endregion
 

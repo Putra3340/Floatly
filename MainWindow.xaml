@@ -99,14 +99,13 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <!-- Title in the center/left -->
-                    <Border Width="20" Height="20" Background="{DynamicResource PrimaryText}" Margin="5,0,5,0" VerticalAlignment="Center" IsHitTestVisible="False">
+                    <Border Width="20" Height="20" Background="{DynamicResource PrimaryText}" Margin="25,0,5,0" VerticalAlignment="Center" IsHitTestVisible="False" Grid.Column="1">
                         <Border.OpacityMask>
                             <ImageBrush ImageSource="/Assets/Images/icon-user.png"/>
                         </Border.OpacityMask>
                     </Border>
-                    <Label x:Name="Lbl_Username" Content="Username6969" Foreground="{DynamicResource SecondaryText}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Grid.Column="1" FontFamily="/Assets/Fonts/Geist/#Geist"/>
-                    <Label x:Name="Lbl_LogoutOnline" Content="Logout" Foreground="{DynamicResource PrimaryText}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" Grid.Column="2" FontFamily="/Assets/Fonts/Geist/#Geist" PreviewMouseDown="UserAction_PreviewMouseDown"/>
-                    <Label Content="Floatly" Foreground="{DynamicResource SecondaryText}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Grid.Column="3"/>
+                    <Label x:Name="Lbl_Username" Content="Username6969" Foreground="{DynamicResource SecondaryText}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="18" Grid.Column="2" FontFamily="/Assets/Fonts/Geist/#Geist"/>
+                    <Label Content="Floatly " Foreground="{DynamicResource SecondaryText}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="18" Grid.Column="3"/>
                     <!--  HOLY SHI, I CAN MANIPULATE IT LIKE INPUT PLACEHOLDER  -->
                     <!-- Minimize button at the right -->
                     <Button Content="" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="Minimize_Click" Grid.Column="4">
@@ -1241,7 +1240,8 @@ VerticalAlignment="Center"/>
                         <!-- Use plain numbers for Width (no 'px') -->
                         <TextBox Grid.Column="0"
            Style="{StaticResource SearchTextBoxStyle}"
-           x:Name="Tbx_Search"/>
+           x:Name="Tbx_Search"
+                                 KeyDown="Tbx_Search_KeyDown"/>
 
                         <Button Grid.Column="1"
           Style="{StaticResource SearchButtonStyle}"

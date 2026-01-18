@@ -64,6 +64,18 @@ public static class QueueManager
         db.Queue.RemoveRange(nextSongs);
         await db.SaveChangesAsync();
     }
+    public static async Task<Floatly.Models.Form.Song?> PeekNextSong()
+    {
+        using var db = CreateDb();
+
+        var song = await db.Queue
+            .AsNoTracking()
+            .Where(q => q.Status == (int)QueueStatus.Next)
+            .OrderBy(q => q.Id)
+            .FirstOrDefaultAsync();
+
+        return song == null ? null : MapQueueToSong(song);
+    }
 
     public static async Task<Floatly.Models.Form.Song?> GetNextSong()
     {

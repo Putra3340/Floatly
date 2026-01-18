@@ -73,6 +73,8 @@ namespace Floatly
             // Server library initialization
             ServerLibrary.Initialize();
             QueueManager.ClearNext();
+
+
             // start notification worker
             _ = Notification.BackgroundNotificationWorker(); 
         }
@@ -81,14 +83,12 @@ namespace Floatly
         {
             var http = new System.Net.Http.HttpClient
             {
-                Timeout = TimeSpan.FromSeconds(3) // shorter timeout
+                Timeout = TimeSpan.FromSeconds(10) // shorter timeout
             };
-
             try
             {
-                var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
                 var res = await http.GetAsync(Prefs.ServerUrl + "/api/info", cts.Token);
-
                 if (res.IsSuccessStatusCode)
                 {
                     return true;
@@ -101,7 +101,6 @@ namespace Floatly
             catch (TaskCanceledException)
             {
                 return false;
-
             }
             catch
             {

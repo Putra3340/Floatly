@@ -141,7 +141,7 @@ namespace Floatly.Utils
                 StaticBinding.LyricLanguages.Clear();
                 StaticBinding.CurrentSong = await ApiLibrary.Play(onlinesong.Id);
 
-                if(await QueueManager.IsThereNextSong())
+                if (await QueueManager.IsThereNextSong())
                 {
                     var nextqueueexisting = await QueueManager.PeekNextSong();
                     StaticBinding.CurrentSong.NextQueueTitle = nextqueueexisting?.Title;
@@ -149,6 +149,14 @@ namespace Floatly.Utils
                 }
                 // Get the music binary URL
                 MusicPlayer.Play();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (StaticBinding.CurrentSong.Id == "MPywGQPLJPo") // just for fun
+                        MainWindow.Instance.PlayerHost.Visibility = Visibility.Visible;
+                    else
+                        MainWindow.Instance.PlayerHost.Visibility = Visibility.Hidden;
+
+                });
             }
             else if (song is DownloadedSong offlinesong)
             {
@@ -165,7 +173,6 @@ namespace Floatly.Utils
             FullScreenWindow.Instance?.StopLoading();
             FloatingWindow.Instance?.StopLoading();
             MainWindow.Instance?.StopLoading();
-
         }
         public static async Task DownloadSong(string id)
         {
@@ -177,6 +184,7 @@ namespace Floatly.Utils
             {
                 Directory.CreateDirectory(downloadFolder);
             }
+
             var httpClient = new HttpClient();
             var musicData = await httpClient.GetByteArrayAsync(song.Music);
             var filePath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(musicData)}.mp3");
@@ -193,9 +201,23 @@ namespace Floatly.Utils
             var bannerData = await httpClient.GetByteArrayAsync(song.Banner);
             var bannerPath = System.IO.Path.Combine(downloadFolder, $"{HashHelper.GetMd5Hash(bannerData)}_banner.png");
             await File.WriteAllBytesAsync(bannerPath, bannerData);
+            var Downloaded = new DownloadedSong
+            {
+                Title = song.Title,
+                Music = filePath,
+                Lyrics = lyricPath,
+                Cover = coverPath,
+                Banner = bannerPath,
+                ArtistName = song.ArtistName,
+                ArtistCover = song.ArtistCover,
+                ArtistBio = song.ArtistBio,
+                SongLength = song.SongLength,
+                UploadedBy = song.UploadedBy,
+                PlayCount = song.PlayCount,
+                CreatedAt = DateTime.Now
+            };
 
-
-            //await db.DownloadedSong.AddAsync(Downloaded);
+            await db.DownloadedSong.AddAsync(Downloaded);
             await db.SaveChangesAsync();
         }
 
@@ -203,21 +225,21 @@ namespace Floatly.Utils
         //{
         //    if (onlinesong == null)
         //        return;
-            //    return;
-            //await QueueManager.AddSongToQueue(new Queue
-            //{
-            //    Title = onlinesong.Title,
-            //    Artist = onlinesong.ArtistName,
-            //    Music = onlinesong.Music,
-            //    Lyrics = onlinesong.Lyrics,
-            //    Cover = onlinesong.Cover,
-            //    Banner = onlinesong.Banner,
-            //    SongLength = onlinesong.SongLength,
-            //    ArtistBio = onlinesong.ArtistBio,
-            //    ArtistCover = onlinesong.ArtistCover,
-            //    CreatedAt = DateTime.Now,
-            //    Status = (int)status
-            //});
+        //    return;
+        //await QueueManager.AddSongToQueue(new Queue
+        //{
+        //    Title = onlinesong.Title,
+        //    Artist = onlinesong.ArtistName,
+        //    Music = onlinesong.Music,
+        //    Lyrics = onlinesong.Lyrics,
+        //    Cover = onlinesong.Cover,
+        //    Banner = onlinesong.Banner,
+        //    SongLength = onlinesong.SongLength,
+        //    ArtistBio = onlinesong.ArtistBio,
+        //    ArtistCover = onlinesong.ArtistCover,
+        //    CreatedAt = DateTime.Now,
+        //    Status = (int)status
+        //});
         //}
 
         public static async Task GetLyrics(string id)
@@ -233,10 +255,12 @@ namespace Floatly.Utils
             });
         }
 
-        public static async Task GetPlaylist(){
-            
+        public static async Task GetPlaylist()
+        {
+
             var playlists = await ApiPlaylist.GetPlaylist();
-            Application.Current.Dispatcher.Invoke(() => {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
                 StaticBinding.Playlists.Clear();
                 foreach (var playlist in playlists)
                 {
@@ -251,7 +275,8 @@ namespace Floatly.Utils
             if (playlist is not PlaylistModel pl)
                 return;
             var playlists = await ApiPlaylist.GetPlaylistSongs(pl.Id);
-            Application.Current.Dispatcher.Invoke(() => {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
                 StaticBinding.PlaylistSong.Clear();
                 CurrentPlaylistId = pl.Id;
                 foreach (var playlist in playlists.Songs)
