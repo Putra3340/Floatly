@@ -51,5 +51,14 @@ namespace Floatly.Utils
                 return false;
             return await ApiAuth.AutoLogin(token);
         }
+        public static async Task LoadAppConfiguration()
+        {
+
+        }
+
+        public class ConfigurationModel
+        {
+            public string ServerUrl { get; set; }
+        }
     }
 }

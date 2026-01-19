@@ -498,7 +498,23 @@ namespace Floatly
                 ew.Focus();
             }
         }
-
+        private void Settings_Click(object sender, RoutedEventArgs e)
+        {
+            if (cw == null)
+            {
+                cw = new ConfigurationWindow
+                {
+                    Owner = this,
+                    WindowStartupLocation = WindowStartupLocation.CenterOwner
+                };
+                cw.Closed += (s, args) => { cw = null; }; // reset instance on close
+                cw.ShowDialog();
+            }
+            else
+            {
+                cw.Focus();
+            }
+        }
         // Play/Pause Toggle
         private void Button_PlayPause_Click(object sender, RoutedEventArgs e)
         {

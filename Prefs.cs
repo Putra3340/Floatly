@@ -1,4 +1,5 @@
 ﻿using Floatly.Models;
+using Floatly.Models.Form;
 using Floatly.Utils;
 using Microsoft.EntityFrameworkCore;
 using StringExt;
@@ -14,6 +15,9 @@ namespace Floatly
 {
     public static class Prefs // Using for settings and preferences
     {
+        public static List<ServerListModel> ServerList = new List<ServerListModel> 
+        { new ServerListModel { Id=0, Name = "Floatly Production",Url = "https://floatly.starhost.web.id" },
+            new ServerListModel { Id=1, Name = "Local 5183", Url = "http://localhost:5183"} };
         public static string LoginToken { get; set { 
                 if (field == value) return;
                 field = value;

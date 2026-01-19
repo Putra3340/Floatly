@@ -127,4 +127,10 @@ namespace Floatly.Models.Form
         public List<Album> Albums { get; set; }
         public List<Artist> Artists { get; set; }
     }
+    public class ServerListModel
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Url { get; set; } = string.Empty;
+    }
 }

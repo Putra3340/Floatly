@@ -23,6 +23,12 @@ namespace Floatly
         public ConfigurationWindow()
         {
             InitializeComponent();
+            ServerComboBox.ItemsSource = null;
+            ServerComboBox.ItemsSource = Prefs.ServerList;
+            ServerComboBox.DisplayMemberPath = "Name";
+
+            var selectedserver = Prefs.ServerList.FirstOrDefault(x => x.Url == Prefs.ServerUrl);
+            ServerComboBox.SelectedItem = selectedserver;
         }
 
         private void SaveSettings_Click(object sender, RoutedEventArgs e)
@@ -32,11 +38,6 @@ namespace Floatly
 
         private async void PingServer_Click(object sender, RoutedEventArgs e)
         {
-            var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, $"https://{TextBox_Server.Text}/api/info");
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            Label_ServerDesc.Text = await response.Content.ReadAsStringAsync();
         }
     }
 }

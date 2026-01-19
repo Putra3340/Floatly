@@ -116,7 +116,83 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        
+
+        <Style x:Key="DarkComboBoxStyle" TargetType="ComboBox">
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="Background" Value="#1E1E1E"/>
+            <Setter Property="BorderBrush" Value="#333"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="#EEFFFFFF"/>
+                        <Setter Property="Padding" Value="10"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" Value="#AA7C3AED"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <!-- Clickable header -->
+                            <ToggleButton
+                    x:Name="ToggleButton"
+                    IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+                    Background="{TemplateBinding Background}"
+                    BorderThickness="0">
+
+                                <Border
+                        Background="Transparent">
+                                    <ContentPresenter
+    Content="{TemplateBinding SelectionBoxItem}"
+    ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
+    ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
+    HorizontalAlignment="Left"
+    VerticalAlignment="Center"
+    TextElement.Foreground="{TemplateBinding Foreground}"/>
+
+
+
+                                </Border>
+                            </ToggleButton>
+
+                            <!-- Dropdown -->
+                            <Popup
+    x:Name="PART_Popup"
+    IsOpen="{TemplateBinding IsDropDownOpen}"
+    Placement="Bottom"
+    Focusable="False"
+    PopupAnimation="Fade"
+    PlacementTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+
+                                <Border
+        Background="#20183A"
+        CornerRadius="18"
+        Padding="6"
+        Width="{Binding PlacementTarget.ActualWidth, RelativeSource={RelativeSource AncestorType=Popup}}">
+
+                                    <ScrollViewer MaxHeight="400">
+                                        <ItemsPresenter/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+
     </Application.Resources>
 
 </Application>
