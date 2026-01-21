@@ -34,6 +34,15 @@ namespace Floatly.Models.Form
         public DateTime CreatedAt { get => field; set { field = value; OnPropertyChanged(); } }
         public string? NextQueueImage { get; set { field = value; OnPropertyChanged(); } } = "/Assets/Images/default.png";
         public string? NextQueueTitle { get; set { field = value; OnPropertyChanged(); } } = "Next Up Title";
+        public bool IsLiked
+        {
+            get; set
+            {
+                field = value;
+                OnPropertyChanged();
+                MainWindow.Instance.UpdateLikeButtonUI(value);
+            }
+        } = false;
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = "") => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }

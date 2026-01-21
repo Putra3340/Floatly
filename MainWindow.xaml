@@ -72,6 +72,9 @@
         <ContextMenu x:Key="SongOfflineContextMenu" Style="{DynamicResource DarkContextMenu}">
             <MenuItem Header="Delete Song" Click="MenuItem_Click"/>
         </ContextMenu>
+        <ContextMenu x:Key="ProfileContextMenu" Style="{DynamicResource DarkContextMenu}">
+            <MenuItem Header="Logout" Click="MenuItem_Click"/>
+        </ContextMenu>
     </Window.Resources>
     <Grid>
         <Grid x:Name="PlayerHost" Visibility="Hidden">
@@ -99,7 +102,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <!-- Title in the center/left -->
-                    <Border Width="20" Height="20" Background="{DynamicResource PrimaryText}" Margin="25,0,5,0" VerticalAlignment="Center" IsHitTestVisible="False" Grid.Column="1">
+                    <Border Width="20" Height="20" Background="{DynamicResource PrimaryText}" Margin="25,0,5,0" VerticalAlignment="Center" Grid.Column="1" MouseLeftButtonDown="User_MouseLeftButtonDown">
                         <Border.OpacityMask>
                             <ImageBrush ImageSource="/Assets/Images/icon-user.png"/>
                         </Border.OpacityMask>
@@ -2414,7 +2417,12 @@ Margin="0,0,10,0"/>
                                                 </Button>
                                                 <Border Background="White" Width="20" Height="20" Grid.Column="6" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False">
                                                     <Border.OpacityMask>
-                                                        <ImageBrush x:Name="Icon_Liked" ImageSource="/Assets/Images/icon-love-blank.png"/>
+                                                        <ImageBrush ImageSource="/Assets/Images/icon-love-blank.png"/>
+                                                    </Border.OpacityMask>
+                                                </Border>
+                                                <Border Background="White" Width="20" Height="20" Grid.Column="6" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" x:Name="Icon_Liked" Visibility="Hidden">
+                                                    <Border.OpacityMask>
+                                                        <ImageBrush ImageSource="/Assets/Images/icon-love.png"/>
                                                     </Border.OpacityMask>
                                                 </Border>
                                             </Grid>

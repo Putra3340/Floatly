@@ -25,6 +25,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static System.Windows.Forms.AxHost;
 namespace Floatly
 {
     /// <summary>
@@ -548,11 +549,32 @@ namespace Floatly
         }
         private async void Button_AddLikeToPlaylist_Click(object sender, RoutedEventArgs e)
         {
-            var crs = StaticBinding.CurrentSong;
-            if (crs == null)
-                return;
-            await ApiPlaylist.AddLikePlaylistSongs(crs.Id);
-            Notification.ShowNotification($"Added {crs.Title} to playlist");
+            if(sender is Button btn)
+            {
+                btn.IsEnabled = false; // prevent spam click
+                if (!StaticBinding.CurrentSong.IsLiked)
+                {
+                    StaticBinding.CurrentSong.IsLiked = true;
+                    await ApiPlaylist.AddLikePlaylistSongs(StaticBinding.CurrentSong.Id);
+                }
+                else
+                {
+                    StaticBinding.CurrentSong.IsLiked = false;
+                    await ApiPlaylist.RemoveLikePlaylistSongs(StaticBinding.CurrentSong.Id);
+                }
+                btn.IsEnabled = true; // prevent spam click
+            }
+        }
+        public void UpdateLikeButtonUI(bool state)
+        {
+            if (state)
+            {
+                Icon_Liked.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Icon_Liked.Visibility = Visibility.Hidden;
+            }
         }
         public async void Button_Next_Click(object sender, RoutedEventArgs e)
         {
@@ -858,6 +880,41 @@ namespace Floatly
                     await ServerLibrary.GetDownloadedSongs();
                 }
             }
+            if(sender is MenuItem mip)
+            {
+                if(mip.Header.ToString() == "Logout")
+                {
+
+                    try
+                    {
+                        Window_Login = new LoginWindow
+                        {
+                            Owner = this,
+                            WindowStartupLocation = WindowStartupLocation.CenterOwner
+                        };
+                        this.IsHitTestVisible = false;
+                        SetBlur = true;
+
+                        await Prefs.Initialize();
+                        await Prefs.isOnline();
+
+                        if (List_Song.ItemsSource == null)
+                            await ServerLibrary.LoadHome();
+
+                        Prefs.LoginToken = "";
+
+                        Window_Login.ShowDialog();
+                        await Prefs.LoginCompleted.Task;
+
+                        this.IsHitTestVisible = true;
+                        SetBlur = false;
+                    }
+                    catch (Exception ex)
+                    {
+                        SetBlur = false;
+                    }
+                }
+            }
         }
         #endregion
 
@@ -997,5 +1054,16 @@ namespace Floatly
             LoadingOverlay_Search.Visibility = Visibility.Collapsed; // stop
         }
         #endregion
+
+        private async void User_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+
+            // show context menu
+            if (sender is Border)
+            {
+                ContextMenu cm = this.FindResource("ProfileContextMenu") as ContextMenu;
+                cm.IsOpen = true;
+            }
+        }
     }
 }
