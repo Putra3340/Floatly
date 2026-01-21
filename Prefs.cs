@@ -21,6 +21,8 @@ namespace Floatly
         public static string LoginToken { get; set { 
                 if (field == value) return;
                 field = value;
+                if (value == "")
+                    return;
                 Notification.ShowNotification("Login Sucess!");
                 LoginCompleted.TrySetResult(true);
             } } = "";
@@ -44,7 +46,7 @@ namespace Floatly
         } = true;
 
 #if DEBUG
-        //public static string ServerUrl { get; set; } = "https://floatly.starhost.web.id"; // production server
+        //public static string ServerUrl { get; set; } = "https://dev.starhost.web.id"; // production server
         public static string ServerUrl { get; set; } = "https://localhost:7156"; // debug server
 #elif PRODUCTION
         public static string ServerUrl { get; set; } = "https://floatly.starhost.web.id"; // production server

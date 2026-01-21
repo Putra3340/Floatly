@@ -136,7 +136,7 @@ namespace Floatly
             }
         }
 
-        private static int VERYSECRETHIGHSECURITYINTERGERTHATYOUDIDNTWANTTOKNOWORIWILLSUEYOUFUCKINGREVERSEENGINEERSTUPIDFUCKINGNERDCOUNTER = 0;
+        private static int VERY_SECRET_HIGH_SECURITY_INTERGER_THAT_YOU_DIDNT_WANT_TO_KNOW_OR_I_WILL_SUE_YOU_FUCKING_REVERSE_ENGINEER_STUPID_FUCKING_NERD_COUNTER = 0;
         private static async void Player_MediaEnded(object? sender, EventArgs e)
         {
             if (Instance == null) // aint no way
@@ -148,11 +148,26 @@ namespace Floatly
             }
 
             var songlist = new List<Song>();
-            if (VERYSECRETHIGHSECURITYINTERGERTHATYOUDIDNTWANTTOKNOWORIWILLSUEYOUFUCKINGREVERSEENGINEERSTUPIDFUCKINGNERDCOUNTER >= 4)
+            if (VERY_SECRET_HIGH_SECURITY_INTERGER_THAT_YOU_DIDNT_WANT_TO_KNOW_OR_I_WILL_SUE_YOU_FUCKING_REVERSE_ENGINEER_STUPID_FUCKING_NERD_COUNTER >= 4)
             {
-                VERYSECRETHIGHSECURITYINTERGERTHATYOUDIDNTWANTTOKNOWORIWILLSUEYOUFUCKINGREVERSEENGINEERSTUPIDFUCKINGNERDCOUNTER = 0;
+                VERY_SECRET_HIGH_SECURITY_INTERGER_THAT_YOU_DIDNT_WANT_TO_KNOW_OR_I_WILL_SUE_YOU_FUCKING_REVERSE_ENGINEER_STUPID_FUCKING_NERD_COUNTER = 0;
+                if (Prefs.isPremium)
+                {
+                    if (StaticBinding.HomeSong?.Count > 0)
+                        songlist.AddRange(StaticBinding.HomeSong);
+                    if (StaticBinding.HomeSongEx?.Count > 0)
+                        songlist.AddRange(StaticBinding.HomeSongEx);
+                    if (StaticBinding.SearchSong?.Count > 0)
+                        songlist.AddRange(StaticBinding.SearchSong);
+                    if (StaticBinding.PlaylistSong?.Count > 0)
+                        songlist.AddRange(StaticBinding.PlaylistSong);
+
+                    if (songlist.Count == 0)
+                        return; // nothing to play, silence is graceful too 
+                }
                 var adssong = await ApiLibrary.GetAdsStream();
-                songlist.Add(adssong);
+                    songlist.Add(adssong);
+                    
             }else if (await QueueManager.IsThereNextSong())
             {
                 var song = await QueueManager.GetNextSong();
@@ -160,7 +175,7 @@ namespace Floatly
             }
             else
             {
-                // Random Id
+            // Random Id
                 if (StaticBinding.HomeSong?.Count > 0)
                     songlist.AddRange(StaticBinding.HomeSong);
                 if (StaticBinding.HomeSongEx?.Count > 0)
@@ -178,7 +193,7 @@ namespace Floatly
             // roll the dice
             var choice = songlist[_rng.Next(songlist.Count)];
             await ServerLibrary.Play(choice);
-            VERYSECRETHIGHSECURITYINTERGERTHATYOUDIDNTWANTTOKNOWORIWILLSUEYOUFUCKINGREVERSEENGINEERSTUPIDFUCKINGNERDCOUNTER++;
+            VERY_SECRET_HIGH_SECURITY_INTERGER_THAT_YOU_DIDNT_WANT_TO_KNOW_OR_I_WILL_SUE_YOU_FUCKING_REVERSE_ENGINEER_STUPID_FUCKING_NERD_COUNTER++;
         }
 
         private void Looping_Click(object sender, RoutedEventArgs e)
@@ -784,8 +799,8 @@ namespace Floatly
             if (await QueueManager.IsThereNextSong())
             {
                 var nextqueueexisting = await QueueManager.PeekNextSong();
-                StaticBinding.CurrentSong.NextQueueTitle = nextqueueexisting?.Title;
-                StaticBinding.CurrentSong.NextQueueImage = nextqueueexisting?.Cover;
+                StaticBinding.CurrentSong?.NextQueueTitle = nextqueueexisting?.Title;
+                StaticBinding.CurrentSong?.NextQueueImage = nextqueueexisting?.Cover;
             }
         }
 

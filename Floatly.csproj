@@ -63,6 +63,7 @@
     <None Remove="Assets\Images\icon-hd.png" />
     <None Remove="Assets\Images\icon-home.png" />
     <None Remove="Assets\Images\icon-library.png" />
+    <None Remove="Assets\Images\icon-liked-cover.png" />
     <None Remove="Assets\Images\icon-listcenter.png" />
     <None Remove="Assets\Images\icon-logo.png" />
     <None Remove="Assets\Images\icon-logout.png" />
@@ -78,6 +79,7 @@
     <None Remove="Assets\Images\icon-pip.png" />
     <None Remove="Assets\Images\icon-player.png" />
     <None Remove="Assets\Images\icon-playlist.png" />
+    <None Remove="Assets\Images\icon-plus.png" />
     <None Remove="Assets\Images\icon-prev.png" />
     <None Remove="Assets\Images\icon-refresh.png" />
     <None Remove="Assets\Images\icon-resume.png" />
@@ -151,6 +153,7 @@
     <Resource Include="Assets\Images\icon-hd.png" />
     <Resource Include="Assets\Images\icon-home.png" />
     <Resource Include="Assets\Images\icon-library.png" />
+    <Resource Include="Assets\Images\icon-liked-cover.png" />
     <Resource Include="Assets\Images\icon-listcenter.png" />
     <Resource Include="Assets\Images\icon-logo.png" />
     <Resource Include="Assets\Images\icon-logout.png" />
@@ -166,6 +169,7 @@
     <Resource Include="Assets\Images\icon-pip.png" />
     <Resource Include="Assets\Images\icon-player.png" />
     <Resource Include="Assets\Images\icon-playlist.png" />
+    <Resource Include="Assets\Images\icon-plus.png" />
     <Resource Include="Assets\Images\icon-prev.png" />
     <Resource Include="Assets\Images\icon-refresh.png" />
     <Resource Include="Assets\Images\icon-resume.png" />

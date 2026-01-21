@@ -30,7 +30,7 @@ namespace Floatly.Models.Form
         public string? ArtistId { get => field; set { field = value; OnPropertyChanged(); } }
         public string? ArtistName { get => field; set { field = value; OnPropertyChanged(); } }
         public string? ArtistBio { get => field; set { field = value; OnPropertyChanged(); } }
-        public string? ArtistCover { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? ArtistCover { get => field; set { field = value; OnPropertyChanged(); } } = "/Assets/Images/default.png";
         public DateTime CreatedAt { get => field; set { field = value; OnPropertyChanged(); } }
         public string? NextQueueImage { get; set { field = value; OnPropertyChanged(); } } = "/Assets/Images/default.png";
         public string? NextQueueTitle { get; set { field = value; OnPropertyChanged(); } } = "Next Up Title";
@@ -122,6 +122,7 @@ namespace Floatly.Models.Form
     {
         public int Id { get; set{ field = value; OnPropertyChanged(); } }
         public string? Name { get; set{field = value; OnPropertyChanged(); } }
+        public string? Cover { get; set { field = value; OnPropertyChanged(); } } = "/Assets/Images/default.png";
         public string? TotalSongs { get; set{field = value; OnPropertyChanged(); } }
         public DateTime CreatedAt { get; set{field = value; OnPropertyChanged(); } }
         public event PropertyChangedEventHandler PropertyChanged;
