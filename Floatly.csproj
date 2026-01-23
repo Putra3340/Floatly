@@ -55,9 +55,12 @@
     <None Remove="Assets\Fonts\Geist\Geist-ThinItalic.otf" />
     <None Remove="Assets\Images\default.png" />
     <None Remove="Assets\Images\icon-addplaylist.png" />
+    <None Remove="Assets\Images\icon-addqueue.png" />
     <None Remove="Assets\Images\icon-arrow-left.png" />
     <None Remove="Assets\Images\icon-close.png" />
     <None Remove="Assets\Images\icon-debug.png" />
+    <None Remove="Assets\Images\icon-delete.png" />
+    <None Remove="Assets\Images\icon-download.png" />
     <None Remove="Assets\Images\icon-equalizer.png" />
     <None Remove="Assets\Images\icon-fullscreen.png" />
     <None Remove="Assets\Images\icon-hd.png" />
@@ -145,9 +148,12 @@
     <Resource Include="Assets\Fonts\Geist\Geist-ThinItalic.otf" />
     <Resource Include="Assets\Images\default.png" />
     <Resource Include="Assets\Images\icon-addplaylist.png" />
+    <Resource Include="Assets\Images\icon-addqueue.png" />
     <Resource Include="Assets\Images\icon-arrow-left.png" />
     <Resource Include="Assets\Images\icon-close.png" />
     <Resource Include="Assets\Images\icon-debug.png" />
+    <Resource Include="Assets\Images\icon-delete.png" />
+    <Resource Include="Assets\Images\icon-download.png" />
     <Resource Include="Assets\Images\icon-equalizer.png" />
     <Resource Include="Assets\Images\icon-fullscreen.png" />
     <Resource Include="Assets\Images\icon-hd.png" />

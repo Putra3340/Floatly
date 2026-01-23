@@ -22,7 +22,7 @@
     </Window.Background>
     <Window.Resources>
         <Style TargetType="ContextMenu" x:Key="DarkContextMenu">
-            <Setter Property="Background" Value="{DynamicResource SidebarBg}"/>
+            <Setter Property="Background" Value="{DynamicResource BackgroundDark}"/>
             <Setter Property="BorderBrush" Value="{DynamicResource BackgroundMuted}"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="FontFamily" Value="Segoe UI Semibold"/>
@@ -31,33 +31,71 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ContextMenu">
-                        <Border 
-                Background="{TemplateBinding Background}" 
-                BorderBrush="{TemplateBinding BorderBrush}" 
-                BorderThickness="{TemplateBinding BorderThickness}">
-                            <StackPanel IsItemsHost="True" />
+                        <Border
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    CornerRadius="8">
+                            <StackPanel IsItemsHost="True"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-
         </Style>
+
 
         <Style TargetType="MenuItem" x:Key="DarkMenuItem">
             <Setter Property="Background" Value="{DynamicResource BackgroundMuted}"/>
-            <Setter Property="Padding" Value="1"/>
-            <Setter Property="Margin" Value="2"/>
-            <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Margin" Value="2"/>
             <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
 
-            <Style.Triggers>
-                <Trigger Property="IsHighlighted" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
-                </Trigger>
-            </Style.Triggers>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border
+                    Background="{TemplateBinding Background}"
+                    CornerRadius="6">
+                            <Grid Height="36">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="36"/>
+                                    <!-- icon -->
+                                    <ColumnDefinition Width="*"/>
+                                    <!-- text -->
+                                </Grid.ColumnDefinitions>
 
+                                <!-- Icon slot -->
+                                <ContentPresenter
+                            Grid.Column="0"
+                            ContentSource="Icon"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"/>
+
+                                <!-- Header text -->
+                                <ContentPresenter
+                            Grid.Column="1"
+                            ContentSource="Header"
+                            VerticalAlignment="Center"
+                            Margin="4,0"/>
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
+
         <Style TargetType="Separator">
             <Setter Property="Background" Value="{DynamicResource BackgroundMuted}" />
             <Setter Property="Height" Value="1"/>
@@ -65,15 +103,57 @@
         </Style>
 
         <ContextMenu x:Key="SongContextMenu" Style="{DynamicResource DarkContextMenu}">
-            <MenuItem Header="Play" Click="MenuItem_Click"/>
-            <MenuItem Header="Add to Queue" Click="MenuItem_Click"/>
-            <MenuItem Header="Download Song" Click="MenuItem_Click"/>
+            <MenuItem Header="Play" Style="{DynamicResource DarkMenuItem}">
+                <MenuItem.Icon>
+                    <Border Width="32" Height="32" Background="{DynamicResource PrimaryText}">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-pause.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Header="Add to Queue" Style="{DynamicResource DarkMenuItem}">
+                <MenuItem.Icon>
+                    <Border Width="32" Height="32" Background="{DynamicResource PrimaryText}">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-addqueue.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Header="Download Song" Style="{DynamicResource DarkMenuItem}">
+                <MenuItem.Icon>
+                    <Border Width="32" Height="32" Background="{DynamicResource PrimaryText}">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-download.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                </MenuItem.Icon>
+            </MenuItem>
         </ContextMenu>
         <ContextMenu x:Key="SongOfflineContextMenu" Style="{DynamicResource DarkContextMenu}">
-            <MenuItem Header="Delete Song" Click="MenuItem_Click"/>
+            <MenuItem Header="Delete Song" Click="MenuItem_Click" Style="{DynamicResource DarkMenuItem}">
+                <MenuItem.Icon>
+                    <Border Width="32" Height="32" Background="{DynamicResource PrimaryText}">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-delete.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                </MenuItem.Icon>
+            </MenuItem>
         </ContextMenu>
         <ContextMenu x:Key="ProfileContextMenu" Style="{DynamicResource DarkContextMenu}">
-            <MenuItem Header="Logout" Click="MenuItem_Click"/>
+            <MenuItem Header="Logout" Click="MenuItem_Click" Style="{DynamicResource DarkMenuItem}">
+                <MenuItem.Icon>
+                    <Border Width="32" Height="32" Background="{DynamicResource PrimaryText}">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-logout.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                </MenuItem.Icon>
+            </MenuItem>
         </ContextMenu>
     </Window.Resources>
     <Grid>
@@ -2064,7 +2144,7 @@ VerticalAlignment="Center"/>
                                     <!-- 3-column grid -->
                                     <ListBox.ItemsPanel>
                                         <ItemsPanelTemplate>
-                                            <WrapPanel ItemWidth="180"
+                                            <WrapPanel ItemWidth="160"
                        ItemHeight="240" />
                                         </ItemsPanelTemplate>
                                     </ListBox.ItemsPanel>
@@ -2115,7 +2195,7 @@ VerticalAlignment="Center"/>
                                                         <Style.Triggers>
                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                 <Setter Property="Background"
-                                        Value="{DynamicResource AccentPurpleHover}"/>
+                                        Value="{DynamicResource AccentDeepIndigo}"/>
                                                             </Trigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -2135,7 +2215,7 @@ VerticalAlignment="Center"/>
             Foreground="White"
             FontWeight="SemiBold"
             Cursor="Hand"
-            Click="Button_AddLikeToPlaylist_Click">
+            Click="Button_AddNewPlaylist_Click">
 
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">
