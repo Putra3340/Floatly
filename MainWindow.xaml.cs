@@ -651,17 +651,15 @@ namespace Floatly
         #endregion
 
         #region Notification
-        private void ShowNotification(object sender, (string message, string resname) args)
+        private async void ShowNotification(object sender, (string message, string resname) args)
         {
             NotificationText.Text = args.message;
 
-            var resbrush = (Brush)FindResource(args.resname);
-            if (resbrush == null)
+            if (TryFindResource(args.resname) is not Brush resbrush)
                 return;
 
             NotificationPanel.Background = resbrush;
 
-            // Slide-in animation
             var slideIn = new ThicknessAnimation
             {
                 From = new Thickness(0, 0, -500, 0),
@@ -670,29 +668,19 @@ namespace Floatly
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
 
-            slideIn.Completed += async (s, e) =>
+            NotificationPanel.BeginAnimation(Border.MarginProperty, slideIn);
+
+            await Task.Delay(3000);
+
+            var slideOut = new ThicknessAnimation
             {
-                // Wait for display time (3s)
-                await Task.Delay(3000);
-
-                // Slide-out animation
-                var slideOut = new ThicknessAnimation
-                {
-                    From = new Thickness(0, 0, 0, 0),
-                    To = new Thickness(0, 0, -500, 0),
-                    Duration = TimeSpan.FromSeconds(0.5),
-                    EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
-                };
-
-                slideOut.Completed += (s2, e2) =>
-                {
-                    Notification.IsBusy = false;
-                };
-
-                NotificationPanel.BeginAnimation(Border.MarginProperty, slideOut);
+                From = new Thickness(0, 0, 0, 0),
+                To = new Thickness(0, 0, -500, 0),
+                Duration = TimeSpan.FromSeconds(0.5),
+                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
             };
 
-            NotificationPanel.BeginAnimation(Border.MarginProperty, slideIn);
+            NotificationPanel.BeginAnimation(Border.MarginProperty, slideOut);
         }
 
         #endregion

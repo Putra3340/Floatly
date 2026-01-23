@@ -1,67 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows;
 
-namespace Floatly.Utils
+public static class Notification
 {
-    public static class Notification
+    private static readonly Queue<(string message, string color)> _queue = new();
+    private static readonly SemaphoreSlim _signal = new(0);
+
+    public static event EventHandler<(string, string)> NotificationRaised;
+
+    public static void ShowNotification(string message, string color = "AccentPurple")
     {
-        private static readonly Queue<(string message, string color)> NotificationQueue = new();
-        private static readonly object _lock = new();
-        public static event EventHandler<(string, string)> NotificationRaised;
-        public static bool IsBusy = false;
-
-        public static void ShowNotification(string message, string color = "AccentPurple")
+        lock (_queue)
         {
-            lock (_lock)
-            {
-                NotificationQueue.Enqueue((message, color));
-            }
+            _queue.Enqueue((message, color));
         }
-
-        public static async Task BackgroundNotificationWorker(CancellationToken token = default)
-        {
-            while (!token.IsCancellationRequested)
-            {
-                (string message, string color) item;
-
-                lock (_lock)
-                {
-                    if (NotificationQueue.Count == 0)
-                    {
-                        item = (null, null);
-                    }
-                    else
-                    {
-                        item = NotificationQueue.Dequeue();
-                    }
-                }
-
-                if (item.message == null)
-                {
-                    await Task.Delay(200, token); // idle wait
-                    continue;
-                }
-
-                // wait for current notification to finish
-                while (Volatile.Read(ref IsBusy))
-                    await Task.Delay(100, token);
-
-                IsBusy = true;
-                try
-                {
-                    NotificationRaised?.Invoke(null, item);
-                }
-                finally
-                {
-                    // UI should reset IsBusy = false when animation ends
-                }
-
-                await Task.Delay(100, token); // slight delay before next
-            }
-        }
+        _signal.Release();
     }
 
+    public static async Task BackgroundNotificationWorker(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
+        {
+            await _signal.WaitAsync(token);
+
+            (string msg, string color) item;
+            lock (_queue)
+            {
+                item = _queue.Dequeue();
+            }
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                NotificationRaised?.Invoke(null, item);
+            });
+            await Task.Delay(4000);
+        }
+    }
 }

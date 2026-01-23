@@ -44,6 +44,7 @@ namespace Floatly
                 OnlineModeChanged?.Invoke(null, null);
             }
         } = true;
+        private static readonly CancellationTokenSource _notificationCts = new();
 
 #if DEBUG
         //public static string ServerUrl { get; set; } = "https://dev.starhost.web.id"; // production server
@@ -82,7 +83,8 @@ namespace Floatly
 
 
             // start notification worker
-            _ = Notification.BackgroundNotificationWorker(); 
+            _ = Notification.BackgroundNotificationWorker(_notificationCts.Token);
+
         }
 
         public static async Task<bool> isOnline()
