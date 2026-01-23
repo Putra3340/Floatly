@@ -124,6 +124,7 @@ namespace Floatly.Models.Form
         public string? Name { get; set{field = value; OnPropertyChanged(); } }
         public string? Cover { get; set { field = value; OnPropertyChanged(); } } = "/Assets/Images/default.png";
         public string? TotalSongs { get; set{field = value; OnPropertyChanged(); } }
+        public bool IsSpecial { get; set{field = value; OnPropertyChanged(); } } = false;
         public DateTime CreatedAt { get; set{field = value; OnPropertyChanged(); } }
         public event PropertyChangedEventHandler PropertyChanged;
         void OnPropertyChanged([CallerMemberName] string n = "")

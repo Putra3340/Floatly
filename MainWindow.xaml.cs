@@ -3,6 +3,7 @@ using Floatly.Forms;
 using Floatly.Models;
 using Floatly.Models.Form;
 using Floatly.Utils;
+using LibVLCSharp.Shared;
 using Microsoft.EntityFrameworkCore;
 using StringExt;
 using System;
@@ -25,6 +26,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.AxHost;
 namespace Floatly
 {
@@ -761,18 +763,11 @@ namespace Floatly
             if (e.ChangedButton == MouseButton.Right)
             {
                 // TODO
-                if (sender is Button btn && btn.DataContext is Song song)
+                if (sender is Button btn && btn.DataContext is PlaylistModel pm)
                 {
-                    ContextMenu cm = this.FindResource("SongContextMenu") as ContextMenu;
-                    cm.DataContext = song; // set the context menu data context to the song
+                    ContextMenu cm = this.FindResource("PlaylistContextMenu") as ContextMenu;
+                    cm.DataContext = pm; // set the context menu data context to the song
                     cm.PlacementTarget = btn; // set the placement target to the button
-                    cm.IsOpen = true;
-                }
-                else if (sender is Button btnn && btnn.DataContext is DownloadedSong offlinesong)
-                {
-                    ContextMenu cm = this.FindResource("SongOfflineContextMenu") as ContextMenu;
-                    cm.DataContext = offlinesong;
-                    cm.PlacementTarget = btnn;
                     cm.IsOpen = true;
                 }
                 return;
@@ -895,7 +890,44 @@ namespace Floatly
                     await ServerLibrary.GetDownloadedSongs();
                 }
             }
-            if(sender is MenuItem mip)
+            if (sender is MenuItem miplay && miplay.DataContext is PlaylistModel pm)
+            {
+                if (miplay.Header.ToString() == "Delete Playlist")
+                {
+                    if (pm.IsSpecial)
+                    {
+                        Notification.ShowNotification("You can't do this");
+                        return;
+                    }
+                    await ApiPlaylist.DeletePlaylist(pm.Id);
+                    await ServerLibrary.GetPlaylist();
+
+                }else if(miplay.Header.ToString() == "Edit Playlist")
+                {
+                    if (pm.IsSpecial)
+                    {
+                        Notification.ShowNotification("You can't do this");
+                        return;
+                    }
+                    this.IsHitTestVisible = false;
+                    SetBlur = true;
+                    var win = new UniversalInputWindow("Rename Playlist to...") { Owner = this };
+                    win.ShowDialog();
+                    string newName = win.Result;
+                    if(newName == null)
+                    {
+                        await ServerLibrary.GetPlaylist();
+                        SetBlur = false;
+                        this.IsHitTestVisible = true;
+                        return;
+                    }
+                    await ApiPlaylist.EditPlaylist(pm.Id, newName);
+                    await ServerLibrary.GetPlaylist();
+                    SetBlur = false;
+                    this.IsHitTestVisible = true;
+                }
+            }
+            if (sender is MenuItem mip)
             {
                 if(mip.Header.ToString() == "Logout")
                 {
@@ -930,6 +962,7 @@ namespace Floatly
                     }
                 }
             }
+            
         }
         #endregion
 

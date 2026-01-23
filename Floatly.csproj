@@ -61,6 +61,7 @@
     <None Remove="Assets\Images\icon-debug.png" />
     <None Remove="Assets\Images\icon-delete.png" />
     <None Remove="Assets\Images\icon-download.png" />
+    <None Remove="Assets\Images\icon-edit.png" />
     <None Remove="Assets\Images\icon-equalizer.png" />
     <None Remove="Assets\Images\icon-fullscreen.png" />
     <None Remove="Assets\Images\icon-hd.png" />
@@ -154,6 +155,7 @@
     <Resource Include="Assets\Images\icon-debug.png" />
     <Resource Include="Assets\Images\icon-delete.png" />
     <Resource Include="Assets\Images\icon-download.png" />
+    <Resource Include="Assets\Images\icon-edit.png" />
     <Resource Include="Assets\Images\icon-equalizer.png" />
     <Resource Include="Assets\Images\icon-fullscreen.png" />
     <Resource Include="Assets\Images\icon-hd.png" />

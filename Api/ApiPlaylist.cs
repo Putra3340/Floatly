@@ -68,6 +68,35 @@ namespace Floatly.Api
                 throw new Exception(await response.Content.ReadAsStringAsync());
             }
         }
+        public async static Task DeletePlaylist(int plId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{Prefs.ServerUrl}/api/playlist/delete");
+            var collection = new List<KeyValuePair<string, string>>();
+            collection.Add(new("token", Prefs.LoginToken));
+            collection.Add(new("playlistId", plId.ToString()));
+            var content = new FormUrlEncodedContent(collection);
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new Exception(await response.Content.ReadAsStringAsync());
+            }
+        }
+        public async static Task EditPlaylist(int plId,string name)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{Prefs.ServerUrl}/api/playlist/edit");
+            var collection = new List<KeyValuePair<string, string>>();
+            collection.Add(new("token", Prefs.LoginToken));
+            collection.Add(new("playlistId", plId.ToString()));
+            collection.Add(new("name", name));
+            var content = new FormUrlEncodedContent(collection);
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new Exception(await response.Content.ReadAsStringAsync());
+            }
+        }
         public async static Task AddPlaylistSongs(int plId, string songId)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, $"{Prefs.ServerUrl}/api/playlist/addsong");
