@@ -174,6 +174,8 @@ namespace Floatly.Utils
             FloatingWindow.Instance?.StopLoading();
             MainWindow.Instance?.StopLoading();
         }
+
+        // 25 January 2026 - This method is busted but fuck it they wont check
         public static async Task DownloadSong(string id)
         {
             var song = await Api.ApiLibrary.Play(id);

@@ -1,15 +1,18 @@
 ﻿using Floatly.Models;
 using Floatly.Models.Form;
 using Floatly.Utils;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using StringExt;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 
 namespace Floatly
 {
@@ -45,10 +48,12 @@ namespace Floatly
             }
         } = true;
         private static readonly CancellationTokenSource _notificationCts = new();
+        public static HubConnection connection;
 
 #if DEBUG
         //public static string ServerUrl { get; set; } = "https://dev.starhost.web.id"; // production server
-        public static string ServerUrl { get; set; } = "https://localhost:7156"; // debug server
+        public static string ServerUrl { get; set; } = "https://floatly.starhost.web.id"; // production server
+        //public static string ServerUrl { get; set; } = "https://localhost:7156"; // debug server
 #elif PRODUCTION
         public static string ServerUrl { get; set; } = "https://floatly.starhost.web.id"; // production server
 #else
@@ -85,6 +90,29 @@ namespace Floatly
             // start notification worker
             _ = Notification.BackgroundNotificationWorker(_notificationCts.Token);
 
+            if(Prefs.isPremium)
+                await ConnectAsync();
+        }
+        public static async Task ConnectAsync()
+        {
+            try
+            {
+
+            connection = new HubConnectionBuilder()
+                .WithUrl($"{ServerUrl}/statusHub")
+                .WithAutomaticReconnect()
+                .Build();
+
+            connection.On<string>("StatusUpdate", msg =>
+            {
+                Debug.WriteLine(msg);
+            });
+
+            await connection.StartAsync();
+            }catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
         }
 
         public static async Task<bool> isOnline()

@@ -4,6 +4,7 @@ using Floatly.Models;
 using Floatly.Models.Form;
 using Floatly.Utils;
 using LibVLCSharp.Shared;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.EntityFrameworkCore;
 using StringExt;
 using System;
@@ -27,6 +28,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Windows.Media.Playlists;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.AxHost;
 namespace Floatly
@@ -1144,6 +1146,17 @@ namespace Floatly
                 btn.IsHitTestVisible = false;
                 await ApiPlaylist.CreateNewPlaylist();
                 await ServerLibrary.GetPlaylist();
+                btn.IsHitTestVisible = true;
+            }
+        }
+
+        private async void Button_ImportPlaylist_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn)
+            {
+                btn.IsHitTestVisible = false;
+                var req = new ImportPlaylistRequest { Token = Prefs.LoginToken, Url = "https://www.youtube.com/playlist?list=PLiIogb_tPYBADmc699vIWZuKRvd-aBspY" };
+                await Prefs.connection.InvokeAsync("StartImportPlaylistJob", req);
                 btn.IsHitTestVisible = true;
             }
         }
