@@ -26,6 +26,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Windows.Media.Playlists;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static System.Windows.Forms.AxHost;
 namespace Floatly
@@ -561,9 +562,38 @@ namespace Floatly
             var crs = StaticBinding.CurrentSong;
             if (crs == null)
                 return;
-            await ApiPlaylist.AddPlaylistSongs(1, crs.Id); // TODO make playlist selection
-            Notification.ShowNotification($"Added {crs.Title} to playlist");
+
+            if (sender is not FrameworkElement fe)
+                return;
+
+            var menu = new ContextMenu
+            {
+                Style = (Style)FindResource("DarkContextMenu"),
+                PlacementTarget = fe
+            };
+
+            if(StaticBinding.Playlists.Count == 0)
+            {
+                await ServerLibrary.GetPlaylist();
+            }
+            foreach (var x in StaticBinding.Playlists.Where(x=>!x.IsSpecial))
+            {
+                var item = new MenuItem
+                {
+                    Header = x.Name,
+                    Style = (Style)FindResource("DarkSimpleMenuItem"),
+                    DataContext = x,
+                };
+
+                item.Click += MenuItem_Click;
+                menu.Items.Add(item);
+            }
+
+
+            fe.ContextMenu = menu;
+            menu.IsOpen = true;
         }
+
         private async void Button_AddLikeToPlaylist_Click(object sender, RoutedEventArgs e)
         {
             if(sender is Button btn)
@@ -793,7 +823,7 @@ namespace Floatly
             {
                 if (mi.Header.ToString() == "Add to Queue")
                 {
-                    QueueManager.AddToQueue(song);
+                    await QueueManager.AddToQueue(song);
                     await Task.Delay(1000);
                     await UpdateQueue();
                     Notification.ShowNotification($"{song.Title} is added to queue");
@@ -913,6 +943,11 @@ namespace Floatly
                     await ServerLibrary.GetPlaylist();
                     SetBlur = false;
                     this.IsHitTestVisible = true;
+                }
+                else
+                {
+                    await ApiPlaylist.AddPlaylistSongs(pm.Id,StaticBinding.CurrentSong.Id);
+                    await ServerLibrary.GetPlaylistSongs(pm);
                 }
             }
             if (sender is MenuItem mip)

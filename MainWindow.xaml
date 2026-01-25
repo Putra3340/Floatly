@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Floatly"
         xmlns:local2="clr-namespace:Floatly.Forms.LoadingAnimation"
+        xmlns:model="clr-namespace:Floatly.Models.Form"
         
         mc:Ignorable="d"
         Title="Floatly" Height="720" Width="1280" Closed="Window_Closed"
@@ -80,6 +81,49 @@
                             ContentSource="Header"
                             VerticalAlignment="Center"
                             Margin="4,0"/>
+                            </Grid>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsHighlighted" Value="True">
+                                <Setter Property="Background" Value="{DynamicResource AccentPurpleHover}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Opacity" Value="0.5"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style TargetType="MenuItem" x:Key="DarkSimpleMenuItem">
+            <Setter Property="Background" Value="{DynamicResource BackgroundMuted}"/>
+            <Setter Property="Foreground" Value="{DynamicResource PrimaryText}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="8,6"/>
+            <Setter Property="Margin" Value="2"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="OverridesDefaultStyle" Value="True"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="MenuItem">
+                        <Border
+             Background="{TemplateBinding Background}"
+             CornerRadius="6">
+                            <Grid Height="36">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100"/>
+                                    <!-- text -->
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Header text -->
+                                <ContentPresenter
+                     Grid.Column="1"
+                     ContentSource="Header"
+                     VerticalAlignment="Center"
+                                    HorizontalAlignment="Center"
+                     Margin="4,0"/>
                             </Grid>
                         </Border>
 
