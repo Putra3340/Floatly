@@ -154,7 +154,7 @@ PreviewMouseUp="Slider_Progress_PreviewMouseUp">
                     <StackPanel>
 
                         <TextBlock
-                            Text="Keybinds"
+                            Text="Floating UI Keybinds"
                             FontSize="18"
                             FontWeight="SemiBold"
                             Foreground="#EAEAEA"
@@ -175,32 +175,36 @@ PreviewMouseUp="Slider_Progress_PreviewMouseUp">
                                 <RowDefinition Height="36"/>
                                 <RowDefinition Height="36"/>
                                 <RowDefinition Height="36"/>
+                                <RowDefinition Height="36"/>
                             </Grid.RowDefinitions>
 
                             <!-- Keybind rows -->
                             <TextBlock Grid.Row="0" Text="Play / Pause" Foreground="#CCCCCC" VerticalAlignment="Center"/>
                             <TextBlock Grid.Row="0" Grid.Column="1" Text="CTRL + LSHIFT + SPACE" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
-                            <TextBlock Grid.Row="1" Text="Next Track" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="CTRL + LSHIFT + X" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Row="1" Text="Move Direction" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="CTRL + LSHIFT + W/A/S/D" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            
+                            <TextBlock Grid.Row="2" Text="Move Forward 5 Sec" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="CTRL + LSHIFT + Right Arrow" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            
+                            <TextBlock Grid.Row="3" Text="Move Forward 5 Sec" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="CTRL + LSHIFT + Left Arrow" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            
+                            <TextBlock Grid.Row="4" Text="Volume Up" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="CTRL + LSHIFT + Plus" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
-                            <TextBlock Grid.Row="2" Text="Previous Track" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="CTRL + LSHIFT + Z" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Row="5" Text="Volume Down" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="CTRL + LSHIFT + Minus" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
-                            <TextBlock Grid.Row="3" Text="Volume Up" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="CTRL + LSHIFT + Plus" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Row="6" Text="Mute" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="6" Grid.Column="1" Text="CTRL + LSHIFT + M" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
-                            <TextBlock Grid.Row="4" Text="Volume Down" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="CTRL + LSHIFT + Minus" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Row="7" Text="Move UI" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="7" Grid.Column="1" Text="Hold CTRL" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
-                            <TextBlock Grid.Row="5" Text="Mute" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="CTRL + LSHIFT + M" Foreground="#FFFFFF" FontWeight="SemiBold"/>
-
-                            <TextBlock Grid.Row="6" Text="Toggle UI" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="6" Grid.Column="1" Text="F7" Foreground="#FFFFFF" FontWeight="SemiBold"/>
-
-                            <TextBlock Grid.Row="7" Text="Open Settings" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="7" Grid.Column="1" Text="F8" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Row="8" Text="Transparent UI" Foreground="#CCCCCC" VerticalAlignment="Center"/>
+                            <TextBlock Grid.Row="8" Grid.Column="1" Text="Hold Alt" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
                         </Grid>
 

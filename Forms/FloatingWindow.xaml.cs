@@ -185,6 +185,13 @@ namespace Floatly
                 {
                     StopLoading();
                 }
+                if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.Space)
+                {
+                    if (MusicPlayer.isPaused)
+                        MusicPlayer.Resume();
+                    else
+                        MusicPlayer.Pause();
+                }
                 if (e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.A)
                 {
                     if(Location == WindowLocation.TopRight)
@@ -230,7 +237,30 @@ namespace Floatly
                     else if (Location == WindowLocation.BottomLeft)
                         MoveWindow(WindowLocation.TopLeft);
                 }
-            } catch (Exception ex)
+                if (e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.Right)
+                {
+                    MusicPlayer.Player.Position = MusicPlayer.Player.Position.Add(TimeSpan.FromSeconds(5));
+                }
+                if (e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.Left)
+                {
+                    MusicPlayer.Player.Position = MusicPlayer.Player.Position.Subtract(TimeSpan.FromSeconds(5));
+                }
+                if (e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.Oemplus)
+                {
+                    MusicPlayer.SetVolume(MusicPlayer.Player.Volume + 0.1);
+                }
+                if (e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.OemMinus)
+                {
+                    MusicPlayer.SetVolume(MusicPlayer.Player.Volume - 0.1);
+                }
+                if (e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.M)
+                {
+                    MusicPlayer.SetVolume(0);
+                }
+
+
+            }
+            catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
             }
