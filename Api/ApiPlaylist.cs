@@ -112,6 +112,21 @@ namespace Floatly.Api
                 throw new Exception(await response.Content.ReadAsStringAsync());
             }
         }
+        public async static Task RemovePlaylistSongs(string songId,int plId)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{Prefs.ServerUrl}/api/playlist/removesong");
+            var collection = new List<KeyValuePair<string, string>>();
+            collection.Add(new("token", Prefs.LoginToken));
+            collection.Add(new("playlistId", plId.ToString()));
+            collection.Add(new("songId", songId));
+            var content = new FormUrlEncodedContent(collection);
+            request.Content = content;
+            var response = await client.SendAsync(request);
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new Exception(await response.Content.ReadAsStringAsync());
+            }
+        }
         public async static Task AddLikePlaylistSongs(string songId)
         {
             var request = new HttpRequestMessage(HttpMethod.Post, $"{Prefs.ServerUrl}/api/playlist/addlikesong");

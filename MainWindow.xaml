@@ -177,6 +177,46 @@
                 </MenuItem.Icon>
             </MenuItem>
         </ContextMenu>
+        <ContextMenu x:Key="PlaylistSongContextMenu" Style="{DynamicResource DarkContextMenu}"  DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+            <MenuItem Header="Play" Style="{DynamicResource DarkMenuItem}" Click="MenuItem_Click">
+                <MenuItem.Icon>
+                    <Border Width="32" Height="32" Background="{DynamicResource PrimaryText}">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-pause.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Header="Add to Queue" Style="{DynamicResource DarkMenuItem}" Click="MenuItem_Click">
+                <MenuItem.Icon>
+                    <Border Width="32" Height="32" Background="{DynamicResource PrimaryText}">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-addqueue.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                </MenuItem.Icon>
+            </MenuItem>
+
+            <MenuItem Header="Download Song" Click="MenuItem_Click" Style="{DynamicResource DarkMenuItem}">
+                <MenuItem.Icon>
+                    <Border Width="32" Height="32" Background="{DynamicResource PrimaryText}">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-download.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                </MenuItem.Icon>
+            </MenuItem>
+            <MenuItem Header="Remove From Playlist" Click="MenuItem_Click" Style="{DynamicResource DarkMenuItem}">
+                <MenuItem.Icon>
+                    <Border Width="32" Height="32" Background="{DynamicResource PrimaryText}">
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Assets/Images/icon-delete.png"/>
+                        </Border.OpacityMask>
+                    </Border>
+                </MenuItem.Icon>
+            </MenuItem>
+        </ContextMenu>
         <ContextMenu x:Key="SongOfflineContextMenu" Style="{DynamicResource DarkContextMenu}">
             <MenuItem Header="Delete Song" Click="MenuItem_Click" Style="{DynamicResource DarkMenuItem}">
                 <MenuItem.Icon>

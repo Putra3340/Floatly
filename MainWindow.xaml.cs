@@ -283,6 +283,7 @@ namespace Floatly
 
         #region Navigation
         Button lastnavbtn = null; // we use this to make navigate is dynamic
+        private bool IsOnPlaylist = false;
         private async void Nav_Click(object sender, RoutedEventArgs e) // put it on one single function to reduce redundancy  
         {
             if (!Prefs.OnlineMode)
@@ -302,6 +303,7 @@ namespace Floatly
                 Style_ChangeButtonBackground(lastnavbtn); // clear previous button
                 CollapseGridExcept(PanelHome);
                 lastnavbtn = btn; // set last button to this button
+                IsOnPlaylist = false;
             }
             else if (btn.Name == "NavSearch")
             {
@@ -309,6 +311,7 @@ namespace Floatly
                 Style_ChangeButtonBackground(lastnavbtn); // clear previous button
                 CollapseGridExcept(PanelOnline);
                 lastnavbtn = btn; // set last button to this button
+                IsOnPlaylist = false;
                 // Load search panel
                 if (List_ArtistSearch.ItemsSource == null && List_AlbumSearch.ItemsSource == null && List_SongSearch.ItemsSource == null)
                 {
@@ -321,6 +324,7 @@ namespace Floatly
                 Style_ChangeButtonBackground(lastnavbtn); // clear previous button
                 CollapseGridExcept(PanelDownloaded);
                 lastnavbtn = btn; // set last button to this button
+                IsOnPlaylist = false;
                 // Load downloaded panel
                 await ServerLibrary.GetDownloadedSongs();
             }
@@ -330,6 +334,7 @@ namespace Floatly
                 Style_ChangeButtonBackground(lastnavbtn); // clear previous button
                 CollapseGridExcept(PanelQueue);
                 lastnavbtn = btn; // set last button to this button
+                IsOnPlaylist = false;
                 // Load queue panel
                 //await ServerLibrary.GetQueueSong();
             }
@@ -339,6 +344,7 @@ namespace Floatly
                 Style_ChangeButtonBackground(lastnavbtn); // clear previous button
                 CollapseGridExcept(PanelPlaylist);
                 lastnavbtn = btn; // set last button to this button
+                IsOnPlaylist = true;
 
                 // Load playlist panel
                 await ServerLibrary.GetPlaylist();
@@ -355,14 +361,17 @@ namespace Floatly
             }
             else if (btn.Name == "NavSettings")
             {
+                IsOnPlaylist = false;
 
             }
             else if (btn.Name == "NavDebug")
             {
+                IsOnPlaylist = false;
 
             }
             else if (btn.Name == "NavExit")
             {
+                IsOnPlaylist = false;
                 Close_Click(null, null);
             }
 
@@ -746,7 +755,14 @@ namespace Floatly
             if (e.ChangedButton == MouseButton.Right)
             {
                 // show context menu
-                if (sender is Button btn && btn.DataContext is Song song)
+                if (sender is Button btnnn && btnnn.DataContext is Song sip && IsOnPlaylist)
+                {
+                    ContextMenu cm = this.FindResource("PlaylistSongContextMenu") as ContextMenu;
+                    cm.DataContext = sip; // set the context menu data context to the song
+                    cm.PlacementTarget = btnnn; // set the placement target to the button
+                    cm.IsOpen = true;
+                }
+                else if (sender is Button btn && btn.DataContext is Song song)
                 {
                     ContextMenu cm = this.FindResource("SongContextMenu") as ContextMenu;
                     cm.DataContext = song; // set the context menu data context to the song
@@ -759,8 +775,8 @@ namespace Floatly
                     cm.DataContext = offlinesong;
                     cm.PlacementTarget = btnn;
                     cm.IsOpen = true;
-                }
-                return;
+                }else 
+                    return;
             }
             else if (e.ChangedButton == MouseButton.Left)
             {
@@ -774,6 +790,28 @@ namespace Floatly
                         ((ImageBrush)Icon_PlayPause.OpacityMask).ImageSource = new BitmapImage(new Uri("pack://application:,,,/Assets/Images/icon-resume.png"));
                         List_Song.IsHitTestVisible = true;
                         List_SongSearch.IsHitTestVisible = true;
+
+                        if (IsOnPlaylist)
+                        {
+                            var currentSong = btnonline.DataContext as Song;
+                            if (currentSong == null) return;
+
+                            var index = StaticBinding.PlaylistSong
+                                .Select((song, i) => new { song, i })
+                                .Where(x => x.song.Id == currentSong.Id)
+                                .Select(x => x.i)
+                                .FirstOrDefault(-1);
+
+                            if (index < 0) return;
+
+                            await QueueManager.ClearNext();
+
+                            foreach (var song in StaticBinding.PlaylistSong.Skip(index + 1))
+                            {
+                                await QueueManager.AddToQueue(song);
+                            }
+                        }
+
                     }
                     return;
                 }
@@ -867,7 +905,12 @@ namespace Floatly
                     await ServerLibrary.DownloadSong(song.Id);
                     Notification.ShowNotification($"Downloaded {song.ArtistName}-{song.Title}");
                 }
-
+                else if (mi.Header.ToString() == "Remove From Playlist")
+                {
+                    await ApiPlaylist.RemovePlaylistSongs(song.Id, ServerLibrary.CurrentPlaylistId);
+                    await Task.Delay(2000);
+                    await ServerLibrary.GetPlaylistSongs(StaticBinding.Playlists.FirstOrDefault(x=>x.Id == ServerLibrary.CurrentPlaylistId));
+                }
             }
             else if (sender is MenuItem miof && miof.DataContext is DownloadedSong offlinesong)
             {
