@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/BAB_III_Desain_Perancangan_Sistem.md
+/SoftwareReport.md
+/Use_Case.md
