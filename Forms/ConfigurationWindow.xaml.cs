@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Floatly.Models.Form;
+using Floatly.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -23,12 +25,12 @@ namespace Floatly
         public ConfigurationWindow()
         {
             InitializeComponent();
-            ServerComboBox.ItemsSource = null;
-            ServerComboBox.ItemsSource = Prefs.ServerList;
-            ServerComboBox.DisplayMemberPath = "Name";
 
-            var selectedserver = Prefs.ServerList.FirstOrDefault(x => x.Url == Prefs.ServerUrl);
-            ServerComboBox.SelectedItem = selectedserver;
+            MusicPlayer.UpdateOutputDevice();
+            ServerComboBox.ItemsSource = null;
+            ServerComboBox.ItemsSource = StaticBinding.AudioDevices;
+            ServerComboBox.DisplayMemberPath = "DeviceName";
+
         }
 
         private void SaveSettings_Click(object sender, RoutedEventArgs e)
@@ -38,6 +40,14 @@ namespace Floatly
 
         private async void PingServer_Click(object sender, RoutedEventArgs e)
         {
+        }
+
+        private void ServerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ServerComboBox.SelectedItem != null && ServerComboBox.SelectedItem is AudioDeviceModel adm)
+            {
+                MusicPlayer.SetDefaultAudioDevice(adm.DeviceID);
+            }
         }
     }
 }

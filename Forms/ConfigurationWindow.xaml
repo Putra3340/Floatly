@@ -41,15 +41,15 @@
                 <!-- Server Selection -->
                 <StackPanel Margin="0,0,0,20">
                     <TextBlock
-                        Text="Server"
+                        Text="Output Devices"
                         Foreground="#AAAAAA"
                         Margin="0,0,0,6"/>
 
                     <ComboBox
     x:Name="ServerComboBox"
     Style="{StaticResource DarkComboBoxStyle}"
-                        DisplayMemberPath="Name"
-                        SelectedValuePath="Name">
+                        DisplayMemberPath="DeviceName"
+                        SelectedValuePath="DeviceName" SelectionChanged="ServerComboBox_SelectionChanged">
                     </ComboBox>
 
                 </StackPanel>

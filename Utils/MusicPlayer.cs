@@ -1,6 +1,9 @@
 ﻿using Floatly.Api;
 using Floatly.Models.Form;
+using NAudio.CoreAudioApi;
+using NAudio.CoreAudioApi.Interfaces;
 using System;
+using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Numerics;
@@ -150,7 +153,31 @@ namespace Floatly.Utils
 
         public static void Stop() => Player.Stop();
 
-        public static void SetVolume(double volume) => Player.Volume = volume;
+        public static void SetVolume(double volume) => Player?.Volume = volume;
+
+        public static void UpdateOutputDevice()
+        {
+            StaticBinding.AudioDevices.Clear();
+            var enumerator = new MMDeviceEnumerator();
+            var devices = enumerator.EnumerateAudioEndPoints(DataFlow.Render, DeviceState.Active);
+
+            foreach (var device in devices)
+            {
+                StaticBinding.AudioDevices.Add(new AudioDeviceModel
+                {
+                    DeviceID = device.ID,
+                    DeviceName = device.FriendlyName
+                });
+            }
+        }
+        public static void SetDefaultAudioDevice(string deviceId)
+        {
+            var policy = (IPolicyConfig)new PolicyConfigClient();
+
+            policy.SetDefaultEndpoint(deviceId, ERole.eMultimedia);
+            policy.SetDefaultEndpoint(deviceId, ERole.eConsole);
+        }
+
         #endregion
     }
 }

@@ -53,5 +53,6 @@ namespace Floatly.Models.Form
         // Lyrics Combobox
         public static ObservableCollection<LyricLanguageModel> LyricLanguages = new();
 
+        public static ObservableCollection<AudioDeviceModel> AudioDevices = new();
     }
 }

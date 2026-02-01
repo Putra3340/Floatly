@@ -150,4 +150,9 @@ namespace Floatly.Models.Form
         public string Token { get; set; } = string.Empty;
         public string Url { get; set; } = string.Empty;
     }
+    public class AudioDeviceModel
+    {
+        public string DeviceID { get; set; } = string.Empty;
+        public string DeviceName { get; set; } = string.Empty;
+    }
 }
