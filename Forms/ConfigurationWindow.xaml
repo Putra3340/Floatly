@@ -51,9 +51,98 @@
                         DisplayMemberPath="DeviceName"
                         SelectedValuePath="DeviceName" SelectionChanged="ServerComboBox_SelectionChanged">
                     </ComboBox>
-
+                    
                 </StackPanel>
+                <StackPanel Margin="0,0,0,20">
+                    <TextBlock
+                        Text="Output Volume"
+                        Foreground="#AAAAAA"
+                        Margin="0,0,0,6"/>
+                    <Slider x:Name="Slider_Progress"
+HorizontalAlignment="Stretch"
+VerticalAlignment="Center"
+Height="16"
+Margin="0,1,0,5"
+Minimum="0"
+Maximum="100"
+ValueChanged="Slider_Progress_ValueChanged"
+PreviewMouseDown="Slider_Progress_PreviewMouseDown"
+PreviewMouseUp="Slider_Progress_PreviewMouseUp">
 
+                        <Slider.Resources>
+                            <!-- Thumb: circular -->
+                            <Style TargetType="Thumb">
+                                <Setter Property="Width" Value="14"/>
+                                <Setter Property="Height" Value="14"/>
+                                <Setter Property="Margin" Value="0,-4,0,0"/>
+                                <!-- move up a bit more -->
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Thumb">
+                                            <Ellipse Fill="Black"
+                 Stroke="#6366F1"
+                 StrokeThickness="2"/>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+
+
+                            <!-- Slider: flat track -->
+                            <Style TargetType="Slider">
+                                <Setter Property="Foreground" Value="#6366F1"/>
+                                <!-- progress bar color -->
+                                <Setter Property="Background" Value="#1F2238"/>
+                                <Setter Property="Margin" Value="0,-18,0,5"/>
+
+                                <!-- background bar color -->
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Slider">
+                                            <Grid>
+                                                <Track x:Name="PART_Track"
+                           Height="8"
+                           VerticalAlignment="Center">
+                                                    <!-- progress (left) -->
+                                                    <Track.DecreaseRepeatButton>
+                                                        <RepeatButton Background="{TemplateBinding Foreground}"
+                                          BorderThickness="0">
+                                                            <RepeatButton.Template>
+                                                                <ControlTemplate TargetType="RepeatButton">
+                                                                    <Border Background="{TemplateBinding Background}"
+                                                Height="6"
+                                                VerticalAlignment="Center"/>
+                                                                </ControlTemplate>
+                                                            </RepeatButton.Template>
+                                                        </RepeatButton>
+                                                    </Track.DecreaseRepeatButton>
+                                                    <!-- background (right) -->
+                                                    <Track.IncreaseRepeatButton>
+                                                        <RepeatButton Background="{TemplateBinding Background}"
+                                          BorderThickness="0">
+                                                            <RepeatButton.Template>
+                                                                <ControlTemplate TargetType="RepeatButton">
+                                                                    <Border Background="{TemplateBinding Background}"
+                                                Height="6"
+                                                VerticalAlignment="Center"/>
+                                                                </ControlTemplate>
+                                                            </RepeatButton.Template>
+                                                        </RepeatButton>
+                                                    </Track.IncreaseRepeatButton>
+                                                    <!-- thumb -->
+                                                    <Track.Thumb>
+                                                        <Thumb/>
+                                                    </Track.Thumb>
+                                                </Track>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Slider.Resources>
+                    </Slider>
+                </StackPanel>
+               
                 <!-- Keybind Section -->
                 <Border
                     Background="#1A1A1A"
@@ -90,22 +179,22 @@
 
                             <!-- Keybind rows -->
                             <TextBlock Grid.Row="0" Text="Play / Pause" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="0" Grid.Column="1" Text="F1" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Row="0" Grid.Column="1" Text="CTRL + LSHIFT + SPACE" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
                             <TextBlock Grid.Row="1" Text="Next Track" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="1" Grid.Column="1" Text="F2" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Row="1" Grid.Column="1" Text="CTRL + LSHIFT + X" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
                             <TextBlock Grid.Row="2" Text="Previous Track" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="2" Grid.Column="1" Text="F3" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Row="2" Grid.Column="1" Text="CTRL + LSHIFT + Z" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
                             <TextBlock Grid.Row="3" Text="Volume Up" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="3" Grid.Column="1" Text="F4" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Row="3" Grid.Column="1" Text="CTRL + LSHIFT + Plus" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
                             <TextBlock Grid.Row="4" Text="Volume Down" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="4" Grid.Column="1" Text="F5" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Row="4" Grid.Column="1" Text="CTRL + LSHIFT + Minus" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
                             <TextBlock Grid.Row="5" Text="Mute" Foreground="#CCCCCC" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Row="5" Grid.Column="1" Text="F6" Foreground="#FFFFFF" FontWeight="SemiBold"/>
+                            <TextBlock Grid.Row="5" Grid.Column="1" Text="CTRL + LSHIFT + M" Foreground="#FFFFFF" FontWeight="SemiBold"/>
 
                             <TextBlock Grid.Row="6" Text="Toggle UI" Foreground="#CCCCCC" VerticalAlignment="Center"/>
                             <TextBlock Grid.Row="6" Grid.Column="1" Text="F7" Foreground="#FFFFFF" FontWeight="SemiBold"/>

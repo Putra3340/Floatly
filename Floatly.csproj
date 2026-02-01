@@ -78,6 +78,7 @@
     <None Remove="Assets\Images\icon-middletext.png" />
     <None Remove="Assets\Images\icon-minimize.png" />
     <None Remove="Assets\Images\icon-minimizefullscreen.png" />
+    <None Remove="Assets\Images\icon-muted.png" />
     <None Remove="Assets\Images\icon-next.png" />
     <None Remove="Assets\Images\icon-pause.png" />
     <None Remove="Assets\Images\icon-pip.png" />
@@ -90,6 +91,7 @@
     <None Remove="Assets\Images\icon-search.png" />
     <None Remove="Assets\Images\icon-settings.png" />
     <None Remove="Assets\Images\icon-shuffle.png" />
+    <None Remove="Assets\Images\icon-speaker.png" />
     <None Remove="Assets\Images\icon-user.png" />
   </ItemGroup>
 
@@ -174,6 +176,7 @@
     <Resource Include="Assets\Images\icon-middletext.png" />
     <Resource Include="Assets\Images\icon-minimize.png" />
     <Resource Include="Assets\Images\icon-minimizefullscreen.png" />
+    <Resource Include="Assets\Images\icon-muted.png" />
     <Resource Include="Assets\Images\icon-next.png" />
     <Resource Include="Assets\Images\icon-pause.png" />
     <Resource Include="Assets\Images\icon-pip.png" />
@@ -186,6 +189,7 @@
     <Resource Include="Assets\Images\icon-search.png" />
     <Resource Include="Assets\Images\icon-settings.png" />
     <Resource Include="Assets\Images\icon-shuffle.png" />
+    <Resource Include="Assets\Images\icon-speaker.png" />
     <Resource Include="Assets\Images\icon-user.png" />
   </ItemGroup>
 

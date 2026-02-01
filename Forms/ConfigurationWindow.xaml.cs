@@ -31,6 +31,7 @@ namespace Floatly
             ServerComboBox.ItemsSource = StaticBinding.AudioDevices;
             ServerComboBox.DisplayMemberPath = "DeviceName";
 
+            Slider_Progress.Value = MusicPlayer.Player.Volume * 100;
         }
 
         private void SaveSettings_Click(object sender, RoutedEventArgs e)
@@ -48,6 +49,21 @@ namespace Floatly
             {
                 MusicPlayer.SetDefaultAudioDevice(adm.DeviceID);
             }
+        }
+
+        private void Slider_Progress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            MusicPlayer.SetVolume(Slider_Progress.Value / 100);
+        }
+
+        private void Slider_Progress_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+        }
+
+        private void Slider_Progress_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+
         }
     }
 }

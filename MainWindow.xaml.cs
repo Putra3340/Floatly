@@ -506,19 +506,19 @@ namespace Floatly
         }
         private void Equalizer_Click(object sender, RoutedEventArgs e)
         {
-            if (ew == null)
+            if (cw == null)
             {
-                ew = new EqualizerWindow
+                cw = new ConfigurationWindow
                 {
                     Owner = this,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
-                ew.Closed += (s, args) => { ew = null; }; // reset instance on close
-                ew.Show();
+                cw.Closed += (s, args) => { cw = null; }; // reset instance on close
+                cw.ShowDialog();
             }
             else
             {
-                ew.Focus();
+                cw.Focus();
             }
         }
         private void Settings_Click(object sender, RoutedEventArgs e)
@@ -1169,6 +1169,13 @@ namespace Floatly
                 await Prefs.connection.InvokeAsync("StartImportPlaylistJob", req);
                 btn.IsHitTestVisible = true;
             }
+        }
+
+        
+        private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            MusicPlayer.SetVolume(Slider_Progress.Value / 100);
+
         }
     }
 }

@@ -219,6 +219,11 @@
                 </MenuItem.Icon>
             </MenuItem>
         </ContextMenu>
+        <ContextMenu x:Key="VolumeContextMenu" Style="{DynamicResource DarkContextMenu}">
+            <StackPanel Width="150" Margin="10">
+                <Slider x:Name="VolumeSlider" Minimum="0" Maximum="100" ValueChanged="VolumeSlider_ValueChanged" Value="75"/>
+            </StackPanel>
+        </ContextMenu>
     </Window.Resources>
     <Grid>
         <Grid x:Name="PlayerHost" Visibility="Hidden">
