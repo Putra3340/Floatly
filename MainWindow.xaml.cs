@@ -54,7 +54,7 @@ namespace Floatly
         private DispatcherTimer _loadingTimer;
         private int _dotCount = 0;
         bool isLooping = false;
-        public static LoginWindow Window_Login = null;
+        public static RegisterWindow Window_Login = null;
         public MainWindow()
         {
             try
@@ -66,7 +66,7 @@ namespace Floatly
                     try
                     {
                         
-                        Window_Login = new LoginWindow
+                        Window_Login = new RegisterWindow
                         {
                             Owner = this,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -75,7 +75,6 @@ namespace Floatly
                         SetBlur = true;
 
                         await Prefs.Initialize();
-                        await Prefs.isOnline();
 
                         if (List_Song.ItemsSource == null)
                             await ServerLibrary.LoadHome();
@@ -110,7 +109,6 @@ namespace Floatly
                 MusicPlayer.CurrentLyricsChanged += OnLyricsChanged;
                 MusicPlayer.Player.MediaEnded += Player_MediaEnded;
                 Notification.NotificationRaised += ShowNotification;
-                Prefs.OnlineModeChanged += OfflineMode;
                 MusicPlayer.PauseChanged += MusicPlayer_PauseChanged;
                 slidertimer.Start();
                 lastnavbtn = NavHome; // default to home
@@ -286,11 +284,6 @@ namespace Floatly
         private bool IsOnPlaylist = false;
         private async void Nav_Click(object sender, RoutedEventArgs e) // put it on one single function to reduce redundancy  
         {
-            if (!Prefs.OnlineMode)
-            {
-                Notification.ShowNotification("You are in offline mode");
-                return;
-            }
             // always init other panel to collapsed first and dont put any data loading here
             var btn = sender as Button;
             if (btn == null || btn.Name.IsNullOrEmpty())
@@ -1004,7 +997,7 @@ namespace Floatly
 
                     try
                     {
-                        Window_Login = new LoginWindow
+                        Window_Login = new RegisterWindow
                         {
                             Owner = this,
                             WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -1013,7 +1006,6 @@ namespace Floatly
                         SetBlur = true;
 
                         await Prefs.Initialize();
-                        await Prefs.isOnline();
 
                         if (List_Song.ItemsSource == null)
                             await ServerLibrary.LoadHome();

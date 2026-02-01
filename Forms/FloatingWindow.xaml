@@ -270,7 +270,7 @@ StrokeThickness="2"/>
                             <ImageBrush ImageSource="/Assets/Images/icon-player.png"/>
                         </Border.OpacityMask>
                     </Border>
-                    <Button x:Name="ToggleLyricButton" Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="ToggleLyric_Click" Grid.Column="8">
+                    <Button x:Name="ToggleLyricButton" Content="" Width="40" Height="40" Foreground="White" FontWeight="SemiBold" Cursor="Hand" Click="ToggleLyric_Click" Grid.Column="8" Visibility="Collapsed">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border Background="{TemplateBinding Background}" CornerRadius="8">
@@ -290,7 +290,7 @@ StrokeThickness="2"/>
                             </Style>
                         </Button.Style>
                     </Button>
-                    <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="8">
+                    <Border Background="White" Width="20" Height="20" VerticalAlignment="Center" HorizontalAlignment="Center" IsHitTestVisible="False" Grid.Column="8" Visibility="Collapsed">
                         <Border.OpacityMask>
                             <ImageBrush ImageSource="/Assets/Images/icon-listcenter.png"/>
                         </Border.OpacityMask>

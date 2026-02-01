@@ -9,8 +9,9 @@
         AllowsTransparency="True"
         Background="Transparent"
         ResizeMode="NoResize">
-
-    <Border CornerRadius="20" Background="{StaticResource BackgroundDark}" BorderBrush="Transparent" BorderThickness="1" Padding="20">
+    <Grid>
+        
+    <Border x:Name="PanelRegister" CornerRadius="20" Background="{StaticResource BackgroundDark}" BorderBrush="Transparent" BorderThickness="1" Padding="20" Visibility="Collapsed">
         <StackPanel VerticalAlignment="Center">
             <Label Content="X" FontWeight="Bold" FontSize="20" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryText}" Margin="0,0,0,10" MouseDown="CloseLogin_MouseDown">
 
@@ -127,7 +128,7 @@
                     FontWeight="SemiBold"
                     BorderThickness="0"
                     Cursor="Hand"
-                    Click="RegisterAccount_MouseDown"
+                    Click="SubmitAccount_MouseDown"
                     >
                 <Button.Template>
                     <ControlTemplate TargetType="Button">
@@ -170,4 +171,110 @@
             </Grid>
         </StackPanel>
     </Border>
+    <Border x:Name="PanelLogin" CornerRadius="20" Background="{StaticResource BackgroundDark}" BorderBrush="Transparent" BorderThickness="1" Padding="20" Visibility="Visible">
+        <StackPanel VerticalAlignment="Center">
+            <Label Content="X" FontWeight="Bold" FontSize="20" HorizontalAlignment="Right" Foreground="{StaticResource PrimaryText}" Margin="0,0,0,10" MouseDown="CloseLogin_MouseDown">
+
+            </Label>
+            <TextBlock Text="Welcome! Please login first!" 
+                   FontSize="20" 
+                   FontWeight="Bold" 
+                   HorizontalAlignment="Center"
+                   Margin="0,0,0,30"
+                   Foreground="{StaticResource PrimaryText}"/>
+
+            <!-- Username -->
+            <Border CornerRadius="10" BorderBrush="#CCC" BorderThickness="1" Background="{StaticResource BackgroundDark}" Margin="0,0,0,20">
+                <Grid>
+                    <TextBox x:Name="UsernameBoxLogin"
+                     Padding="10"
+                     BorderThickness="0"
+                     Background="Transparent"
+                     Foreground="{StaticResource PrimaryText}"
+                     FontSize="14"
+                     VerticalContentAlignment="Center"
+                     TextChanged="UsernameBox_TextChanged"
+                     CaretBrush="White"
+                     />
+                    <TextBlock x:Name="UsernamePlaceholderLogin"
+               Text="Username or email address"
+               Foreground="Gray"
+               Margin="10,0,0,0"
+               VerticalAlignment="Center"
+               IsHitTestVisible="False"/>
+                </Grid>
+            </Border>
+
+            <!-- Password -->
+            <Border CornerRadius="10" BorderBrush="#CCC" BorderThickness="1" Background="{StaticResource BackgroundDark}" Margin="0,0,0,20">
+                <Grid>
+                    <PasswordBox x:Name="PasswordBoxLogin"
+                         Padding="10"
+                         BorderThickness="0"
+                         Background="Transparent"
+                         Foreground="{StaticResource PrimaryText}"
+                         FontSize="14"
+                         CaretBrush="White"
+                         VerticalContentAlignment="Center"
+                         PasswordChanged="PasswordBox_PasswordChanged"
+                         />
+                    <TextBlock x:Name="PasswordPlaceholderLogin"
+               Text="Password"
+               Foreground="Gray"
+               Margin="10,0,0,0"
+               VerticalAlignment="Center"
+               IsHitTestVisible="False"/>
+                </Grid>
+            </Border>
+
+            <!-- Login button -->
+            <Button Content="Login"
+                Height="40"
+                Margin="0,10,0,20"
+                Foreground="White"
+                FontWeight="SemiBold"
+                BorderThickness="0"
+                Cursor="Hand" Click="SubmitAccount_MouseDown">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="10" Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background" Value="{StaticResource AccentPurple}"/>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#8b5cf6"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Column="0" HorizontalAlignment="Left">
+                    <TextBlock Text="Register new account" Foreground="{StaticResource AccentPurple}" Cursor="Hand" MouseDown="OpenRegister_MouseDown"/>
+                </Border>
+                <Border Grid.Column="2" HorizontalAlignment="Right">
+                    <TextBlock Text="Forgot password?" Foreground="{StaticResource AccentPurple}" Cursor="Hand" MouseDown="ForgotPassword_MouseDown"/>
+                </Border>
+                <Border Grid.Column="1" HorizontalAlignment="Center" Grid.Row="1" Margin="0,20,0,0" Visibility="Collapsed">
+                    <TextBlock Text="Stay logged out" Foreground="Gray" Cursor="Hand" MouseDown="AnonymousLogin_MouseDown"/>
+                </Border>
+            </Grid>
+        </StackPanel>
+    </Border>
+    </Grid>
 </Window>

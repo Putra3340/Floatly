@@ -34,46 +34,94 @@ namespace Floatly
 
         private void UsernameBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            UsernamePlaceholder.Visibility =
-                string.IsNullOrEmpty(UsernameBox.Text) ? Visibility.Visible : Visibility.Hidden;
+            if (PanelLogin.Visibility == Visibility.Visible)
+            {
+                UsernamePlaceholderLogin.Visibility = string.IsNullOrEmpty(UsernameBoxLogin.Text) ? Visibility.Visible : Visibility.Hidden;
+            }
+            else
+            {
+                UsernamePlaceholder.Visibility =
+                    string.IsNullOrEmpty(UsernameBox.Text) ? Visibility.Visible : Visibility.Hidden;
+
+            }
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            PasswordPlaceholder.Visibility =
-                string.IsNullOrEmpty(PasswordBox.Password) ? Visibility.Visible : Visibility.Hidden;
+            if(PanelLogin.Visibility == Visibility.Visible)
+            {
+                PasswordPlaceholderLogin.Visibility = string.IsNullOrEmpty(PasswordBoxLogin.Password) ? Visibility.Visible : Visibility.Hidden;
+            }
+            else
+            {
+                PasswordPlaceholder.Visibility =
+                    string.IsNullOrEmpty(PasswordBox.Password) ? Visibility.Visible : Visibility.Hidden;
+
+            }
         }
 
         private async void RegisterAccount_MouseDown(object sender, RoutedEventArgs e)
         {
-            if (EmailBox.Text.IsNullOrEmpty() || UsernameBox.Text.IsNullOrEmpty() || PasswordBox.Password.IsNullOrEmpty())
+            PanelLogin.Visibility = Visibility.Collapsed;
+            PanelRegister.Visibility = Visibility.Visible;
+        }
+        private async void SubmitAccount_MouseDown(object sender, RoutedEventArgs e)
+        {
+            if(PanelRegister.Visibility == Visibility.Visible)
             {
-                MessageBox.Show("Please fill all required fields.");
-                return;
-            }
-            var btn = sender as Button;
-            string temp = btn.Content.ToString();
-            btn.Content = "...";
-            btn.IsEnabled = false; // disable while processing
-            try
-            {
-                await ApiAuth.Register(EmailBox.Text,PasswordBox.Password,UsernameBox.Text);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Registration failed: {ex.Message}");
-                return;
-            }
-            finally
-            {
-                btn.Content = temp;
-                btn.IsEnabled = true; // re-enable no matter what
-                if (Prefs.LoginToken.IsNotNullOrEmpty())
+                if (EmailBox.Text.IsNullOrEmpty() || UsernameBox.Text.IsNullOrEmpty() || PasswordBox.Password.IsNullOrEmpty())
                 {
-                    MainWindow.Window_Login.Close();
-                    this.Close();
+                    MessageBox.Show("Please fill all required fields.");
+                    return;
+                }
+                var btn = sender as Button;
+                string temp = btn.Content.ToString();
+                btn.Content = "...";
+                btn.IsEnabled = false; // disable while processing
+                try
+                {
+                    await ApiAuth.Register(EmailBox.Text, PasswordBox.Password, UsernameBox.Text);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Registration failed: {ex.Message}");
+                    return;
+                }
+                finally
+                {
+                    btn.Content = temp;
+                    btn.IsEnabled = true; // re-enable no matter what
+                    if (Prefs.LoginToken.IsNotNullOrEmpty())
+                    {
+                        this.Close();
+                    }
                 }
             }
+            else
+            {
+                if (UsernameBoxLogin.Text.IsNullOrEmpty() || PasswordBoxLogin.Password.IsNullOrEmpty())
+                {
+                    MessageBox.Show("Please fill all required fields.");
+                    return;
+                }
+                var btn = sender as Button;
+                btn.IsEnabled = false; // disable while processing
+                try
+                {
+                    await ApiAuth.Login(UsernameBoxLogin.Text, PasswordBoxLogin.Password);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Login failed: {ex.Message}");
+                }
+                finally
+                {
+                    btn.IsEnabled = true; // re-enable no matter what
+                    if (!Prefs.LoginToken.IsNullOrEmpty())
+                        this.Close();
+                }
+            }
+            
         }
         private void ForgotPassword_MouseDown(object sender, RoutedEventArgs e)
         {
@@ -90,7 +138,8 @@ namespace Floatly
         }
         private void BackToLogin_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            this.Close();
+            PanelLogin.Visibility = Visibility.Visible;
+            PanelRegister.Visibility = Visibility.Collapsed;
         }
         private async void Verify_Click(object sender, RoutedEventArgs e)
         {
@@ -116,6 +165,12 @@ namespace Floatly
                 btn.Content=temp;
                 btn.IsEnabled = true; // re-enable no matter what
             }
+        }
+
+        private void OpenRegister_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            PanelLogin.Visibility = Visibility.Collapsed;
+            PanelRegister.Visibility = Visibility.Visible;
         }
     }
 }

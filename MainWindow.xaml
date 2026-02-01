@@ -2317,7 +2317,7 @@ VerticalAlignment="Center"/>
             Foreground="White"
             FontWeight="SemiBold"
             Cursor="Hand"
-            Click="Button_ImportPlaylist_Click">
+            Click="Button_ImportPlaylist_Click" Visibility="Collapsed">
 
                                         <Button.Template>
                                             <ControlTemplate TargetType="Button">

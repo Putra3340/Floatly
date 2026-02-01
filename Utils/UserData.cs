@@ -45,11 +45,18 @@ namespace Floatly.Utils
             if (!File.Exists(Path.Combine(GetUserDataPath(), "auth.dat")))
                 return false;
             string a = File.ReadAllText(Path.Combine(GetUserDataPath(), "auth.dat"));
+            try
+            {
+
             using var doc = JsonDocument.Parse(a);
             string token = doc.RootElement.GetProperty("token").GetString();
             if (token == null)
                 return false;
             return await ApiAuth.AutoLogin(token);
+            }catch
+            {
+                return false;
+            }
         }
         public static async Task LoadAppConfiguration()
         {

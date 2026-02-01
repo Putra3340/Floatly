@@ -37,16 +37,6 @@ namespace Floatly
             } } = "";
         public static TaskCompletionSource<bool> LoginCompleted { get; } = new();
         public static bool isPremium { get; set; } = true; // is user premium
-        public static event EventHandler OnlineModeChanged;
-        public static bool OnlineMode
-        {
-            get => field;
-            set
-            {
-                field = value;
-                OnlineModeChanged?.Invoke(null, null);
-            }
-        } = true;
         private static readonly CancellationTokenSource _notificationCts = new();
         public static HubConnection connection;
 
@@ -117,34 +107,34 @@ namespace Floatly
             }
         }
 
-        public static async Task<bool> isOnline()
-        {
-            var http = new System.Net.Http.HttpClient
-            {
-                Timeout = TimeSpan.FromSeconds(10) // shorter timeout
-            };
-            try
-            {
-                var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-                var res = await http.GetAsync(Prefs.ServerUrl + "/api/info", cts.Token);
-                if (res.IsSuccessStatusCode)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            catch (TaskCanceledException)
-            {
-                return false;
-            }
-            catch
-            {
-                return false;
+        //public static async Task<bool> isOnline()
+        //{
+        //    var http = new System.Net.Http.HttpClient
+        //    {
+        //        Timeout = TimeSpan.FromSeconds(10) // shorter timeout
+        //    };
+        //    try
+        //    {
+        //        var cts = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        //        var res = await http.GetAsync(Prefs.ServerUrl + "/api/info", cts.Token);
+        //        if (res.IsSuccessStatusCode)
+        //        {
+        //            return true;
+        //        }
+        //        else
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    catch (TaskCanceledException)
+        //    {
+        //        return false;
+        //    }
+        //    catch
+        //    {
+        //        return false;
 
-            }
-        }
+        //    }
+        //}
     }
 }
