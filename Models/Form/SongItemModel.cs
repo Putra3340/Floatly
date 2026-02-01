@@ -16,6 +16,7 @@ namespace Floatly.Models.Form
     public class Song : INotifyPropertyChanged 
     {
         public string? Id { get => field; set { field = value; OnPropertyChanged(); } }
+        public string? ExtId { get => field; set { field = value; OnPropertyChanged(); } }
         public string? Title { get => field; set { field = value; OnPropertyChanged(); } }
         public string? Music { get => field; set { field = value; OnPropertyChanged(); } }
         public string? Lyrics { get => field; set { field = value; OnPropertyChanged(); } }

@@ -16,7 +16,7 @@ namespace Floatly.Api
         public static HttpClient client = new HttpClient();
         public static async Task<Library> GetHomeLibrary()
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v4");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -37,7 +37,7 @@ namespace Floatly.Api
         }
         public async static Task<Song> Play(string songid)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/play/{songid}?token={Prefs.LoginToken}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v4/play/{songid}?token={Prefs.LoginToken}");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -49,7 +49,7 @@ namespace Floatly.Api
         }
         public async static Task<LyricsResponseModel> GetLyric(string songid)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/lyrics/{songid}?token={Prefs.LoginToken}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v4/lyrics/{songid}?token={Prefs.LoginToken}");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -61,7 +61,7 @@ namespace Floatly.Api
         }
         public static async Task<Library> Search(string searchbytext)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/search?anycontent={searchbytext}&token={Prefs.LoginToken}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v4/search?anycontent={searchbytext}&token={Prefs.LoginToken}");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -71,23 +71,9 @@ namespace Floatly.Api
             };
             return JsonSerializer.Deserialize<Library>(result, options);
         }
-        public static async Task<List<Song>> GetNextQueue()
-        {
-            var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Get, "https://localhost:7156/api/getqueue");
-            var response = await client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            string result = await response.Content.ReadAsStringAsync();
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true
-            };
-            List<Song> songs = JsonSerializer.Deserialize<List<Song>>(result, options);
-            return songs;
-        }
         public static async Task<string> GetVideoStream(string yturl)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/video/{yturl}?token={Prefs.LoginToken}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v4/video/{yturl}?token={Prefs.LoginToken}");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();
@@ -95,7 +81,7 @@ namespace Floatly.Api
         }
         public static async Task<string> GetHDVideoStream(string yturl)
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v3/hdvideo/{yturl}?token={Prefs.LoginToken}");
+            var request = new HttpRequestMessage(HttpMethod.Get, $"{Prefs.ServerUrl}/api/library/v4/hdvideo/{yturl}?token={Prefs.LoginToken}");
             var response = await client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             string result = await response.Content.ReadAsStringAsync();

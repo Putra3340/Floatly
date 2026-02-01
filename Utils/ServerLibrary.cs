@@ -205,6 +205,7 @@ namespace Floatly.Utils
             await File.WriteAllBytesAsync(bannerPath, bannerData);
             var Downloaded = new DownloadedSong
             {
+                ExtId = song.Id,
                 Title = song.Title,
                 Music = filePath,
                 Lyrics = lyricPath,

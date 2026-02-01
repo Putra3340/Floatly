@@ -7,6 +7,8 @@ public partial class DownloadedSong
 {
     public int Id { get; set; }
 
+    public string? ExtId { get; set; }
+
     public string? Title { get; set; }
 
     public string? Music { get; set; }

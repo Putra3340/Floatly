@@ -6,7 +6,7 @@
         AllowsTransparency="True"
         Background="Transparent"
         Topmost="True"
-        MouseMove="Window_MouseMove"
+    MouseMove="Window_MouseMove"
         ResizeMode="NoResize"
         ShowInTaskbar="False"
         Width="640" Height="460">

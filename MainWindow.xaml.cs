@@ -115,6 +115,8 @@ namespace Floatly
                 slidertimer.Start();
                 lastnavbtn = NavHome; // default to home
 
+
+                // 30 January 2026 : Nah i think we didnt need this anymore
                 // so when app started we load the last played song from queue TODO BUGS
                 //var lastsong = QueueManager.GetCurrentSong().Result;
                 //if (lastsong != null)
@@ -1155,7 +1157,15 @@ namespace Floatly
             if (sender is Button btn)
             {
                 btn.IsHitTestVisible = false;
-                var req = new ImportPlaylistRequest { Token = Prefs.LoginToken, Url = "https://www.youtube.com/playlist?list=PLiIogb_tPYBADmc699vIWZuKRvd-aBspY" };
+                var win = new UniversalInputWindow("Playlist Link (ex :https://www.youtube.com/playlist?list=XXX)") { Owner = this };
+                win.ShowDialog();
+                string playlisturl = win.Result;
+                if (playlisturl == null)
+                {
+                    btn.IsHitTestVisible = true;
+                    return;
+                }
+                var req = new ImportPlaylistRequest { Token = Prefs.LoginToken, Url = playlisturl };
                 await Prefs.connection.InvokeAsync("StartImportPlaylistJob", req);
                 btn.IsHitTestVisible = true;
             }

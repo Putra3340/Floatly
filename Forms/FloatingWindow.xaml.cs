@@ -8,12 +8,14 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
 
 namespace Floatly
 {
@@ -129,66 +131,108 @@ namespace Floatly
         }
         public enum WindowLocation
         {
-            TopLeft,TopRight,BottomLeft,BottomRight
+            TopLeft,
+            TopRight,
+            BottomLeft,
+            BottomRight
         }
-        public WindowLocation Location = WindowLocation.TopLeft;
+        public WindowLocation Location
+        {
+            get
+            {
+                int midX = width / 2;
+                int midY = height / 2;
+
+                // assume you have window X and Y (Top-Left position)
+                if (this.Left < midX && this.Top < midY)
+                    return WindowLocation.TopLeft;
+
+                if (this.Left >= midX && this.Top < midY)
+                    return WindowLocation.TopRight;
+
+                if (this.Left < midX && this.Top >= midY)
+                    return WindowLocation.BottomLeft;
+
+                return WindowLocation.BottomRight;
+            }
+            set
+            {
+                field = value;
+            }
+        }
+
+
         private void GlobalHook_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
         {
-            if (e.KeyCode == System.Windows.Forms.Keys.LControlKey)
+            try
             {
-                isHoldingKey = false;
-                SetWindowLong(hwnd, GWL_EXSTYLE, baseStyle | WS_EX_TOOLWINDOW);
-                UpdateOpacity(1.0);
-            }
-            if (e.KeyCode == System.Windows.Forms.Keys.LMenu)
+                if (e.KeyCode == System.Windows.Forms.Keys.LControlKey)
+                {
+                    isHoldingKey = false;
+                    SetWindowLong(hwnd, GWL_EXSTYLE, baseStyle | WS_EX_TOOLWINDOW);
+                    UpdateOpacity(1.0);
+                }
+                if (e.KeyCode == System.Windows.Forms.Keys.LMenu)
+                {
+                    SetWindowLong(hwnd, GWL_EXSTYLE, baseStyle | WS_EX_TOOLWINDOW);
+                    UpdateOpacity(1.0);
+                }
+                if (e.KeyCode == System.Windows.Forms.Keys.F12)
+                {
+                    StartLoading();
+                }
+                if (e.KeyCode == System.Windows.Forms.Keys.F11)
+                {
+                    StopLoading();
+                }
+                if (e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.A)
+                {
+                    if(Location == WindowLocation.TopRight)
+                        MoveWindow(WindowLocation.TopLeft);
+                    else if (Location == WindowLocation.TopLeft)
+                        MoveWindow(WindowLocation.TopLeft);
+                    else if (Location == WindowLocation.BottomRight)
+                        MoveWindow(WindowLocation.BottomLeft);
+                    else if(Location == WindowLocation.BottomLeft)
+                        MoveWindow(WindowLocation.BottomLeft);
+                }
+                if (e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.D)
+                {
+                    if (Location == WindowLocation.TopRight)
+                        MoveWindow(WindowLocation.TopRight);
+                    else if (Location == WindowLocation.TopLeft)
+                        MoveWindow(WindowLocation.TopRight);
+                    else if (Location == WindowLocation.BottomRight)
+                        MoveWindow(WindowLocation.BottomRight);
+                    else if (Location == WindowLocation.BottomLeft)
+                        MoveWindow(WindowLocation.BottomRight);
+                }
+
+                if (e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.S)
+                {
+                    if (Location == WindowLocation.TopRight)
+                        MoveWindow(WindowLocation.BottomRight);
+                    else if (Location == WindowLocation.TopLeft)
+                        MoveWindow(WindowLocation.BottomLeft);
+                    else if (Location == WindowLocation.BottomRight)
+                        MoveWindow(WindowLocation.BottomRight);
+                    else if (Location == WindowLocation.BottomLeft)
+                        MoveWindow(WindowLocation.BottomRight);
+                }
+                if (e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.W)
+                {
+                    if (Location == WindowLocation.TopRight)
+                        MoveWindow(WindowLocation.TopRight);
+                    else if (Location == WindowLocation.TopLeft)
+                        MoveWindow(WindowLocation.TopLeft);
+                    else if (Location == WindowLocation.BottomRight)
+                        MoveWindow(WindowLocation.TopRight);
+                    else if (Location == WindowLocation.BottomLeft)
+                        MoveWindow(WindowLocation.TopLeft);
+                }
+            } catch (Exception ex)
             {
-                SetWindowLong(hwnd, GWL_EXSTYLE, baseStyle | WS_EX_TOOLWINDOW);
-                UpdateOpacity(1.0);
-            }
-            if (e.KeyCode == System.Windows.Forms.Keys.F12)
-            {
-                StartLoading();
-            }
-            if (e.KeyCode == System.Windows.Forms.Keys.F11)
-            {
-                StopLoading();
-            }
-            if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.A)
-            {
-                if(Location == WindowLocation.BottomRight)
-                    MoveWindow(WindowLocation.BottomLeft);
-                else if(Location == WindowLocation.TopRight)
-                    MoveWindow(WindowLocation.TopLeft);
-                else
-                    MoveWindow(WindowLocation.TopLeft);
-            }
-            if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.D)
-            {
-                if(Location == WindowLocation.TopLeft)
-                    MoveWindow(WindowLocation.TopRight);
-                else if(Location == WindowLocation.BottomLeft)
-                    MoveWindow(WindowLocation.BottomRight);
-                else
-                    MoveWindow(WindowLocation.TopRight);
-            }
-            
-            if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.S)
-            {
-                if(Location == WindowLocation.TopLeft)
-                    MoveWindow(WindowLocation.BottomLeft);
-                else if(Location == WindowLocation.TopRight)
-                    MoveWindow(WindowLocation.BottomRight);
-                else
-                    MoveWindow(WindowLocation.BottomRight);
-            }
-            if(e.Control & e.Shift && e.KeyCode == System.Windows.Forms.Keys.W)
-            {
-                if(Location == WindowLocation.BottomLeft)
-                    MoveWindow(WindowLocation.TopLeft);
-                else if(Location == WindowLocation.BottomRight)
-                    MoveWindow(WindowLocation.TopRight);
-                else
-                    MoveWindow(WindowLocation.TopLeft);
+                Debug.WriteLine(ex.Message);
             }
         }
         private void MoveWindow(WindowLocation location)
@@ -319,7 +363,7 @@ namespace Floatly
         bool IsVideoDisplayed = false;
         private async void PlayWithVideo_Click(object sender, RoutedEventArgs e)
         {
-            var btn = sender as Button;
+            var btn = sender as System.Windows.Controls.Button;
             if (VideoRectangleHost.Visibility == Visibility.Visible)
             {
                 btn.Background = Brushes.Transparent;
@@ -349,7 +393,7 @@ namespace Floatly
         }
         private async void PlayHD_Click(object sender, RoutedEventArgs e)
         {
-            var btn = sender as Button;
+            var btn = sender as System.Windows.Controls.Button;
             if (VideoRectangleHost.Visibility == Visibility.Visible)
             {
                 btn.Background = Brushes.Transparent;
@@ -380,7 +424,7 @@ namespace Floatly
         bool LabelLyricShowed = false;
         private async void ToggleLyric_Click(object sender, RoutedEventArgs e)
         {
-            var btn = sender as Button;
+            var btn = sender as System.Windows.Controls.Button;
             if (LyricShowed)
             {
                 LyricShowed = false;
@@ -395,7 +439,7 @@ namespace Floatly
         }
         private async void ToggleLabelLyric_Click(object sender, RoutedEventArgs e)
         {
-            var btn = sender as Button;
+            var btn = sender as System.Windows.Controls.Button;
             if (LabelLyricShowed)
             {
                 LabelLyricShowed = false;
