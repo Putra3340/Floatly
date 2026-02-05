@@ -68,7 +68,7 @@ namespace Floatly.Utils
                 {
                     StaticBinding.HomeSong.Add(song);
                 }
-                foreach (var song in lib.SongsEx)
+                foreach (var song in lib.Songs)
                 {
                     StaticBinding.HomeSongEx.Add(song);
                 }

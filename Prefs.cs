@@ -45,8 +45,8 @@ namespace Floatly
         public static string ServerUrl { get; set; } = "https://floatly.starhost.web.id"; // production server
         //public static string ServerUrl { get; set; } = "https://localhost:7156"; // debug server
 #elif PRODUCTION
-        //public static string ServerUrl { get; set; } = "https://floatly.starhost.web.id"; // production server
-        public static string ServerUrl { get; set; } = "https://localhost:7156"; // debug server
+        public static string ServerUrl { get; set; } = "https://floatly.starhost.web.id"; // production server
+        //public static string ServerUrl { get; set; } = "https://localhost:7156"; // debug server
 #else
         public static string ServerUrl { get; set; } = "http://localhost:5000"; // self-host server
 #endif
