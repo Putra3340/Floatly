@@ -4,6 +4,8 @@
 
 Powered by **.NET 10** and **WPF**, Floatly combines cutting-edge technology with a sleek, minimalist design.
 
+## Archived 3 March 2026 - Moved to [Floatly Remake](https://github.com/Putra3340/FloatlyRemake)
+## This is for Windows Only Need Rework to support multiplatform and fix performance, and the unfixable bugs on WPF
 ---
 
 ## Features
