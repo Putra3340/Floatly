@@ -46,12 +46,15 @@ namespace Floatly
                 services.AddSingleton<INavigationWindow, MainWindow>();
                 services.AddSingleton<MainWindowViewModel>();
 
-                services.AddSingleton<DashboardPage>();
-                services.AddSingleton<DashboardViewModel>();
+                services.AddSingleton<HomePage>();
+                services.AddSingleton<HomeViewModel>();
                 services.AddSingleton<DataPage>();
                 services.AddSingleton<DataViewModel>();
                 services.AddSingleton<SettingsPage>();
                 services.AddSingleton<SettingsViewModel>();
+
+                // API service
+                services.AddSingleton<IApiService, ApiService>();
             }).Build();
 
         /// <summary>

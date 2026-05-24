@@ -50,7 +50,7 @@ namespace Floatly.Services
                 )!;
                 _navigationWindow!.ShowWindow();
 
-                _navigationWindow.Navigate(typeof(Views.Pages.DashboardPage));
+                _navigationWindow.Navigate(typeof(Views.Pages.HomePage));
             }
 
             await Task.CompletedTask;

@@ -3,11 +3,11 @@ using Wpf.Ui.Abstractions.Controls;
 
 namespace Floatly.Views.Pages
 {
-    public partial class DashboardPage : INavigableView<DashboardViewModel>
+    public partial class HomePage : INavigableView<HomeViewModel>
     {
-        public DashboardViewModel ViewModel { get; }
+        public HomeViewModel ViewModel { get; }
 
-        public DashboardPage(DashboardViewModel viewModel)
+        public HomePage(HomeViewModel viewModel)
         {
             ViewModel = viewModel;
             DataContext = this;

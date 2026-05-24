@@ -1,4 +1,7 @@
-﻿using Floatly.ViewModels.Windows;
+﻿using Floatly.Enums;
+using Floatly.Helpers;
+using Floatly.ViewModels.Windows;
+using System.Windows.Media;
 using Wpf.Ui;
 using Wpf.Ui.Abstractions;
 using Wpf.Ui.Appearance;
@@ -25,6 +28,9 @@ namespace Floatly.Views.Windows
             SetPageService(navigationViewPageProvider);
 
             navigationService.SetNavigationControl(RootNavigation);
+
+            // Theme manipulation
+            ApplicationAccentColorManager.Apply(ThemeHelper.GetColor(ThemeAccent.Indigo));
         }
 
         #region INavigationWindow methods

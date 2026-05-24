@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using Floatly.Enums;
+using System.Globalization;
 using System.Windows.Data;
 using Wpf.Ui.Appearance;
 
@@ -13,14 +14,28 @@ namespace Floatly.Helpers
                 throw new ArgumentException("ExceptionEnumToBooleanConverterParameterMustBeAnEnumName");
             }
 
-            if (!Enum.IsDefined(typeof(ApplicationTheme), value))
+            try
             {
-                throw new ArgumentException("ExceptionEnumToBooleanConverterValueMustBeAnEnum");
+
+                if (Enum.IsDefined(typeof(ApplicationTheme), value))
+                {
+                    var enumValue = Enum.Parse(typeof(ApplicationTheme), enumString);
+                    return enumValue.Equals(value);
+                }
             }
+            catch { }
+            try
+            {
 
-            var enumValue = Enum.Parse(typeof(ApplicationTheme), enumString);
+                if (Enum.IsDefined(typeof(ThemeAccent), value))
+                {
+                    var enumValue = Enum.Parse(typeof(ThemeAccent), enumString);
+                    return enumValue.Equals(value);
+                }
+            }
+            catch { }
+            return false;
 
-            return enumValue.Equals(value);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -1,4 +1,7 @@
-﻿using Wpf.Ui.Abstractions.Controls;
+﻿using Floatly.Enums;
+using Floatly.Helpers;
+using System.Windows.Media;
+using Wpf.Ui.Abstractions.Controls;
 using Wpf.Ui.Appearance;
 
 namespace Floatly.ViewModels.Pages
@@ -12,6 +15,8 @@ namespace Floatly.ViewModels.Pages
 
         [ObservableProperty]
         private ApplicationTheme _currentTheme = ApplicationTheme.Unknown;
+        [ObservableProperty]
+        private ThemeAccent _currentAccent = ThemeAccent.Indigo;
 
         public Task OnNavigatedToAsync()
         {
@@ -26,8 +31,8 @@ namespace Floatly.ViewModels.Pages
         private void InitializeViewModel()
         {
             CurrentTheme = ApplicationThemeManager.GetAppTheme();
-            AppVersion = $"UiDesktopApp1 - {GetAssemblyVersion()}";
-
+            CurrentAccent = ThemeHelper.GetCurrentTheme();
+            AppVersion = $"Floatly - {GetAssemblyVersion()}";
             _isInitialized = true;
         }
 
@@ -58,6 +63,26 @@ namespace Floatly.ViewModels.Pages
                     ApplicationThemeManager.Apply(ApplicationTheme.Dark);
                     CurrentTheme = ApplicationTheme.Dark;
 
+                    break;
+            }
+        }
+        [RelayCommand]
+        private void OnChangeAccent(string parameter)
+        {
+            switch (parameter)
+            {
+                case "deep_indigo":
+                    ApplicationAccentColorManager.Apply(ThemeHelper.GetColor(ThemeAccent.DeepIndigo));
+                    CurrentAccent = ThemeAccent.DeepIndigo;
+                    break;
+                case "purple":
+                    ApplicationAccentColorManager.Apply(ThemeHelper.GetColor(ThemeAccent.Purple));
+                    CurrentAccent = ThemeAccent.Purple;
+                    break;
+
+                default:
+                    ApplicationAccentColorManager.Apply(ThemeHelper.GetColor(ThemeAccent.Indigo));
+                    CurrentAccent = ThemeAccent.Indigo;
                     break;
             }
         }

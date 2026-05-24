@@ -6,7 +6,7 @@ namespace Floatly.ViewModels.Windows
     public partial class MainWindowViewModel : ObservableObject
     {
         [ObservableProperty]
-        private string _applicationTitle = "WPF UI - Floatly";
+        private string _applicationTitle = "Floatly";
 
         [ObservableProperty]
         private ObservableCollection<object> _menuItems = new()
@@ -15,12 +15,24 @@ namespace Floatly.ViewModels.Windows
             {
                 Content = "Home",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Home24 },
-                TargetPageType = typeof(Views.Pages.DashboardPage)
+                TargetPageType = typeof(Views.Pages.HomePage)
             },
             new NavigationViewItem()
             {
-                Content = "Data",
-                Icon = new SymbolIcon { Symbol = SymbolRegular.DataHistogram24 },
+                Content = "Search",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.Search24 },
+                TargetPageType = typeof(Views.Pages.DataPage)
+            },
+            new NavigationViewItem()
+            {
+                Content = "Playlist",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.List24 },
+                TargetPageType = typeof(Views.Pages.DataPage)
+            },
+            new NavigationViewItem()
+            {
+                Content = "Offline",
+                Icon = new SymbolIcon { Symbol = SymbolRegular.ArrowDownload24 },
                 TargetPageType = typeof(Views.Pages.DataPage)
             }
         };
