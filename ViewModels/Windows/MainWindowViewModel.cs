@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using Floatly.Models;
+using System.Collections.ObjectModel;
 using Wpf.Ui.Controls;
 
 namespace Floatly.ViewModels.Windows
@@ -7,6 +8,8 @@ namespace Floatly.ViewModels.Windows
     {
         [ObservableProperty]
         private string _applicationTitle = "Floatly";
+        [ObservableProperty]
+        private Song _currentSong = new();
 
         [ObservableProperty]
         private ObservableCollection<object> _menuItems = new()
@@ -16,12 +19,6 @@ namespace Floatly.ViewModels.Windows
                 Content = "Home",
                 Icon = new SymbolIcon { Symbol = SymbolRegular.Home24 },
                 TargetPageType = typeof(Views.Pages.HomePage)
-            },
-            new NavigationViewItem()
-            {
-                Content = "Search",
-                Icon = new SymbolIcon { Symbol = SymbolRegular.Search24 },
-                TargetPageType = typeof(Views.Pages.DataPage)
             },
             new NavigationViewItem()
             {

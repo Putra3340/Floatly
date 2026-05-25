@@ -9,6 +9,7 @@ namespace Floatly.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public string Duration { get; set; }
+        public int DurationValue { get; set; }
         public string Uploader { get; set; }
         public int PlayCount { get; set; }
         public int LikeCount { get; set; }

@@ -22,6 +22,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <ui:NavigationView
             x:Name="RootNavigation"
@@ -56,5 +57,75 @@
                 <ui:ImageIcon Source="pack://application:,,,/Assets/wpfui-icon-256.png" />
             </ui:TitleBar.Icon>
         </ui:TitleBar>
+        <Border
+            Grid.Row="2"
+            Height="90"
+            Margin="8"
+            Padding="12"
+            BorderThickness="1">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Cover  -->
+                <Border
+                    Width="58"
+                    Height="58"
+                    ClipToBounds="True"
+                    CornerRadius="12">
+
+                    <Image Source="{Binding ViewModel.CurrentSong.ThumbnailUrl}" Stretch="UniformToFill" />
+                </Border>
+
+                <!--  Song Info  -->
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="16,0"
+                    VerticalAlignment="Center">
+
+                    <ui:TextBlock
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="{Binding ViewModel.CurrentSong.Name}" />
+
+                    <ui:TextBlock
+                        Margin="0,4,0,0"
+                        Opacity="0.7"
+                        Text="{Binding ViewModel.CurrentSong.Uploader}" />
+
+                    <!--  Progress  -->
+                    <Slider
+                        Margin="0,10,0,0"
+                        Maximum="{Binding ViewModel.CurrentSong.DurationValue}"
+                        Value="0" />
+                </StackPanel>
+
+                <!--  Controls  -->
+                <StackPanel
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+
+                    <ui:Button
+                        Margin="4"
+                        Appearance="Transparent"
+                        Icon="{ui:SymbolIcon Symbol=SkipBack1024}" />
+
+                    <ui:Button
+                        Margin="4"
+                        Appearance="Primary"
+                        Icon="{ui:SymbolIcon Play24}" />
+
+                    <ui:Button
+                        Margin="4"
+                        Appearance="Transparent"
+                        Icon="{ui:SymbolIcon Symbol=SkipForward1024}" />
+                </StackPanel>
+            </Grid>
+        </Border>
     </Grid>
 </ui:FluentWindow>
