@@ -1,4 +1,6 @@
-﻿using Floatly.Models;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Floatly.Messages;
+using Floatly.Models;
 using System.Collections.ObjectModel;
 using Wpf.Ui.Controls;
 
@@ -6,6 +8,13 @@ namespace Floatly.ViewModels.Windows
 {
     public partial class MainWindowViewModel : ObservableObject
     {
+        public MainWindowViewModel()
+        {
+            WeakReferenceMessenger.Default.Register<SongChangedMessage>(this, (r, m) =>
+            {
+                CurrentSong = m.Value;
+            });
+        }
         [ObservableProperty]
         private string _applicationTitle = "Floatly";
         [ObservableProperty]

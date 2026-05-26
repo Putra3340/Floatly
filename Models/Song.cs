@@ -15,20 +15,6 @@ namespace Floatly.Models
         public int LikeCount { get; set; }
         public string ThumbnailUrl { get; set; }
         public string LyricsUrl { get; set; }
-        public string PlaybackUrl { get; set; }
         public string VideoPlaybackUrl { get; set; }
-    }
-    public class ApiList
-    {
-        public List<ApiSong> Songs { get; set; }
-    }
-    public class ApiSong
-    {
-        public string Id { get; set; }
-        public string Title { get; set; }
-        public string ArtistName { get; set; }
-        public string Cover { get; set; }
-        public string SongLength { get; set; }
-        public string PlayCount { get; set; }
     }
 }

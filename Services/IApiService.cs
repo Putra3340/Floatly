@@ -7,7 +7,8 @@ namespace Floatly.Services
 {
     public interface IApiService
     {
-        Task<List<ApiSong>> GetSongAsync();
-        Task<List<ApiSong>> GetSongAsync(string query);
+        Task<List<Song>> GetSongAsync();
+        Task<List<Song>> GetSongAsync(string query);
+        Task<Song> GetSongDetailAsync(string id);
     }
 }

@@ -1,4 +1,6 @@
-﻿using Floatly.Models;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Floatly.Messages;
+using Floatly.Models;
 using Floatly.Services;
 using System.Collections.ObjectModel;
 
@@ -12,12 +14,19 @@ namespace Floatly.ViewModels.Pages
             _apiService = apiService;
         }
         [ObservableProperty]
-        private ObservableCollection<ApiSong> _songlist;
+        private ObservableCollection<Song> _songlist;
+        [ObservableProperty]
+        private string searchQuery;
 
         [RelayCommand]
-        private async Task LoadSongsAsync()
+        private async Task LoadSongsAsync(string query)
         {
-            Songlist = new ObservableCollection<ApiSong>(await _apiService.GetSongAsync());
+            Songlist = new ObservableCollection<Song>(await _apiService.GetSongAsync(query));
+        }
+        [RelayCommand]
+        private async Task GetLoadSongAsync(string id)
+        {
+            WeakReferenceMessenger.Default.Send(new SongChangedMessage(await _apiService.GetSongDetailAsync(id)));
         }
     }
 }

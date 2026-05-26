@@ -19,11 +19,19 @@
         HorizontalAlignment="Stretch"
         VerticalAlignment="Stretch"
         RowDefinitions="Auto,*">
-        <ui:Button HorizontalAlignment="Stretch" Command="{Binding ViewModel.LoadSongsCommand}">
-            <ui:Button.Icon>
-                <ui:SymbolIcon Symbol="Search24" />
-            </ui:Button.Icon>
-        </ui:Button>
+        <Grid ColumnDefinitions="*,Auto">
+            <ui:TextBox Text="{Binding ViewModel.SearchQuery, Mode=TwoWay}" />
+            <ui:Button
+                Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Command="{Binding ViewModel.LoadSongsCommand}"
+                CommandParameter="{Binding ViewModel.SearchQuery}">
+                <ui:Button.Icon>
+                    <ui:SymbolIcon Symbol="Search24" />
+                </ui:Button.Icon>
+            </ui:Button>
+        </Grid>
         <ui:ListView
             Grid.Row="1"
             HorizontalContentAlignment="Stretch"
@@ -35,10 +43,13 @@
                         MinHeight="60"
                         MaxHeight="180"
                         HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Stretch">
+                        HorizontalContentAlignment="Stretch"
+                        Command="{Binding DataContext.ViewModel.GetLoadSongCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
+                        CommandParameter="{Binding Id}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}">
                         <Grid ColumnDefinitions="180,*,50">
 
-                            <ui:Image Source="{Binding Cover}" Stretch="Uniform" />
+                            <ui:Image Source="{Binding ThumbnailUrl}" Stretch="Uniform" />
 
                             <Grid
                                 Grid.Column="1"
@@ -47,7 +58,7 @@
 
                                 <ui:TextBlock
                                     FontSize="24"
-                                    Text="{Binding Title}"
+                                    Text="{Binding Name}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="NoWrap" />
 
@@ -55,7 +66,7 @@
                                     Grid.Row="1"
                                     Margin="0,8,0,0"
                                     FontSize="18"
-                                    Text="{Binding ArtistName}"
+                                    Text="{Binding Uploader}"
                                     TextTrimming="CharacterEllipsis"
                                     TextWrapping="NoWrap" />
 

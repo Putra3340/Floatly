@@ -39,8 +39,13 @@
                 <ui:BreadcrumbBar x:Name="BreadcrumbBar" Margin="42,32,42,20" />
             </ui:NavigationView.Header>
             <ui:NavigationView.ContentOverlay>
-                <Grid>
+                <Grid RowDefinitions="*">
                     <ui:SnackbarPresenter x:Name="SnackbarPresenter" />
+                    <MediaElement
+                        MaxHeight="250"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Source="{Binding ViewModel.CurrentSong.VideoPlaybackUrl}" />
                 </Grid>
             </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>

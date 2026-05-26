@@ -12,26 +12,40 @@ namespace Floatly.Services
     public class ApiService : IApiService
     {
         private readonly HttpClient _http;
+        private readonly string _baseurl = "https://localhost:7156/api/";
+        private string _token = "MTc3OTc3Njg0NjY4MHw1Nzg5Zjk2YnwzMTgwNTN8NjZhMTg5MDI5ZjIxNGQ0ZGE2NGZhMzVlNWQxN2RjODN8MTc4MDM4MTY0Ng==";
         public ApiService()
         {
             _http = new();
         }
 
-        public async Task<List<ApiSong>> GetSongAsync()
+        public async Task<List<Song>> GetSongAsync()
         {
-            var response = await _http.GetAsync("https://floatly.starhost.web.id/api/library/v4/search?token=MTc3OTY0OTA0MDg1OXw1NGNmOTliOHw1MzAwMzB8YWNkYzE4YzdlN2MwNDg2NjkxZWYyMThiZjdiZjhlYWJ8MTc4MDI1Mzg0MA%3D%3D");
+            var response = await _http.GetAsync($"{_baseurl}v1/search?token={_token}");
 
             response.EnsureSuccessStatusCode();
-            string res = await response.Content.ReadAsStringAsync();
-            Debug.WriteLine($"RES {res}");
 
-            var parsed = await response.Content.ReadFromJsonAsync<ApiList>() ?? new();
+            var parsed = await response.Content.ReadFromJsonAsync<SearchModel>() ?? new();
             return parsed.Songs;
         }
 
-        public Task<List<ApiSong>> GetSongAsync(string query)
+        public async Task<List<Song>> GetSongAsync(string query)
         {
-            throw new NotImplementedException();
+            var response = await _http.GetAsync($"{_baseurl}v1/search?anycontent={query}&token={_token}");
+
+            response.EnsureSuccessStatusCode();
+
+            var parsed = await response.Content.ReadFromJsonAsync<SearchModel>() ?? new();
+            return parsed.Songs;
+        }
+
+        public async Task<Song> GetSongDetailAsync(string id)
+        {
+            var response = await _http.GetAsync($"{_baseurl}v1/play/{id}?token={_token}");
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<Song>() ?? new();
         }
     }
 }
