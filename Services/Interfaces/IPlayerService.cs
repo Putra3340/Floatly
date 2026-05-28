@@ -9,9 +9,11 @@ namespace Floatly.Services.Interfaces
 {
     public interface IPlayerService
     {
-        GlobalPlayerControl PlayerControl { get;set; }
+        GlobalPlayerControl PlayerControl { get; set; }
         Song? CurrentSong { get; }
-
+        List<LyricItem> LyricItems { get; set; }
+        List<LyricLine> LyricLines { get; set; }
+        string ActiveLyric { get; }
         TimeSpan Position { get; }
         TimeSpan Duration { get; }
 
@@ -22,6 +24,8 @@ namespace Floatly.Services.Interfaces
         void Initialize(MediaElement mediaElement);
 
         void Play(string url, Song song);
+        void LoadLyric(Lyric lyric);
+        void SelectLyric(LyricItem lyric);
         void Pause();
         void Resume();
         void Seek(TimeSpan position);

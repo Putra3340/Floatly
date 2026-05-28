@@ -20,6 +20,15 @@ namespace Floatly.Services
             _http = new();
         }
 
+        public async Task<Lyric> GetCaptionAsync(string id)
+        {
+            var response = await _http.GetAsync($"{_baseurl}v1/lyrics/{id}?token={_token}");
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<Lyric>() ?? new();
+        }
+
         public async Task<List<Song>> GetSongAsync()
         {
             var response = await _http.GetAsync($"{_baseurl}v1/search?token={_token}");

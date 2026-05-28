@@ -30,6 +30,9 @@ namespace Floatly.ViewModels.Pages
         {
             var song = await _apiService.GetSongDetailAsync(id);
             _playerService.Play(song.VideoPlaybackUrl,song);
+            _playerService.LyricItems?.Clear();
+            _playerService.LyricLines?.Clear();
+            _playerService.LoadLyric(await _apiService.GetCaptionAsync(id));
         }
     }
 }
