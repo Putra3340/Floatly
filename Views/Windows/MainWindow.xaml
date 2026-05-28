@@ -2,7 +2,9 @@
     x:Class="Floatly.Views.Windows.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Floatly.Views.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:Floatly.Views.Windows"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
@@ -18,6 +20,17 @@
     WindowCornerPreference="Round"
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
+    <i:Interaction.Triggers>
+
+        <i:EventTrigger EventName="Activated">
+            <i:InvokeCommandAction Command="{Binding ViewModel.WindowFocusCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Deactivated">
+            <i:InvokeCommandAction Command="{Binding ViewModel.WindowLostFocusCommand}" />
+        </i:EventTrigger>
+
+    </i:Interaction.Triggers>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -41,11 +54,11 @@
             <ui:NavigationView.ContentOverlay>
                 <Grid RowDefinitions="*">
                     <ui:SnackbarPresenter x:Name="SnackbarPresenter" />
-                    <MediaElement
+                    <ContentControl
+                        x:Name="PlayerHost"
                         MaxHeight="250"
                         HorizontalAlignment="Right"
-                        VerticalAlignment="Bottom"
-                        Source="{Binding ViewModel.CurrentSong.VideoPlaybackUrl}" />
+                        VerticalAlignment="Bottom" />
                 </Grid>
             </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>
@@ -83,31 +96,53 @@
                     ClipToBounds="True"
                     CornerRadius="12">
 
-                    <Image Source="{Binding ViewModel.CurrentSong.ThumbnailUrl}" Stretch="UniformToFill" />
+                    <Image Source="{Binding ViewModel.Thumbnail, TargetNullValue={x:Null}}" Stretch="Uniform" />
                 </Border>
-
-                <!--  Song Info  -->
-                <StackPanel
+                <Grid
                     Grid.Column="1"
                     Margin="16,0"
-                    VerticalAlignment="Center">
+                    RowDefinitions="Auto,*">
+                    <!--  Song Info  -->
+                    <StackPanel VerticalAlignment="Center">
+                        <ui:TextBlock
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            Text="{Binding ViewModel.Title}" />
 
-                    <ui:TextBlock
-                        FontSize="16"
-                        FontWeight="SemiBold"
-                        Text="{Binding ViewModel.CurrentSong.Name}" />
+                        <ui:TextBlock
+                            Margin="0,2,0,0"
+                            Opacity="0.7"
+                            Text="{Binding ViewModel.Uploader}" />
 
-                    <ui:TextBlock
-                        Margin="0,4,0,0"
-                        Opacity="0.7"
-                        Text="{Binding ViewModel.CurrentSong.Uploader}" />
 
-                    <!--  Progress  -->
-                    <Slider
-                        Margin="0,10,0,0"
-                        Maximum="{Binding ViewModel.CurrentSong.DurationValue}"
-                        Value="0" />
-                </StackPanel>
+                    </StackPanel>
+                    <Grid
+                        Grid.Row="1"
+                        HorizontalAlignment="Stretch"
+                        ColumnDefinitions="Auto,*,Auto">
+                        <TextBlock
+                            Margin="0,0,12,0"
+                            VerticalAlignment="Center"
+                            Foreground="White"
+                            Text="{Binding ViewModel.ProgressText}" />
+
+                        <Slider
+                            x:Name="ProgressSlider"
+                            Grid.Column="1"
+                            Maximum="{Binding ViewModel.Duration}"
+                            PreviewMouseLeftButtonUp="ProgressSlider_PreviewMouseLeftButtonUp"
+                            Value="{Binding ViewModel.Progress, Mode=OneWay}" />
+
+                        <TextBlock
+                            Grid.Column="2"
+                            Margin="12,0,0,0"
+                            VerticalAlignment="Center"
+                            Foreground="White"
+                            Text="{Binding ViewModel.DurationText}" />
+
+                    </Grid>
+                </Grid>
+
 
                 <!--  Controls  -->
                 <StackPanel
@@ -118,17 +153,30 @@
                     <ui:Button
                         Margin="4"
                         Appearance="Transparent"
+                        Command="{Binding ViewModel.Rewind10SecondsCommand}"
                         Icon="{ui:SymbolIcon Symbol=SkipBack1024}" />
 
                     <ui:Button
                         Margin="4"
                         Appearance="Primary"
-                        Icon="{ui:SymbolIcon Play24}" />
+                        Command="{Binding ViewModel.PlayPauseCommand}">
+
+                        <ui:Button.Icon>
+                            <ui:SymbolIcon Symbol="{Binding ViewModel.PlayPauseIcon}" />
+                        </ui:Button.Icon>
+
+                    </ui:Button>
 
                     <ui:Button
                         Margin="4"
                         Appearance="Transparent"
+                        Command="{Binding ViewModel.Skip10SecondsCommand}"
                         Icon="{ui:SymbolIcon Symbol=SkipForward1024}" />
+                    <ui:Button
+                        Margin="4"
+                        Appearance="Transparent"
+                        Command="{Binding ViewModel.OpenFloatingWindowCommand}"
+                        Icon="{ui:SymbolIcon Symbol=PictureInPicture24}" />
                 </StackPanel>
             </Grid>
         </Border>

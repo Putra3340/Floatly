@@ -1,4 +1,5 @@
 ﻿using Floatly.Models;
+using Floatly.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -12,8 +13,8 @@ namespace Floatly.Services
     public class ApiService : IApiService
     {
         private readonly HttpClient _http;
-        private readonly string _baseurl = "https://localhost:7156/api/";
-        private string _token = "MTc3OTc3Njg0NjY4MHw1Nzg5Zjk2YnwzMTgwNTN8NjZhMTg5MDI5ZjIxNGQ0ZGE2NGZhMzVlNWQxN2RjODN8MTc4MDM4MTY0Ng==";
+        private readonly string _baseurl = "https://floatly.starhost.web.id/api/";
+        private string _token = "MTc3OTgzODg4MDUxMHxmODg5NDdlZXw3MzUxNzN8OWVjY2I2NTNmNjFlNDhkNzgxOTBjOGZjMmRlMDkyZTh8MTc4MDQ0MzY4MA==";
         public ApiService()
         {
             _http = new();

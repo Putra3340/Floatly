@@ -3,6 +3,7 @@ using Floatly.Helpers;
 using System.Windows.Media;
 using Wpf.Ui.Abstractions.Controls;
 using Wpf.Ui.Appearance;
+using Wpf.Ui.Controls;
 
 namespace Floatly.ViewModels.Pages
 {
@@ -72,19 +73,28 @@ namespace Floatly.ViewModels.Pages
             switch (parameter)
             {
                 case "deep_indigo":
-                    ApplicationAccentColorManager.Apply(ThemeHelper.GetColor(ThemeAccent.DeepIndigo));
                     CurrentAccent = ThemeAccent.DeepIndigo;
                     break;
+
                 case "purple":
-                    ApplicationAccentColorManager.Apply(ThemeHelper.GetColor(ThemeAccent.Purple));
                     CurrentAccent = ThemeAccent.Purple;
                     break;
 
                 default:
-                    ApplicationAccentColorManager.Apply(ThemeHelper.GetColor(ThemeAccent.Indigo));
                     CurrentAccent = ThemeAccent.Indigo;
                     break;
             }
+
+            ApplicationAccentColorManager.Apply(
+    ThemeHelper.GetColor(CurrentAccent),
+    ApplicationThemeManager.GetAppTheme()
+);
+
+            ApplicationThemeManager.Apply(
+                ApplicationThemeManager.GetAppTheme(),
+                WindowBackdropType.Mica,
+                true
+            );
         }
     }
 }

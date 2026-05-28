@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Floatly.Services
+namespace Floatly.Services.Interfaces
 {
     public interface IApiService
     {

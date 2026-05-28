@@ -1,4 +1,5 @@
 ﻿using Floatly.Services;
+using Floatly.Services.Interfaces;
 using Floatly.ViewModels.Pages;
 using Floatly.ViewModels.Windows;
 using Floatly.Views.Pages;
@@ -52,9 +53,12 @@ namespace Floatly
                 services.AddSingleton<DataViewModel>();
                 services.AddSingleton<SettingsPage>();
                 services.AddSingleton<SettingsViewModel>();
+                services.AddSingleton<FloatingWindow>();
+                services.AddSingleton<FloatingWindowViewModel>();
 
                 // API service
                 services.AddSingleton<IApiService, ApiService>();
+                services.AddSingleton<IPlayerService, PlayerService>();
             }).Build();
 
         /// <summary>
@@ -89,6 +93,10 @@ namespace Floatly
         private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
             // For more info see https://docs.microsoft.com/en-us/dotnet/api/system.windows.application.dispatcherunhandledexception?view=windowsdesktop-6.0
+        }
+        public static T GetService<T>() where T : class
+        {
+            return (T)_host.Services.GetService(typeof(T))!;
         }
     }
 }

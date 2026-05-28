@@ -1,5 +1,6 @@
 ﻿using Floatly.Enums;
 using Floatly.Helpers;
+using Floatly.Services.Interfaces;
 using Floatly.ViewModels.Windows;
 using System.Windows.Media;
 using Wpf.Ui;
@@ -16,7 +17,7 @@ namespace Floatly.Views.Windows
         public MainWindow(
             MainWindowViewModel viewModel,
             INavigationViewPageProvider navigationViewPageProvider,
-            INavigationService navigationService
+            INavigationService navigationService,IPlayerService playerService
         )
         {
             ViewModel = viewModel;
@@ -31,6 +32,8 @@ namespace Floatly.Views.Windows
 
             // Theme manipulation
             ApplicationAccentColorManager.Apply(ThemeHelper.GetColor(ThemeAccent.Indigo));
+
+            PlayerHost.Content = playerService.PlayerControl;
         }
 
         #region INavigationWindow methods
@@ -66,6 +69,11 @@ namespace Floatly.Views.Windows
         public void SetServiceProvider(IServiceProvider serviceProvider)
         {
             throw new NotImplementedException();
+        }
+
+        private void ProgressSlider_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            ViewModel.SeekCommand.Execute(ProgressSlider.Value);
         }
     }
 }
