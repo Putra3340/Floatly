@@ -1,6 +1,7 @@
 ﻿using Floatly.Models;
 using System.Windows.Media;
 using Wpf.Ui.Abstractions.Controls;
+using Color = System.Windows.Media.Color;
 
 namespace Floatly.ViewModels.Pages
 {

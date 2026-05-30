@@ -4,6 +4,6 @@ namespace Floatly.Models
 {
     public struct DataColor
     {
-        public Brush Color { get; set; }
+        public System.Windows.Media.Brush Color { get; set; }
     }
 }

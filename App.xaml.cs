@@ -7,6 +7,7 @@ using Floatly.Views.Windows;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using SharpHook;
 using System.IO;
 using System.Reflection;
 using System.Windows.Threading;
@@ -56,9 +57,11 @@ namespace Floatly
                 services.AddSingleton<FloatingWindow>();
                 services.AddSingleton<FloatingWindowViewModel>();
 
-                // API service
+                // Service
                 services.AddSingleton<IApiService, ApiService>();
                 services.AddSingleton<IPlayerService, PlayerService>();
+                services.AddSingleton<SimpleGlobalHook>();
+
             }).Build();
 
         /// <summary>

@@ -50,7 +50,7 @@
                         Command="{Binding DataContext.ViewModel.GetLoadSongCommand, RelativeSource={RelativeSource AncestorType=ListView}}"
                         CommandParameter="{Binding Id}"
                         Foreground="{DynamicResource TextFillColorPrimaryBrush}">
-                        <Grid ColumnDefinitions="100,*,50">
+                        <Grid ColumnDefinitions="100,800,50">
 
                             <ui:Image Source="{Binding ThumbnailUrl}" Stretch="Uniform" />
 
@@ -76,6 +76,7 @@
 
                             <TextBlock
                                 Grid.Column="2"
+                                HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Text="{Binding PlayCount}" />
 

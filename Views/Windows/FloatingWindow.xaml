@@ -43,7 +43,8 @@
                 VerticalAlignment="Bottom"
                 Background="Black"
                 CornerRadius="6"
-                IsHitTestVisible="False">
+                IsHitTestVisible="False"
+                Visibility="{Binding ViewModel.IsCaptionVisible}">
                 <ui:TextBlock
                     Background="Black"
                     FontSize="20"

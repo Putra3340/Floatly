@@ -6,6 +6,7 @@ using Floatly.Views.Windows;
 using System.Collections.ObjectModel;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
+using MenuItem = Wpf.Ui.Controls.MenuItem;
 
 namespace Floatly.ViewModels.Windows
 {

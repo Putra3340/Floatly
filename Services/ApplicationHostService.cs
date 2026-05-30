@@ -3,6 +3,7 @@ using Floatly.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Wpf.Ui;
+using Application = System.Windows.Application;
 
 namespace Floatly.Services
 {
